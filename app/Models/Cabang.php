@@ -20,7 +20,7 @@ class Cabang extends Model
     }
     // --------------------------------------------------------------------------------
     public function sub_wilayah(){
-        return $this->belongsTo(SubWilayah::class, 'sub_wilayah_id');
+        return $this->belongsTo(SubWilayah::class, 'sub_wilayah_id')->withTrashed();
     }
     // --------------------------------------------------------------------------------
 }

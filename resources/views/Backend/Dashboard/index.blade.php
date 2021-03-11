@@ -2,6 +2,6 @@
 
 @section('content')
 <div class="container-fluid">
-    asd
+    Dashboard page
 </div>
 @endsection

@@ -11,14 +11,6 @@
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-// Auth::routes();
-
-// Route::get('/home', 'HomeController@index')->name('home');
-
 // ------------------------------------------------------------------------
 // Login page
 // ------------------------------------------------------------------------
@@ -36,6 +28,22 @@ Route::namespace('Backend')->group(function(){
     // --------------------------------------------------------------------
     Route::prefix('dashboard')->group(function(){
         Route::get('/', 'DashboardController@index')->name('dashboard.index');
+    });
+    // --------------------------------------------------------------------
+
+    // --------------------------------------------------------------------
+    // Master page
+    // --------------------------------------------------------------------
+    Route::namespace('Master')->prefix('master')->name('master.')->group(function(){
+        // ----------------------------------------------------------------
+        //  Sub Wilayah page
+        // ----------------------------------------------------------------
+        Route::resource('sub-wilayah', 'SubWilayahController');
+        Route::prefix('sub-wilayah')->group(function(){
+            Route::get('json/{param}', 'SubWilayahController@json')->name('sub-wilayah.json');
+            Route::put('update-status/{type}/{id}', 'SubWilayahController@updateStatus')->name('sub-wilayah.update.status');
+        });
+        // ----------------------------------------------------------------
     });
     // --------------------------------------------------------------------
 });

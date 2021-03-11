@@ -48,6 +48,7 @@
 
 	<!-- Start - Script -->
 	<script src="{{ asset('js/app.js') }}"></script>
+	
 	@stack('scripts')
 	<!-- End - Script -->
 </body>

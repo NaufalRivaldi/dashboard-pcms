@@ -8,11 +8,6 @@
         <button type="button" class="btn btn-default btn-toggle-fullwidth"><i class="ti-menu"></i></button>
         <div id="navbar-menu">
             <ul class="nav navbar-nav align-items-center">
-                <li class="nav-item">
-                    <a href="#" class="dropdown-toggle btn-toggle-rightsidebar">
-                        <i class="ti-layout-sidebar-right"></i>
-                    </a>
-                </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="dropdown-toggle icon-menu" data-toggle="dropdown">
                         <i class="ti-bell"></i>
