@@ -1,7 +1,25 @@
 @extends('layouts.app_master')
 
 @push('css')
+<style>
+    /* ------------------------------------------------------------ */
+    /* Form style */
+    /* ------------------------------------------------------------ */
+    .label-form{
+        font-weight: bold;
+        font-size: 1em;
+    }
 
+    .form-group > label > span{
+        font-size: .7em;
+    }
+
+    .input-form{
+        align-items: center !important;
+        display: inline-grid;
+    }
+    /* ------------------------------------------------------------ */
+</style>
 @endpush
 
 @section('content')

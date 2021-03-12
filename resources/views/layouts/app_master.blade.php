@@ -45,7 +45,8 @@
             <!-- MAIN CONTENT -->
             <div class="main-content">
                 @include('layouts.components.breadcrumb')    
-
+                
+                @include('layouts.components.alert')
                 @yield('content')
             </div>
             <!-- END MAIN CONTENT -->

@@ -143,7 +143,7 @@
         // Set datatable
         // ----------------------------------------------------------------------------
         var datatable = $('#myDataTable').DataTable({
-            order: [[0, "desc"]],
+            order: [[0, "asc"]],
             processing: true,
             serverSide: true,
             orderCellsTop: true,
