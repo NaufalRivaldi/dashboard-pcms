@@ -26,6 +26,8 @@ class CreateCabangTable extends Migration
             $table->unsignedBigInteger('wilayah_id');
             $table->unsignedBigInteger('sub_wilayah_id');
             // ------------------------------------------------------------------------
+            $table->softDeletes();
+            // ------------------------------------------------------------------------
             // Set foreign key
             // ------------------------------------------------------------------------
             $table->foreign('wilayah_id')->references('id')->on('wilayah')->onUpdate('CASCADE')->onDelete('CASCADE');

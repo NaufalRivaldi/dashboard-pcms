@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // ----------------------------------------------------------------------------
-use App\Models\SubWilayah;
+use App\Models\Kategori;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 // ----------------------------------------------------------------------------
-class SubWilayahController extends Controller
+class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,14 +22,14 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass; $filtering = new \stdClass;
-        $data->title        = "Sub Wilayah - List";
+        $data->title        = "Kategori - List";
         $data->filtering    = $filtering; 
         // --------------------------------------------------------------------
         // Filtering data
         // --------------------------------------------------------------------
-        $filtering->status = ['Active', 'Inactive'];
+        $filtering->status      = ['Active', 'Inactive'];
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.index', (array) $data);
+        return view('backend.master.kategori.index', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -45,9 +45,9 @@ class SubWilayahController extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $subWilayahs = SubWilayah::query();
+                $kategori = Kategori::query();
                 // ------------------------------------------------------------
-                $datatable = datatables()->of($subWilayahs)->addIndexColumn();
+                $datatable = datatables()->of($kategori)->addIndexColumn();
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
@@ -57,7 +57,7 @@ class SubWilayahController extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<a href="'.route('master.sub-wilayah.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
+                                    $button .= '<a href="'.route('master.kategori.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
                                     $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
@@ -100,10 +100,10 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Sub Wilayah - Form";
-        $data->subWilayah   = new SubWilayah();
+        $data->title        = "Kategori - Form";
+        $data->kategori     = new Kategori();
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.form', (array) $data);
+        return view('backend.master.kategori.form', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -121,8 +121,8 @@ class SubWilayahController extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:sub_wilayah,kode|max:100',
-            'nama'      => 'required|max:191',
+            'kode'              => 'required|unique:kategori,kode|max:100',
+            'nama'              => 'required|max:191',
         ])->validate();
         // --------------------------------------------------------------------
 
@@ -131,12 +131,12 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         try {
             // ----------------------------------------------------------------
-            SubWilayah::create($request->all());
+            Kategori::create($request->all());
             // ----------------------------------------------------------------
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
+            return redirect()->route('master.kategori.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.kategori.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -166,10 +166,10 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Sub Wilayah - Form Edit";
-        $data->subWilayah   = SubWilayah::find($id);
+        $data->title        = "Kategori - Form Edit";
+        $data->kategori     = Kategori::find($id);
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.form', (array) $data);
+        return view('backend.master.kategori.form', (array) $data);
         // -------------------------------------------  -------------------------
     }
     // ------------------------------------------------------------------------
@@ -188,7 +188,7 @@ class SubWilayahController extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:sub_wilayah,kode,'.$id.'|max:100',
+            'kode'      => 'required|unique:wilayah,kode,'.$id.'|max:100',
             'nama'      => 'required|max:191',
         ])->validate();
         // --------------------------------------------------------------------
@@ -200,15 +200,15 @@ class SubWilayahController extends Controller
             // ----------------------------------------------------------------
             $data = $request->all();
             // ----------------------------------------------------------------
-            $subWilayah = SubWilayah::findOrFail($id);
-            $subWilayah->kode = $data['kode'];
-            $subWilayah->nama = $data['nama'];
-            $subWilayah->save();
+            $kategori = Kategori::findOrFail($id);
+            $kategori->kode = $data['kode'];
+            $kategori->nama = $data['nama'];
+            $kategori->save();
             // ----------------------------------------------------------------
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
+            return redirect()->route('master.kategori.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.kategori.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -221,10 +221,10 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $subWilayah = SubWilayah::find($id);
+        $kategori = Kategori::find($id);
         // --------------------------------------------------------------------
-        $subWilayah->status = $type;
-        $subWilayah->save();
+        $kategori->status = $type;
+        $kategori->save();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
         // --------------------------------------------------------------------
@@ -245,9 +245,9 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $subWilayah = SubWilayah::findOrFail($id);
+        $kategori = Kategori::findOrFail($id);
         // --------------------------------------------------------------------
-        $subWilayah->delete();
+        $kategori->delete();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_DELETE_MESSAGE');
         // --------------------------------------------------------------------

@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // ----------------------------------------------------------------------------
+use App\Models\Cabang;
+use App\Models\Wilayah;
 use App\Models\SubWilayah;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 // ----------------------------------------------------------------------------
-class SubWilayahController extends Controller
+class CabangController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,14 +24,16 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass; $filtering = new \stdClass;
-        $data->title        = "Sub Wilayah - List";
+        $data->title        = "Cabang - List";
         $data->filtering    = $filtering; 
         // --------------------------------------------------------------------
         // Filtering data
         // --------------------------------------------------------------------
-        $filtering->status = ['Active', 'Inactive'];
+        $filtering->status      = ['Active', 'Inactive'];
+        $filtering->wilayah     = Wilayah::where('status', 1)->pluck('nama', 'id');
+        $filtering->subWilayah  = SubWilayah::where('status', 1)->pluck('nama', 'id');
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.index', (array) $data);
+        return view('backend.master.cabang.index', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -45,9 +49,9 @@ class SubWilayahController extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $subWilayahs = SubWilayah::query();
+                $cabang = Cabang::with('wilayah', 'sub_wilayah')->select('cabang.*');
                 // ------------------------------------------------------------
-                $datatable = datatables()->of($subWilayahs)->addIndexColumn();
+                $datatable = datatables()->of($cabang)->addIndexColumn();
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
@@ -57,7 +61,7 @@ class SubWilayahController extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<a href="'.route('master.sub-wilayah.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
+                                    $button .= '<a href="'.route('master.cabang.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
                                     $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
@@ -100,10 +104,12 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Sub Wilayah - Form";
-        $data->subWilayah   = new SubWilayah();
+        $data->title        = "Cabang - Form";
+        $data->cabang       = new Cabang();
+        $data->wilayah      = Wilayah::where('status', 1)->pluck('nama', 'id')->toArray();
+        $data->subWilayah   = SubWilayah::where('status', 1)->pluck('nama', 'id')->toArray();
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.form', (array) $data);
+        return view('backend.master.cabang.form', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -121,8 +127,10 @@ class SubWilayahController extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:sub_wilayah,kode|max:100',
-            'nama'      => 'required|max:191',
+            'kode'              => 'required|unique:cabang,kode|max:100',
+            'nama'              => 'required|max:191',
+            'wilayah_id'        => 'required',
+            'sub_wilayah_id'    => 'required',
         ])->validate();
         // --------------------------------------------------------------------
 
@@ -131,12 +139,12 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         try {
             // ----------------------------------------------------------------
-            SubWilayah::create($request->all());
+            Cabang::create($request->all());
             // ----------------------------------------------------------------
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
+            return redirect()->route('master.cabang.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.cabang.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -166,10 +174,12 @@ class SubWilayahController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Sub Wilayah - Form Edit";
-        $data->subWilayah   = SubWilayah::find($id);
+        $data->title        = "Cabang - Form Edit";
+        $data->cabang       = Cabang::find($id);
+        $data->wilayah      = Wilayah::where('status', 1)->pluck('nama', 'id')->toArray();
+        $data->subWilayah   = SubWilayah::where('status', 1)->pluck('nama', 'id')->toArray();
         // --------------------------------------------------------------------
-        return view('backend.master.sub_wilayah.form', (array) $data);
+        return view('backend.master.cabang.form', (array) $data);
         // -------------------------------------------  -------------------------
     }
     // ------------------------------------------------------------------------
@@ -188,8 +198,10 @@ class SubWilayahController extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:sub_wilayah,kode,'.$id.'|max:100',
+            'kode'      => 'required|unique:cabang,kode,'.$id.'|max:100',
             'nama'      => 'required|max:191',
+            'wilayah_id'        => 'required',
+            'sub_wilayah_id'    => 'required',
         ])->validate();
         // --------------------------------------------------------------------
 
@@ -200,15 +212,17 @@ class SubWilayahController extends Controller
             // ----------------------------------------------------------------
             $data = $request->all();
             // ----------------------------------------------------------------
-            $subWilayah = SubWilayah::findOrFail($id);
-            $subWilayah->kode = $data['kode'];
-            $subWilayah->nama = $data['nama'];
-            $subWilayah->save();
+            $cabang = Cabang::findOrFail($id);
+            $cabang->kode               = $data['kode'];
+            $cabang->nama               = $data['nama'];
+            $cabang->wilayah_id         = $data['wilayah_id'];
+            $cabang->sub_wilayah_id     = $data['sub_wilayah_id'];
+            $cabang->save();
             // ----------------------------------------------------------------
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
+            return redirect()->route('master.cabang.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.sub-wilayah.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.cabang.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -221,10 +235,10 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $subWilayah = SubWilayah::find($id);
+        $cabang = Cabang::find($id);
         // --------------------------------------------------------------------
-        $subWilayah->status = $type;
-        $subWilayah->save();
+        $cabang->status = $type;
+        $cabang->save();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
         // --------------------------------------------------------------------
@@ -245,9 +259,9 @@ class SubWilayahController extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $subWilayah = SubWilayah::findOrFail($id);
+        $cabang = Cabang::findOrFail($id);
         // --------------------------------------------------------------------
-        $subWilayah->delete();
+        $cabang->delete();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_DELETE_MESSAGE');
         // --------------------------------------------------------------------

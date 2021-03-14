@@ -98,7 +98,7 @@
                         // ------------------------------------------------------------
                         // Set text variable
                         // ------------------------------------------------------------
-                        text += '<option value="">Pilih '+ title +'</option>';
+                        text += '<option value="">All</option>';
                         // ------------------------------------------------------------
                         $.each(data, function(index, val){
                             text += '<option value="'+ val +'">'+ val +'</option>';

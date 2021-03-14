@@ -23,13 +23,29 @@
                 </a>
                 <div id="submenuCabang" class="collapse">
                     <ul class="submenu">
-                        <li><a href="#">Cabang</a></li>
-                        <li><a href="#">Wilayah</a></li>
+                        <li><a href="{{ route('master.cabang.index') }}">Cabang</a></li>
+                        <li><a href="{{ route('master.wilayah.index') }}">Wilayah</a></li>
                         <li><a href="{{ route('master.sub-wilayah.index') }}">Sub Wilayah</a></li>
                     </ul>
                 </div>
             </li>
             <!-- End - Cabang collapse -->
+
+            <!-- Start - Materi collapse -->
+            <li class="panel">
+                <a href="#" data-toggle="collapse" data-target="#submenuMateri" data-parent="#sidebar-nav-menu">
+                    <i class="ti-book"></i> <span class="title">Materi</span><i class="icon-submenu ti-angle-left"></i>
+                </a>
+                <div id="submenuMateri" class="collapse">
+                    <ul class="submenu">
+                        <li><a href="{{ route('master.kategori.index') }}">Kategori</a></li>
+                        <li><a href="#">Materi</a></li>
+                        <li><a href="#">Grade</a></li>
+                        <li><a href="#">Materi Grade</a></li>
+                    </ul>
+                </div>
+            </li>
+            <!-- End - Materi collapse -->
             <!-- End - Master Link -->
         </ul>
         <button type="button" class="btn-toggle-minified" title="Toggle Minified Menu"><i class="ti-arrows-horizontal"></i></button>

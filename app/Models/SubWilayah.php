@@ -21,7 +21,7 @@ class SubWilayah extends Model
     // Set relationship
     // --------------------------------------------------------------------------------
     public function cabangs(){
-        return $this->hasMany(Cabang::class, 'sub_wilayah_id');
+        return $this->hasMany(Cabang::class, 'sub_wilayah_id')->withTrashed();
     }
     // --------------------------------------------------------------------------------
 }
