@@ -16,6 +16,11 @@ window.Vue = require('vue');
 import Vue from 'vue';
 // -----------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------
+import vueNumeralFilterInstaller from 'vue-numeral-filter';
+Vue.use(vueNumeralFilterInstaller, { locale: 'en-gb' });
+// -----------------------------------------------------------------------------
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

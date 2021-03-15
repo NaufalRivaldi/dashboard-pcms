@@ -2,11 +2,11 @@
 // ----------------------------------------------------------------------------
 use Illuminate\Database\Seeder;
 // ----------------------------------------------------------------------------
-use App\Models\SubWilayah;
+use App\Models\Wilayah;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 // ----------------------------------------------------------------------------
-class SubWilayahTableSeeder extends Seeder
+class WilayahTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,9 +17,9 @@ class SubWilayahTableSeeder extends Seeder
     public function run()
     {
         // --------------------------------------------------------------------
-        SubWilayah::query()->forceDelete();
+        Wilayah::query()->forceDelete();
         // --------------------------------------------------------------------
-        factory(SubWilayah::class, 50)->create();
+        factory(Wilayah::class, 50)->create();
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

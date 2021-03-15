@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "vue-numeral-filter": "^2.0.0",
         "vue-select": "^3.11.2",
         "vue-select2": "^0.2.6",
         "vuejs-datatable": "^2.0.0-alpha.7"

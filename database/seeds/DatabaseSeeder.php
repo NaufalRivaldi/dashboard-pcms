@@ -21,6 +21,14 @@ class DatabaseSeeder extends Seeder
         // Cabang Table and relation with cabang
         // --------------------------------------------------------------------
         $this->call(SubWilayahTableSeeder::class);
+        $this->call(WilayahTableSeeder::class);
+        $this->call(CabangTableSeeder::class);
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        // Materi Table and relation with materi
+        // --------------------------------------------------------------------
+        $this->call(GradeTableSeeder::class);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

@@ -74,6 +74,27 @@ Route::namespace('Backend')->group(function(){
             Route::put('update-status/{type}/{id}', 'KategoriController@updateStatus')->name('kategori.update.status');
         });
         // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Materi page
+        // ----------------------------------------------------------------
+        Route::resource('materi', 'MateriController');
+        Route::prefix('materi')->group(function(){
+            Route::get('json/{param}', 'MateriController@json')->name('materi.json');
+            Route::put('update-status/{type}/{id}', 'MateriController@updateStatus')->name('materi.update.status');
+            Route::post('grade', 'MateriController@storeGrade')->name('materi.store.grade');
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Grade page
+        // ----------------------------------------------------------------
+        Route::resource('grade', 'GradeController');
+        Route::prefix('grade')->group(function(){
+            Route::get('json/{param}', 'GradeController@json')->name('grade.json');
+            Route::put('update-status/{type}/{id}', 'GradeController@updateStatus')->name('grade.update.status');
+        });
+        // ----------------------------------------------------------------
     });
     // --------------------------------------------------------------------
 });

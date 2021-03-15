@@ -84,9 +84,9 @@
             var title = $(this).text();
             var type = $(this).data('type');
             // ------------------------------------------------------------------------
-            // If title not action
+            // If title not action && type not none (no input for search column)
             // ------------------------------------------------------------------------
-            if(title != 'Action'){
+            if(title != 'Action' && type != 'none'){
                 switch (type) {
                     // ----------------------------------------------------------------
                     // Select input filtering

@@ -39,9 +39,8 @@
                 <div id="submenuMateri" class="collapse">
                     <ul class="submenu">
                         <li><a href="{{ route('master.kategori.index') }}">Kategori</a></li>
-                        <li><a href="#">Materi</a></li>
-                        <li><a href="#">Grade</a></li>
-                        <li><a href="#">Materi Grade</a></li>
+                        <li><a href="{{ route('master.materi.index') }}">Materi</a></li>
+                        <li><a href="{{ route('master.grade.index') }}">Grade</a></li>
                     </ul>
                 </div>
             </li>

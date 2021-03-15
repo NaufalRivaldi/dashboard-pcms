@@ -24,6 +24,8 @@ class CreateMateriTable extends Migration
             // ------------------------------------------------------------------------
             $table->unsignedBigInteger('kategori_id');
             // ------------------------------------------------------------------------
+            $table->softDeletes();
+            // ------------------------------------------------------------------------
             // Set foreign key
             // ------------------------------------------------------------------------
             $table->foreign('kategori_id')->references('id')->on('kategori')->onUpdate('CASCADE')->onDelete('CASCADE');
