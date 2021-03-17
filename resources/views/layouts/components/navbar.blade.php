@@ -49,12 +49,10 @@
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="https://i.imgur.com/M701HZb.jpg" class="user-picture"" alt="Avatar"> <span>Samuel</span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="https://i.imgur.com/M701HZb.jpg" class="user-picture"" alt="Avatar"> <span>{{ Auth::user()->nama }}</span></a>
                     <ul class="dropdown-menu dropdown-menu-right logged-user-menu">
-                        <li><a href="#"><i class="ti-user"></i> <span>My Profile</span></a></li>
-                        <li><a href="appviews-inbox.html"><i class="ti-email"></i> <span>Message</span></a></li>
-                        <li><a href="#"><i class="ti-settings"></i> <span>Settings</span></a></li>
-                        <li><a href="page-lockscreen.html"><i class="ti-power-off"></i> <span>Logout</span></a></li>
+                        <li><a href="{{ route('password-user.index') }}"><i class="ti-key"></i> <span>Ubah Password</span></a></li>
+                        <li><a href="{{ route('login.logout') }}"><i class="ti-power-off"></i> <span>Logout</span></a></li>
                     </ul>
                 </li>
             </ul>

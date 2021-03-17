@@ -8,26 +8,40 @@
 </div>
 <!-- End - Header -->
 
+@include('layouts.components.alert')
+
 <!-- Start - Form Login -->
-<form class="form-auth-small" action="" method="POST">
+<form class="form-auth-small" action="{{ route('login.signin') }}" method="POST">
     @csrf
     <!-- Start - Username -->
     <div class="form-group">
         <label for="username" class="control-label sr-only">Username</label>
-        <input type="text" name="username" class="form-control" id="username" placeholder="Username">
+        <input type="text" name="username" class="form-control @if($errors->has('username')) is-invalid @endif" id="username" placeholder="Username">
+        
+        <!-- Start - Error handling -->
+        @if($errors->has('username'))
+            <div class="invalid-feedback">{{ $errors->first('username') }}</div>
+        @endif
+        <!-- End - Error handling -->
     </div>
     <!-- Emd - Username -->
 
     <!-- Start - Password -->
     <div class="input-group">
         <label for="password" class="control-label sr-only">Password</label>
-        <input :type="passwordVisible ? 'text' : 'password'" name="password" class="form-control" id="password" placeholder="Password" aria-label="password" aria-describedby="basic-addon-password">
+        <input :type="passwordVisible ? 'text' : 'password'" name="password" class="form-control @if($errors->has('password')) is-invalid @endif" id="password" placeholder="Password" aria-label="password" aria-describedby="basic-addon-password">
 
         <div class="input-group-prepend">
             <button type="button" class="input-group-text" id="basic-addon-password" @click="passwordChange()">
                 <span class="ti-eye"></span>
             </button>
         </div>
+
+        <!-- Start - Error handling -->
+        @if($errors->has('password'))
+            <div class="invalid-feedback">{{ $errors->first('password') }}</div>
+        @endif
+        <!-- End - Error handling -->
     </div>
     <!-- End - Password -->
 

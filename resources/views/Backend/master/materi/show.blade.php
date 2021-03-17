@@ -41,6 +41,7 @@
                             <div class="form-group">
                                 <label>Kode Materi <span class="badge badge-danger">Required</span></label>
                                 <input type="text" v-model="materiGrade.kode_materi" :class="validation.kode_materi ? ['form-control', 'is-invalid'] : ['form-control']" @keyup="validationState('kode_materi', null)">
+                                <small class="text-info">*Kode tidak boleh sama</small>
                             </div>
                         </div>
                         <!-- Emd - kode_materi -->
@@ -50,6 +51,7 @@
                             <div class="form-group">
                                 <label>Kode Grade <span class="badge badge-danger">Required</span></label>
                                 <input type="text" v-model="materiGrade.kode_grade" :class="validation.kode_grade ? ['form-control', 'is-invalid'] : ['form-control']" @keyup="validationState('kode_grade', null)">
+                                <small class="text-info">*Kode tidak boleh sama</small>
                             </div>
                         </div>
                         <!-- Emd - kode_grade -->
@@ -98,6 +100,7 @@
                                             <th>Kode Grade</th>
                                             <th>Grade</th>
                                             <th>Biaya (Rp.)</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
 
@@ -107,6 +110,11 @@
                                             <td>@{{ result.kode_grade }}</td>
                                             <td>@{{ result.grade.nama }}</td>
                                             <td>@{{ result.biaya | numeral('0,0') }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger btn-sm" @click="deleteGrade(result.id)">
+                                                    <i class="ti-trash"></i> Hapus
+                                                </button>
+                                            </td>
                                         </tr>
                                     </tbody>
 
@@ -221,14 +229,18 @@
             },
             // --------------------------------------------------------------------
 
+            // --------------------------------------------------------------------
+            // True of false for disabled grade
+            // --------------------------------------------------------------------
             checkGrade: function(id){
+                // ----------------------------------------------------------------
                 let state = this.preset.grade_id.includes(id);
-                if(state){
-                    return true;
-                }
-
+                // ----------------------------------------------------------------
+                if(state) return true;
                 return false;
+                // ----------------------------------------------------------------
             },
+            // --------------------------------------------------------------------
 
             // --------------------------------------------------------------------
             // Submit form
@@ -306,7 +318,63 @@
                     // ------------------------------------------------------------
                 }
                 // ----------------------------------------------------------------
-            }
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Delete grade
+            // --------------------------------------------------------------------
+            deleteGrade: function(id){
+                // ----------------------------------------------------------------
+                let vm = this;
+                let url = "{{ route('master.materi.destroy.grade', ':id') }}";
+                url = url.replace(':id', id);
+                // ----------------------------------------------------------------
+                // Set confirm
+                // ----------------------------------------------------------------
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Data terhapus pada list.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Hapus',
+                    cancelButtonText: 'Batal',
+                }).then((result) => {
+                    // ------------------------------------------------------------
+                    if (result.value) {
+                        // --------------------------------------------------------
+                        // Set request
+                        // --------------------------------------------------------
+                        let request = axios.delete(url);
+                        // --------------------------------------------------------
+                        // If request success
+                        // --------------------------------------------------------
+                        request.then((response)=>{
+                            // ----------------------------------------------------
+                            let data = response.data;
+                            // ----------------------------------------------------
+                            vm.results = data.materiGrades;
+                            // ----------------------------------------------------
+                            Vue.nextTick(function () {
+                                toastr.success(data.message);    
+                                vm.preset.grade_id = data.grade_id;
+                            })
+                            // ----------------------------------------------------
+                        })
+                        // --------------------------------------------------------
+                        // If request error
+                        // --------------------------------------------------------
+                        request.catch((error)=>{
+                            toastr.error(error.message);
+                        })
+                        // --------------------------------------------------------
+                    }
+                    // ------------------------------------------------------------
+                })
+                // ----------------------------------------------------------------
+            },
             // --------------------------------------------------------------------
         },
         // ------------------------------------------------------------------------

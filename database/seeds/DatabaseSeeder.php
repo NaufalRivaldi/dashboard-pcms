@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         // User Table and relation with user
         // --------------------------------------------------------------------
         $this->call(LevelTableSeeder::class);
+        $this->call(UserTableSeeder::class);
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------

@@ -46,6 +46,9 @@
 	</div>
 	<!-- End - WRAPPER -->
 
+	<!-- Vendor -->
+    <script src="{{ asset('assets/js/vendor.min.js') }}"></script>
+
 	<!-- Start - Script -->
 	<script src="{{ asset('js/app.js') }}"></script>
 	
