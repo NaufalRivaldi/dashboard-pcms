@@ -28,5 +28,9 @@ class Cabang extends Model
         return $this->belongsTo(SubWilayah::class, 'sub_wilayah_id')->withTrashed();
     }
     // --------------------------------------------------------------------------------
+    public function pembayarans(){
+        return $this->hasMany(Pembayaran::class, 'cabang_id')->withTrashed();
+    }
+    // --------------------------------------------------------------------------------
 }
 // ------------------------------------------------------------------------------------

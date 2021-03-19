@@ -124,5 +124,21 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
     });
     // --------------------------------------------------------------------
+
+    // --------------------------------------------------------------------
+    // Import page
+    // --------------------------------------------------------------------
+    Route::namespace('Import')->prefix('import')->name('import.')->group(function(){
+        // ----------------------------------------------------------------
+        // LA03 page
+        // ----------------------------------------------------------------
+        Route::resource('la03', 'LA03Controller');
+        Route::prefix('la03')->group(function(){
+            Route::get('json/{param}', 'LA03Controller@json')->name('la03.json');
+            Route::get('import/', 'LA03Controller@import')->name('la03.import');
+            Route::put('update-status/{type}/{id}', 'LA03Controller@updateStatus')->name('la03.update.status');
+        });
+        // ----------------------------------------------------------------
+    });
 });
 // ------------------------------------------------------------------------

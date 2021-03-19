@@ -25,5 +25,9 @@ class MateriGrade extends Model
         return $this->belongsTo(Materi::class, 'materi_id')->withTrashed();
     }
     // --------------------------------------------------------------------------------
+    public function pembayarans(){
+        return $this->hasMany(Pembayaran::class, 'materi_grade_id')->withTrashed();
+    }
+    // --------------------------------------------------------------------------------
 }
 // ------------------------------------------------------------------------------------

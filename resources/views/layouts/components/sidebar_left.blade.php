@@ -66,7 +66,7 @@
                 </a>
                 <div id="submenuImportLaporan" class="collapse">
                     <ul class="submenu">
-                        <li><a href="#">LA03</a></li>
+                        <li><a href="{{ route('import.la03.index') }}">LA03</a></li>
                         <li><a href="#">LA06</a></li>
                         <li><a href="#">LA07</a></li>
                         <li><a href="#">LA09</a></li>

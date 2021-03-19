@@ -179,6 +179,7 @@ return [
         // Add manual
         // --------------------------------------------------------------------
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
         // --------------------------------------------------------------------
 
     ],
@@ -236,6 +237,7 @@ return [
         // Add manual
         // --------------------------------------------------------------------
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         // --------------------------------------------------------------------
 
     ],
