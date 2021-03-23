@@ -1,17 +1,21 @@
 <?php
 // ----------------------------------------------------------------------------
-namespace App\Http\Controllers\Backend\Import;
+namespace App\Http\Controllers\Backend\Import\LA03;
 // ----------------------------------------------------------------------------
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 // ----------------------------------------------------------------------------
+use App\Helpers\ImportHelper;
+// ----------------------------------------------------------------------------
 use App\Models\Pembayaran; // LA03 - model
+use App\Models\PembayaranDetail; // LA03 - model
 use App\Models\Cabang;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
+use Auth;
 // ----------------------------------------------------------------------------
-class LA03Controller extends Controller
+class LA03DetailController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,21 +23,19 @@ class LA03Controller extends Controller
      * @return \Illuminate\Http\Response
      */
     // ------------------------------------------------------------------------
-    public function index()
+    public function index($id = null)
     {
         // --------------------------------------------------------------------
         $data = new \stdClass; $filtering = new \stdClass;
-        $data->title        = "LA03 - List";
+        $data->title        = "LA03 - Detail";
         $data->filtering    = $filtering; 
+        $data->pembayaran   = Pembayaran::with('pembayaran_details')->where('id', $id)->first();
         // --------------------------------------------------------------------
         // Filtering data
         // --------------------------------------------------------------------
-        $filtering->cabang  = Cabang::pluck('nama', 'id');
-        $filtering->bulan   = $this->monthArray();
-        $filtering->type[1] = "Penerimaan Uang Pendaftaran";
-        $filtering->type[2] = "Penerimaan Uang Kursus";
+        $filtering->type    = ["Penerimaan Uang Pendaftaran", "Penerimaan Uang Kursus"];
         // --------------------------------------------------------------------
-        return view('backend.import.la03.index', (array) $data);
+        return view('backend.import.la03.show', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -41,7 +43,7 @@ class LA03Controller extends Controller
     // ------------------------------------------------------------------------
     // JSON function
     // ------------------------------------------------------------------------
-    public function json($param){
+    public function json($id, $param){
         // --------------------------------------------------------------------
         // Set switch case
         // --------------------------------------------------------------------
@@ -49,9 +51,9 @@ class LA03Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $pembayarans = pembayaran::with('materi_grade', 'cabang');
+                $pembayaranDetails = PembayaranDetail::where('pembayaran_id', $id);
                 // ------------------------------------------------------------
-                $datatable = datatables()->of($pembayarans)->addIndexColumn();
+                $datatable = datatables()->of($pembayaranDetails)->addIndexColumn();
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
@@ -61,8 +63,8 @@ class LA03Controller extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<a href="'.route('import.la03.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
+                                    $button .= '<button class="btn btn-sm btn-warning btn-update" data-id="'.$row->id.'" '.($row->pembayaran->status ? "disabled" : "").'><i class="ti-settings"></i></button>';
+                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.($row->pembayaran->status ? "disabled" : "").'><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;
@@ -73,7 +75,9 @@ class LA03Controller extends Controller
                 // Filter column
                 // ------------------------------------------------------------
                 $datatable = $datatable->filterColumn('type', function($query,$keyword){
-                                    $query->where('type', $keyword);
+                                    $value = 1;
+                                    if($keyword == "Penerimaan Uang Kursus") $value = 2;
+                                    $query->where('type', $value);
                                 });
                 // ------------------------------------------------------------
                 return $datatable->rawColumns(['type', 'action'])->make(true);
@@ -94,18 +98,10 @@ class LA03Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    // ------------------------------------------------------------------------
     public function create()
     {
-        // --------------------------------------------------------------------
-        $data = new \stdClass;
-        $data->title        = "Wilayah - Form";
-        $data->wilayah   = new Wilayah();
-        // --------------------------------------------------------------------
-        return view('backend.import.la03.form', (array) $data);
-        // --------------------------------------------------------------------
+        //
     }
-    // ------------------------------------------------------------------------
 
     /**
      * Store a newly created resource in storage.
@@ -113,33 +109,10 @@ class LA03Controller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    // ------------------------------------------------------------------------
     public function store(Request $request)
     {
-        // --------------------------------------------------------------------
-        // Set validation
-        // --------------------------------------------------------------------
-        Validator::make($request->all(), [
-            'kode'      => 'required|unique:wilayah,kode|max:100',
-            'nama'      => 'required|max:191',
-        ])->validate();
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
-        // Use try catch
-        // --------------------------------------------------------------------
-        try {
-            // ----------------------------------------------------------------
-            Wilayah::create($request->all());
-            // ----------------------------------------------------------------
-            return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
-            // ----------------------------------------------------------------
-        } catch (\Throwable $th) {
-            return redirect()->route('import.la03.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
-        }
-        // --------------------------------------------------------------------
+        //
     }
-    // ------------------------------------------------------------------------
 
     /**
      * Display the specified resource.
@@ -147,12 +120,10 @@ class LA03Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // ------------------------------------------------------------------------
     public function show($id)
     {
         //
     }
-    // ------------------------------------------------------------------------
 
     /**
      * Show the form for editing the specified resource.
@@ -160,18 +131,10 @@ class LA03Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // ------------------------------------------------------------------------
     public function edit($id)
     {
-        // --------------------------------------------------------------------
-        $data = new \stdClass;
-        $data->title        = "Wilayah - Form Edit";
-        $data->wilayah   = Wilayah::find($id);
-        // --------------------------------------------------------------------
-        return view('backend.import.la03.form', (array) $data);
-        // -------------------------------------------  -------------------------
+        //
     }
-    // ------------------------------------------------------------------------
 
     /**
      * Update the specified resource in storage.
@@ -180,50 +143,22 @@ class LA03Controller extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // ------------------------------------------------------------------------
     public function update(Request $request, $id)
     {
-        // --------------------------------------------------------------------
-        // Set validation
-        // --------------------------------------------------------------------
-        Validator::make($request->all(), [
-            'kode'      => 'required|unique:wilayah,kode,'.$id.'|max:100',
-            'nama'      => 'required|max:191',
-        ])->validate();
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
-        // Use try catch
-        // --------------------------------------------------------------------
-        try {
-            // ----------------------------------------------------------------
-            $data = $request->all();
-            // ----------------------------------------------------------------
-            $wilayah = Wilayah::findOrFail($id);
-            $wilayah->kode = $data['kode'];
-            $wilayah->nama = $data['nama'];
-            $wilayah->save();
-            // ----------------------------------------------------------------
-            return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
-            // ----------------------------------------------------------------
-        } catch (\Throwable $th) {
-            return redirect()->route('import.la03.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
-        }
-        // --------------------------------------------------------------------
+        //
     }
-    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
-    // Update status function
+    // Validation accept function
     // ------------------------------------------------------------------------
-    public function updateStatus($type, $id){
+    public function accept($id){
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $wilayah = Wilayah::find($id);
+        $pembayaran = Pembayaran::find($id);
         // --------------------------------------------------------------------
-        $wilayah->status = $type;
-        $wilayah->save();
+        $pembayaran->status = 1;
+        $pembayaran->save();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
         // --------------------------------------------------------------------
@@ -244,28 +179,13 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $wilayah = Wilayah::findOrFail($id);
+        $pembayaranDetail = PembayaranDetail::findOrFail($id);
         // --------------------------------------------------------------------
-        $wilayah->delete();
+        $pembayaranDetail->delete();
         // --------------------------------------------------------------------
         $data->message = __('label.SUCCESS_DELETE_MESSAGE');
         // --------------------------------------------------------------------
         return response()->json($data);
-        // --------------------------------------------------------------------
-    }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    private function monthArray(){
-        // --------------------------------------------------------------------
-        $array = [];
-        // --------------------------------------------------------------------
-        for($i = 1; $i <= 12; $i++){
-            $idx = strlen($i) == 1 ? "0".$i : $i;
-            $array[$i] = Carbon::parse('2020-'.$idx.'-01')->format('F');
-        }
-        // --------------------------------------------------------------------
-        return $array;
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

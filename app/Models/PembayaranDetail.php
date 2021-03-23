@@ -4,33 +4,29 @@ namespace App\Models;
 // ------------------------------------------------------------------------------------
 use Illuminate\Database\Eloquent\Model;
 // ------------------------------------------------------------------------------------
-class Pembayaran extends Model
+class PembayaranDetail extends Model
 {
     // --------------------------------------------------------------------------------
-    protected $table = 'pembayaran';
+    protected $table = 'pembayaran_detail';
     // --------------------------------------------------------------------------------
     protected $fillable = [
-        'bulan', 
-        'tahun', 
-        'status', 
-        'user_id',
-        'cabang_id',
+        'type', 
+        'nama_pembayar', 
+        'nominal',
+        'pembayaran_id',
+        'materi_grade_id',
     ];
     // --------------------------------------------------------------------------------
 
     // --------------------------------------------------------------------------------
     // Set relationship
     // --------------------------------------------------------------------------------
-    public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+    public function pembayaran(){
+        return $this->belongsTo(Pembayaran::class, 'pembayaran_id');
     }
     // --------------------------------------------------------------------------------
-    public function cabang(){
-        return $this->belongsTo(Cabang::class, 'cabang_id')->withTrashed();
-    }
-    // --------------------------------------------------------------------------------
-    public function pembayaran_details(){
-        return $this->hasMany(PembayaranDetail::class, 'pembayaran_id');
+    public function materi_grade(){
+        return $this->belongsTo(MateriGrade::class, 'materi_grade_id');
     }
     // --------------------------------------------------------------------------------
 }

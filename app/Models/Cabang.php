@@ -12,7 +12,7 @@ class Cabang extends Model
     // --------------------------------------------------------------------------------
     protected $table = 'cabang';
     // --------------------------------------------------------------------------------
-    protected $fillable = ['kode', 'nama', 'status', 'wilayah_id', 'sub_wilayah_id'];
+    protected $fillable = ['kode', 'nama', 'status', 'wilayah_id', 'sub_wilayah_id', 'user_id'];
     // --------------------------------------------------------------------------------
     public $timestamps = false;
     // --------------------------------------------------------------------------------
@@ -26,6 +26,10 @@ class Cabang extends Model
     // --------------------------------------------------------------------------------
     public function sub_wilayah(){
         return $this->belongsTo(SubWilayah::class, 'sub_wilayah_id')->withTrashed();
+    }
+    // --------------------------------------------------------------------------------
+    public function owner(){
+        return $this->belongsTo(User::class, 'user_id');
     }
     // --------------------------------------------------------------------------------
     public function pembayarans(){

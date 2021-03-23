@@ -68,6 +68,22 @@ if (! function_exists('status')) {
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
+// Set status pembayaran (Accept, Pending)
+// ----------------------------------------------------------------------------
+if (! function_exists('statusValidate')) {
+    // ------------------------------------------------------------------------
+    function statusValidate($val){
+        if($val == 1){
+            return '<span class="badge badge-success">Accept</span>';
+        }else{
+            return '<span class="badge badge-secondary">Pending</span>';
+        }
+    }
+    // ------------------------------------------------------------------------
+}
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
 // Set pembayaran type
 // ----------------------------------------------------------------------------
 if (! function_exists('pembayaranType')) {
@@ -78,6 +94,29 @@ if (! function_exists('pembayaranType')) {
         }else{
             return '<span class="badge badge-info">Penerimaan Uang Kursus</span>';
         }
+    }
+    // ------------------------------------------------------------------------
+}
+// ----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+// Set month
+// ----------------------------------------------------------------------------
+if (! function_exists('setMonth')) {
+    // ------------------------------------------------------------------------
+    function setMonth($val){
+        if($val == 1) return "Januari";
+        if($val == 2) return "Februari";
+        if($val == 3) return "Maret";
+        if($val == 4) return "April";
+        if($val == 5) return "Mei";
+        if($val == 6) return "Juni";
+        if($val == 7) return "Juli";
+        if($val == 8) return "Agustus";
+        if($val == 9) return "September";
+        if($val == 10) return "Oktober";
+        if($val == 11) return "November";
+        if($val == 12) return "Desember";
     }
     // ------------------------------------------------------------------------
 }

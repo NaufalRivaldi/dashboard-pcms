@@ -9,6 +9,7 @@
     <th>Nama</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->wilayah) !!}'>Wilayah</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->subWilayah) !!}'>Sub Wilayah</th>
+    <th>Owner</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->status) !!}'>Status</th>
     <th>Action</th>
 @endsection
@@ -20,6 +21,7 @@
         ["data" => "nama", "name" => "nama", "defaultContent" => "-"],
         ["data" => "wilayah.nama", "name" => "wilayah.nama", "defaultContent" => "-"],
         ["data" => "sub_wilayah.nama", "name" => "sub_wilayah.nama", "defaultContent" => "-"],
+        ["data" => "owner.nama", "name" => "owner.nama", "defaultContent" => "-"],
         ["data" => "status", "name" => "status", "defaultContent" => "-"],
         ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];

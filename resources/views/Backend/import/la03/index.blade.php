@@ -8,12 +8,9 @@
 @section('content-table')
     <th data-type="select" data-filtering='{!! parseJson($filtering->bulan) !!}'>Bulan</th>
     <th>Tahun</th>
-    <th data-type="select" data-filtering='{!! parseJson($filtering->type) !!}'>Type</th>
-    <th>Nama Pembayar</th>
-    <th>Nominal</th>
-    <th data-type="select" data-filtering='{!! parseJson($filtering->cabang) !!}'>Cabang</th>
-    <th>Materi</th>
-    <th>Grade</th>
+    <th>Cabang</th>
+    <th data-type="select" data-filtering='{!! parseJson($filtering->status) !!}'>Status</th>
+    <th>User</th>
     <th>Action</th>
 @endsection
 
@@ -22,12 +19,9 @@
     $column = [
         ["data" => "bulan", "name" => "bulan", "defaultContent" => "-"],
         ["data" => "tahun", "name" => "tahun", "defaultContent" => "-"],
-        ["data" => "type", "name" => "type", "defaultContent" => "-"],
-        ["data" => "nama_pembayar", "name" => "nama_pembayar", "defaultContent" => "-"],
-        ["data" => "nominal", "name" => "nominal", "defaultContent" => "-"],
         ["data" => "cabang.nama", "name" => "cabang.nama", "defaultContent" => "-"],
-        ["data" => "materi_grade.materi.nama", "name" => "materi_grade.materi.nama", "defaultContent" => "-"],
-        ["data" => "materi_grade.grade.nama", "name" => "materi_grade.grade.nama", "defaultContent" => "-"],
+        ["data" => "status", "name" => "status", "defaultContent" => "-"],
+        ["data" => "user.nama", "name" => "user.nama", "defaultContent" => "-"],
         ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];
 @endphp

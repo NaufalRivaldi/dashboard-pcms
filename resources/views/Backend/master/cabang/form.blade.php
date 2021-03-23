@@ -88,6 +88,28 @@
     </div>
     <!-- End - wilayah_id -->
 
+    <!-- Start - user_id -->
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+            <span class="badge badge-danger">Required</span><br>
+            <div class="label-form">Owner</div>
+        </label>
+        <div class="col-sm-10 input-form">
+            <select name="user_id" class="form-control select2 @if($errors->has('user_id')) is-invalid @endif">
+                <option value="">Pilih</option>
+                @foreach($owner as $id => $value)
+                    <option value="{{ $id }}" @if($id == $cabang->user_id) selected @endif>{{ $value }}</option>
+                @endforeach
+            </select>
+            <!-- Start - Error handling -->
+            @if($errors->has('user_id'))
+                <div class="invalid-feedback">{{ $errors->first('user_id') }}</div>
+            @endif
+            <!-- End - Error handling -->
+        </div>
+    </div>
+    <!-- End - user_id -->
+
     <!-- Start - Button -->
     <div class="row">
         <div class="col-sm-2"></div>

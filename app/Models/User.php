@@ -55,6 +55,10 @@ class User extends Authenticatable
         return $this->belongsTo(Level::class, 'level_id');
     }
     // --------------------------------------------------------------------------------
+    public function cabangs(){
+        return $this->hasMany(Cabang::class, 'user_id');
+    }
+    // --------------------------------------------------------------------------------
     public function pembayarans(){
         return $this->hasMany(Pembayaran::class, 'user_id')->withTrashed();
     }

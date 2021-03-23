@@ -20,11 +20,11 @@ class CreateCabangTable extends Migration
             $table->bigIncrements('id');
             // ------------------------------------------------------------------------
             $table->string('kode', 100)->unique();
-            $table->string('nama');
+            $table->string('nama')->nullable();
             $table->boolean('status')->default(1);
             // ------------------------------------------------------------------------
-            $table->unsignedBigInteger('wilayah_id');
-            $table->unsignedBigInteger('sub_wilayah_id');
+            $table->unsignedBigInteger('wilayah_id')->nullable();
+            $table->unsignedBigInteger('sub_wilayah_id')->nullable();
             // ------------------------------------------------------------------------
             $table->softDeletes();
             // ------------------------------------------------------------------------

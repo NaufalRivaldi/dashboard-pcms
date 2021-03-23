@@ -31,6 +31,7 @@
                     </div>
                 </div>
                 <div class="card-body">
+                    @yield('card-slot-up')
                     <!-- Start - Table -->
                     <div class="table-responsive">
                         <table id="myDataTable" class="table table-bordered table-striped">
@@ -43,6 +44,7 @@
                     </div>
                     <!-- End - Table -->
                 </div>
+                @yield('card-footer')
             </div>
             <!-- End - card -->
         </div>

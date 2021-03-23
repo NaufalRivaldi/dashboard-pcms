@@ -41,13 +41,15 @@
         <!-- END LEFT SIDEBAR -->
 
         <!-- MAIN -->
-        <div class="main">
+        <div class="main" style="height:auto">
             <!-- MAIN CONTENT -->
             <div class="main-content">
                 @include('layouts.components.breadcrumb')    
                 
                 @include('layouts.components.alert')
                 @yield('content')
+                
+                @yield('modal')
             </div>
             <!-- END MAIN CONTENT -->
         </div>

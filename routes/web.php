@@ -132,12 +132,31 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
         // LA03 page
         // ----------------------------------------------------------------
-        Route::resource('la03', 'LA03Controller');
-        Route::prefix('la03')->group(function(){
+        Route::namespace('LA03')->prefix('la03')->group(function(){
+            // ------------------------------------------------------------
+            // LA03 list and create page
+            // ------------------------------------------------------------
             Route::get('json/{param}', 'LA03Controller@json')->name('la03.json');
             Route::get('import/', 'LA03Controller@import')->name('la03.import');
+            Route::post('import/', 'LA03Controller@importStore')->name('la03.import.store');
             Route::put('update-status/{type}/{id}', 'LA03Controller@updateStatus')->name('la03.update.status');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // LA03 detail page
+            // ------------------------------------------------------------
+            Route::get('{id}', 'LA03DetailController@index')->name('la03.show');
+            Route::get('{id}/pdf', 'LA03DetailController@exportPdf')->name('la03.show.pdf');
+            Route::get('{id}/json/{param}', 'LA03DetailController@json')->name('la03.show.json');
+            Route::delete('{id}/delete', 'LA03DetailController@destroy')->name('la03.show.destroy');
+            Route::put('{id}/update', 'LA03DetailController@update')->name('la03.show.update');
+            Route::put('{id}/accept', 'LA03DetailController@accept')->name('la03.show.accept');
+            // ------------------------------------------------------------
         });
+        // ----------------------------------------------------------------
+        // LA03 list and create page
+        // ----------------------------------------------------------------
+        Route::resource('la03', 'LA03\LA03Controller');
         // ----------------------------------------------------------------
     });
 });
