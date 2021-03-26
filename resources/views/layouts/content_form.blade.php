@@ -37,7 +37,7 @@
             <!-- Start - card -->
             <div class="card">
                 <div class="card-header row">
-                    <h6 class="mt-1">Add Form</h6>
+                    <h6 class="mt-1">Form</h6>
                 </div>
                 <div class="card-body">
                     @yield('content-form')
@@ -50,6 +50,10 @@
         </div>
     </div>
     <!-- End - row -->
+
+    <!-- Start - Modal -->
+    @yield('modal')
+    <!-- End - Modal -->
 </div>
 @endsection
 
@@ -72,6 +76,7 @@
             dateFormat: 'MM yy',
             onClose: function(dateText, inst) { 
                 $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                let val = new Date(inst.selectedYear, inst.selectedMonth, 1);
             }
         });
         // ----------------------------------------------------------------------------

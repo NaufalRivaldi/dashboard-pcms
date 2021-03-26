@@ -89,7 +89,94 @@
 <!-- End - Set column -->
 
 @section('modal')
-    <!-- Modal -->
+    <!-- Start - Modal edit -->
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEditLabel">Edit data</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <!-- Start - form -->
+                <form action="{{ route('import.la03.show.update', $pembayaran->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="modal-body">
+                        
+                        <!-- Start - Hidden input -->
+                        <input type="hidden" name="id" value="" v-model="result.id">
+                        <!-- End - Hidden input -->
+
+                        <!-- Start - Type -->
+                        <div class="form-group">
+                            <div class="label-form mb-1">
+                                Type <span class="badge badge-danger">Required</span>
+                            </div>
+                            <div class="input-form">
+                                <select name="type" class="form-control @if($errors->has('type')) is-invalid @endif" v-model="result.type" required>
+                                    <option value="">Pilih</option>
+                                    <option value="1">Penerimaan Uang Pendaftaran</option>
+                                    <option value="2">Penerimaan Uang Kursus</option>
+                                </select>
+                                <!-- Start - Error handling -->
+                                @if($errors->has('type'))
+                                    <div class="invalid-feedback">{{ $errors->first('type') }}</div>
+                                @endif
+                                <!-- End - Error handling -->
+                            </div>
+                        </div>
+                        <!-- End - Type -->
+
+                        <!-- Start - Nama Pembayar -->
+                        <div class="form-group">
+                            <div class="label-form mb-1">
+                                Nama Pembayar <span class="badge badge-success">Optional</span>
+                            </div>
+                            <div class="input-form">
+                                <input type="text" name="nama_pembayar" class="form-control @if($errors->has('nama_pembayar')) is-invalid @endif" value="" v-model="result.nama_pembayar">
+                                <!-- Start - Error handling -->
+                                @if($errors->has('nama_pembayar'))
+                                    <div class="invalid-feedback">{{ $errors->first('nama_pembayar') }}</div>
+                                @endif
+                                <!-- End - Error handling -->
+                            </div>
+                        </div>
+                        <!-- End - Nama Pembayar -->
+
+                        <!-- Start - Nominal -->
+                        <div class="form-group">
+                            <div class="label-form mb-1">
+                                Nominal <span class="badge badge-success">Optional</span>
+                            </div>
+                            <div class="input-form">
+                                <input type="text" name="nominal" class="form-control @if($errors->has('nominal')) is-invalid @endif" value="" v-model="result.nominal" onkeypress="return onlyNumberKey(event)">
+                                <!-- Start - Error handling -->
+                                @if($errors->has('nominal'))
+                                    <div class="invalid-feedback">{{ $errors->first('nominal') }}</div>
+                                @endif
+                                <!-- End - Error handling -->
+                            </div>
+                        </div>
+                        <!-- End - Nominal -->
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti-save"></i> Save
+                        </button>
+                    </div>
+                </form>
+                <!-- End - form -->
+            </div>
+        </div>
+    </div>
+    <!-- End - Modal edit -->
+
+    <!-- Start - Modal Validation -->
     <div class="modal fade" id="modalValidation" tabindex="-1" aria-labelledby="modalValidationLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -115,6 +202,7 @@
             </div>
         </div>
     </div>
+    <!-- End - Modal Validation -->
 @endsection
 
 @push('scripts')
@@ -129,12 +217,21 @@
         // Data for Cabang page
         // ------------------------------------------------------------------------
         data: {
+            // --------------------------------------------------------------------
             uangPendaftaran: 0,
             uangKursus: 0,
             uangTotal: 0,
             uangRoyalti: 0,
-
+            // --------------------------------------------------------------------
             pembayaranDetails: @json($pembayaran->pembayaran_details),
+            // --------------------------------------------------------------------
+            result: {
+                pembayaran_detail_id: null,
+                type: null,
+                nama_pembayar:null,
+                nominal:0,
+            },
+            // --------------------------------------------------------------------
         },
         // ------------------------------------------------------------------------
 
@@ -185,7 +282,6 @@
             // Validation accept function
             // --------------------------------------------------------------------
             accept: function(){
-                console.log('asd');
                 // ----------------------------------------------------------------
                 let url = "{{ route('import.la03.show.accept', ':id') }}";
                 url = url.replace(':id', "{{ $pembayaran->id }}");
@@ -211,6 +307,15 @@
                     toastr.error(error.message);
                 })
                 // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Edit data function
+            // --------------------------------------------------------------------
+            editData: function(id){
+                let data = _.filter(this.pembayaranDetails, { id: parseInt(id) });
+                this.result = data[0];
             },
             // --------------------------------------------------------------------
 
@@ -287,6 +392,15 @@
             // --------------------------------------------------------------------
             $(document).on('click', '.btn-accept', function(){
                 vm.accept();
+            })
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Edit event
+            // --------------------------------------------------------------------
+            $(document).on('click', '.btn-edit', function(){
+                let $id = $(this).data('id');
+                vm.editData($id);
             })
             // --------------------------------------------------------------------
 

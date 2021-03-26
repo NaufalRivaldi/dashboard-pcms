@@ -134,12 +134,23 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
         Route::namespace('LA03')->prefix('la03')->group(function(){
             // ------------------------------------------------------------
-            // LA03 list and create page
+            // LA03 list page
             // ------------------------------------------------------------
+            Route::get('/', 'LA03Controller@index')->name('la03.index');
             Route::get('json/{param}', 'LA03Controller@json')->name('la03.json');
             Route::get('import/', 'LA03Controller@import')->name('la03.import');
             Route::post('import/', 'LA03Controller@importStore')->name('la03.import.store');
-            Route::put('update-status/{type}/{id}', 'LA03Controller@updateStatus')->name('la03.update.status');
+            Route::delete('{id}/delete', 'LA03Controller@destroy')->name('la03.destroy');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // LA03 create page
+            // ------------------------------------------------------------
+            Route::get('create', 'LA03Controller@create')->name('la03.create');
+            Route::get('check-date', 'LA03Controller@checkDataValidation')->name('la03.check-data-validation');
+            Route::get('{id}/edit', 'LA03Controller@edit')->name('la03.edit');
+            Route::post('/', 'LA03Controller@store')->name('la03.store');
+            Route::put('{id}/update', 'LA03Controller@update')->name('la03.update');
             // ------------------------------------------------------------
 
             // ------------------------------------------------------------
@@ -148,16 +159,11 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             Route::get('{id}', 'LA03DetailController@index')->name('la03.show');
             Route::get('{id}/pdf', 'LA03DetailController@exportPdf')->name('la03.show.pdf');
             Route::get('{id}/json/{param}', 'LA03DetailController@json')->name('la03.show.json');
-            Route::delete('{id}/delete', 'LA03DetailController@destroy')->name('la03.show.destroy');
-            Route::put('{id}/update', 'LA03DetailController@update')->name('la03.show.update');
-            Route::put('{id}/accept', 'LA03DetailController@accept')->name('la03.show.accept');
+            Route::delete('{id}/delete-detail', 'LA03DetailController@destroy')->name('la03.show.destroy');
+            Route::put('{id}/update-detail', 'LA03DetailController@update')->name('la03.show.update');
+            Route::put('{id}/accept-detail', 'LA03DetailController@accept')->name('la03.show.accept');
             // ------------------------------------------------------------
         });
-        // ----------------------------------------------------------------
-        // LA03 list and create page
-        // ----------------------------------------------------------------
-        Route::resource('la03', 'LA03\LA03Controller');
-        // ----------------------------------------------------------------
     });
 });
 // ------------------------------------------------------------------------

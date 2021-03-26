@@ -63,7 +63,7 @@ class LA03DetailController extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<button class="btn btn-sm btn-warning btn-update" data-id="'.$row->id.'" '.($row->pembayaran->status ? "disabled" : "").'><i class="ti-settings"></i></button>';
+                                    $button .= '<button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'" '.($row->pembayaran->status ? "disabled" : "").' data-toggle="modal" data-target="#modalEdit"><i class="ti-settings"></i></button>';
                                     $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.($row->pembayaran->status ? "disabled" : "").'><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
@@ -143,10 +143,42 @@ class LA03DetailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // ------------------------------------------------------------------------
     public function update(Request $request, $id)
     {
-        //
+        
+        // --------------------------------------------------------------------
+        // Set validation
+        // --------------------------------------------------------------------
+        Validator::make($request->all(), [
+            'id'            => 'required',
+            'type'          => 'required',
+            'nama_pembayar' => 'max:191',
+            'nominal'       => 'numeric',
+        ])->validate();
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        // Use try catch
+        // --------------------------------------------------------------------
+        try {
+            // ----------------------------------------------------------------
+            $data = $request->all();
+            // ----------------------------------------------------------------
+            $detailPembayaran = PembayaranDetail::findOrFail($data['id']);
+            $detailPembayaran->type = $data['type'];
+            $detailPembayaran->nama_pembayar = $data['nama_pembayar'];
+            $detailPembayaran->nominal = $data['nominal'];
+            $detailPembayaran->save();
+            // ----------------------------------------------------------------
+            return redirect()->route('import.la03.show', $id)->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
+            // ----------------------------------------------------------------
+        } catch (\Throwable $th) {
+            return redirect()->route('import.la03.show', $id)->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+        }
+        // --------------------------------------------------------------------
     }
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     // Validation accept function

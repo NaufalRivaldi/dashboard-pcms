@@ -50,6 +50,10 @@
         </div>
     </div>
     <!-- End - row -->
+
+    <!-- Start - Modal -->
+    @yield('modal')
+    <!-- End - Modal -->
 </div>
 @endsection
 

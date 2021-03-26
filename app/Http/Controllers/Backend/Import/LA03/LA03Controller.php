@@ -46,6 +46,31 @@ class LA03Controller extends Controller
     // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
+    // Check date
+    // ------------------------------------------------------------------------
+    public function checkDataValidation(Request $request){
+        // --------------------------------------------------------------------
+        $data = new \stdClass;
+        // --------------------------------------------------------------------
+        $input  = $request->all();
+        $month  = Carbon::parse('01 '.$input['date'])->format('m');
+        $year   = Carbon::parse('01 '.$input['date'])->format('Y');
+        // --------------------------------------------------------------------
+        $pembayaran = Pembayaran::where('bulan', $month)->where('tahun', $year)->first();
+        if(empty($pembayaran)){
+            $data->status = true;
+            $data->message = "Data masih kosong, pembuatan form bisa dilakukan.";
+        }else{
+            $data->status = false;
+            $data->message = "Data sudah terisi, mohon cek kembali pada sistem!";
+        }
+        // --------------------------------------------------------------------
+        return response()->json($data);
+        // --------------------------------------------------------------------
+    }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
     // JSON function
     // ------------------------------------------------------------------------
     public function json($param){
@@ -110,8 +135,14 @@ class LA03Controller extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Wilayah - Form";
-        $data->wilayah   = new Wilayah();
+        $data->title            = "LA03 - Form";
+        $data->pembayaran       = new Pembayaran();
+        $data->pembayaranDetail = [];
+        // --------------------------------------------------------------------
+        // Init data
+        // --------------------------------------------------------------------
+        $data->pageType = "create";
+        $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
         // --------------------------------------------------------------------
         return view('backend.import.la03.form', (array) $data);
         // --------------------------------------------------------------------
@@ -143,8 +174,10 @@ class LA03Controller extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:wilayah,kode|max:100',
-            'nama'      => 'required|max:191',
+            'bulan_tahun'       => 'required',
+            'cabang_id'         => 'required',
+            'type.*'            => 'required',
+            'nominal.*'         => 'required|numeric',
         ])->validate();
         // --------------------------------------------------------------------
 
@@ -153,11 +186,40 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         try {
             // ----------------------------------------------------------------
-            Wilayah::create($request->all());
+            // Create pembayaran
+            // ----------------------------------------------------------------
+            $input = $request->all();
+            $pembayaran = [
+                "bulan"     => Carbon::parse('01 '.$input['bulan_tahun'])->format('m'),
+                "tahun"     => Carbon::parse('01 '.$input['bulan_tahun'])->format('Y'),
+                "cabang_id" => $input['cabang_id'],
+                "user_id"   => Auth::user()->id,
+            ];
+            // ----------------------------------------------------------------
+            $mPembayaran = Pembayaran::create($pembayaran);
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            // Create pembayaran detail
+            // ----------------------------------------------------------------
+            if(count($input['type']) > 0){
+                for($i = 0; $i < count($input['type']); $i++){
+                    $pembayaranDetail = [
+                        "type"          => $input['type'][$i],
+                        "nama_pembayar" => $input['nama_pembayar'][$i],
+                        "nominal"       => $input['nominal'][$i],
+                        "pembayaran_id" => $mPembayaran->id,
+                    ];
+                    // --------------------------------------------------------
+                    PembayaranDetail::create($pembayaranDetail);
+                    // --------------------------------------------------------
+                }
+            }
             // ----------------------------------------------------------------
             return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
+            dd($th);
             return redirect()->route('import.la03.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
@@ -239,7 +301,6 @@ class LA03Controller extends Controller
             return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->route('import.la03.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
@@ -281,11 +342,17 @@ class LA03Controller extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title        = "Wilayah - Form Edit";
-        $data->wilayah   = Wilayah::find($id);
+        $data->title            = "LA03 - Edit Form";
+        $data->pembayaran       = Pembayaran::find($id);
+        $data->pembayaranDetail = PembayaranDetail::where('pembayaran_id', $id)->get();
+        // --------------------------------------------------------------------
+        // Init data
+        // --------------------------------------------------------------------
+        $data->pageType = "edit";
+        $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
         // --------------------------------------------------------------------
         return view('backend.import.la03.form', (array) $data);
-        // -------------------------------------------  -------------------------
+        // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
 
@@ -303,8 +370,11 @@ class LA03Controller extends Controller
         // Set validation
         // --------------------------------------------------------------------
         Validator::make($request->all(), [
-            'kode'      => 'required|unique:wilayah,kode,'.$id.'|max:100',
-            'nama'      => 'required|max:191',
+            'id'                => 'required',
+            'bulan_tahun'       => 'required',
+            'cabang_id'         => 'required',
+            'type.*'            => 'required',
+            'nominal.*'         => 'required|numeric',
         ])->validate();
         // --------------------------------------------------------------------
 
@@ -313,37 +383,47 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         try {
             // ----------------------------------------------------------------
-            $data = $request->all();
+            // Update pembayaran
             // ----------------------------------------------------------------
-            $wilayah = Wilayah::findOrFail($id);
-            $wilayah->kode = $data['kode'];
-            $wilayah->nama = $data['nama'];
-            $wilayah->save();
+            $input = $request->all();
+            $pembayaran = [
+                "bulan"     => Carbon::parse('01 '.$input['bulan_tahun'])->format('m'),
+                "tahun"     => Carbon::parse('01 '.$input['bulan_tahun'])->format('Y'),
+                "cabang_id" => $input['cabang_id'],
+                "user_id"   => Auth::user()->id,
+            ];
+            // ----------------------------------------------------------------
+            $pembayaran = Pembayaran::find($input['id']);
+            $pembayaran->bulan      = Carbon::parse('01 '.$input['bulan_tahun'])->format('m');
+            $pembayaran->tahun      = Carbon::parse('01 '.$input['bulan_tahun'])->format('Y');
+            $pembayaran->cabang_id  = $input['cabang_id'];
+            $pembayaran->user_id    = Auth::user()->id;
+            $pembayaran->save();
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            // Create pembayaran detail
+            // ----------------------------------------------------------------
+            PembayaranDetail::where('pembayaran_id', $input['id'])->delete();
+            if(count($input['type']) > 0){
+                for($i = 0; $i < count($input['type']); $i++){
+                    $pembayaranDetail = [
+                        "type"          => $input['type'][$i],
+                        "nama_pembayar" => $input['nama_pembayar'][$i],
+                        "nominal"       => $input['nominal'][$i],
+                        "pembayaran_id" => $input['id'],
+                    ];
+                    // --------------------------------------------------------
+                    PembayaranDetail::create($pembayaranDetail);
+                    // --------------------------------------------------------
+                }
+            }
             // ----------------------------------------------------------------
             return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
             return redirect()->route('import.la03.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
-        // --------------------------------------------------------------------
-    }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    // Update status function
-    // ------------------------------------------------------------------------
-    public function updateStatus($type, $id){
-        // --------------------------------------------------------------------
-        $data = new \stdClass;
-        // --------------------------------------------------------------------
-        $wilayah = Wilayah::find($id);
-        // --------------------------------------------------------------------
-        $wilayah->status = $type;
-        $wilayah->save();
-        // --------------------------------------------------------------------
-        $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
-        // --------------------------------------------------------------------
-        return response()->json($data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

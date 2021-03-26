@@ -1,108 +1,61 @@
 @extends('layouts.content_form')
 
 @section('content-form')
-<form action="{{ $cabang->id == null ? route('master.cabang.store') : route('master.cabang.update', $cabang->id) }}" method="POST">
+<form action="{{ $pembayaran->id == null ? route('import.la03.store') : route('import.la03.update', $pembayaran->id) }}" method="POST">
     @csrf
-    @if($cabang->id != null)
+    @if($pembayaran->id != null)
         @method('PUT')
     @endif
     <!-- Start - Hidden input -->
-    <input type="hidden" name="id" value="{{ $cabang->id }}">
+    <input type="hidden" name="id" value="{{ $pembayaran->id }}">
     <!-- End - Hidden input -->
 
-    <!-- Start - Kode -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">
-            <span class="badge badge-danger">Required</span><br>
-            <div class="label-form">Kode</div>
-        </label>
-        <div class="col-sm-10 input-form">
-            <input type="text" name="kode" class="form-control col-sm-6 @if($errors->has('kode')) is-invalid @endif" value="{{ $cabang->kode ? $cabang->kode : old('kode') }}">
-            <!-- Start - Error handling -->
-            @if($errors->has('kode'))
-                <div class="invalid-feedback">{{ $errors->first('kode') }}</div>
-            @endif
-            <!-- End - Error handling -->
-        </div>
-    </div>
-    <!-- End - Kode -->
+    <!-- Start - Row 1 -->
+    @include('backend.import.la03.includes.row-1.input')
+    <!-- End - Row 1 -->
 
-    <!-- Start - Nama -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">
-            <span class="badge badge-danger">Required</span><br>
-            <div class="label-form">Nama</div>
-        </label>
-        <div class="col-sm-10 input-form">
-            <input type="text" name="nama" class="form-control @if($errors->has('nama')) is-invalid @endif" value="{{ $cabang->nama ? $cabang->nama : old('nama') }}">
-            <!-- Start - Error handling -->
-            @if($errors->has('nama'))
-                <div class="invalid-feedback">{{ $errors->first('nama') }}</div>
-            @endif
-            <!-- End - Error handling -->
-        </div>
-    </div>
-    <!-- End - Nama -->
+    <hr>
 
-    <!-- Start - wilayah_id -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">
-            <span class="badge badge-danger">Required</span><br>
-            <div class="label-form">Wilayah</div>
-        </label>
-        <div class="col-sm-10 input-form">
-            <select name="wilayah_id" class="form-control select2 @if($errors->has('wilayah_id')) is-invalid @endif">
-                <option value="">Pilih</option>
-                @foreach($wilayah as $id => $value)
-                    <option value="{{ $id }}" @if($id == $cabang->wilayah_id) selected @endif>{{ $value }}</option>
-                @endforeach
-            </select>
-            <!-- Start - Error handling -->
-            @if($errors->has('wilayah_id'))
-                <div class="invalid-feedback">{{ $errors->first('wilayah_id') }}</div>
-            @endif
-            <!-- End - Error handling -->
+    <template v-if="status.form">
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <strong>Detail Pembayaran</strong>
+            </div>
         </div>
-    </div>
-    <!-- End - wilayah_id -->
+        
+        <!-- Start - Row 2 -->
+        @include('backend.import.la03.includes.row-2.input')
+        <!-- End - Row 2 -->
 
-    <!-- Start - wilayah_id -->
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label">
-            <span class="badge badge-danger">Required</span><br>
-            <div class="label-form">Sub Wilayah</div>
-        </label>
-        <div class="col-sm-10 input-form">
-            <select name="sub_wilayah_id" class="form-control select2 @if($errors->has('sub_wilayah_id')) is-invalid @endif">
-                <option value="">Pilih</option>
-                @foreach($subWilayah as $id => $value)
-                    <option value="{{ $id }}" @if($id == $cabang->sub_wilayah_id) selected @endif>{{ $value }}</option>
-                @endforeach
-            </select>
-            <!-- Start - Error handling -->
-            @if($errors->has('sub_wilayah_id'))
-                <div class="invalid-feedback">{{ $errors->first('sub_wilayah_id') }}</div>
-            @endif
-            <!-- End - Error handling -->
-        </div>
-    </div>
-    <!-- End - wilayah_id -->
+        <hr>
 
-    <!-- Start - Button -->
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-success">
-                <i class="ti-save"></i> Simpan
-            </button>
+        <!-- Start - Button -->
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="submit" class="btn btn-success" :disabled="status.form == false ? true : false">
+                    <i class="ti-save"></i> Simpan
+                </button>
+            </div>
         </div>
-    </div>
-    <!-- End - Button -->
+        <!-- End - Button -->
+    </template>
+
+    <!-- Start - alert for validation data -->
+    <template v-else>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info" role="alert">
+                    Check data terlebih dahulu.
+                </div>
+            </div>
+        </div>
+    </template>
+    <!-- Start - alert for validation data -->
 </form>
 @endsection
 
 @section('card-button-footer')
-<a href="{{ route('master.cabang.index') }}" class="btn btn-info">
+<a href="{{ route('import.la03.index') }}" class="btn btn-info">
     <i class="ti-arrow-circle-left"></i> Kembali
 </a>
 @endsection
@@ -116,27 +69,114 @@
         // ------------------------------------------------------------------------
         el: '#app',
         // ------------------------------------------------------------------------
-        // Data for Cabang page
+        // Data for pembayaran page
         // ------------------------------------------------------------------------
         data: {
-            //
+            // --------------------------------------------------------------------
+            status: {
+                form: false,
+            },
+            // --------------------------------------------------------------------
+            // Preset data
+            // --------------------------------------------------------------------
+            preset: {
+                templateDetail: {
+                    type: null, nama_pembayar: null, nominal: 0,
+                }
+            },
+            // --------------------------------------------------------------------
+            result:{
+                pembayaran: @json($pembayaran),
+                pembayaranDetail: @json($pembayaranDetail),
+            },
+            // --------------------------------------------------------------------
         },
         // ------------------------------------------------------------------------
 
         // ------------------------------------------------------------------------
-        // Methods for Cabang page
+        // Methods for pembayaran page
         // ------------------------------------------------------------------------
         methods: {
-            //
+            // --------------------------------------------------------------------
+            // Check data validation for form
+            // --------------------------------------------------------------------
+            checkDataValidation: function(){
+                // ----------------------------------------------------------------
+                let data = {
+                    date        : $("input[name='bulan_tahun']").val(),
+                    cabang_id   : $("select[name='cabang_id']").val(),
+                };
+                // ----------------------------------------------------------------
+                let request = axios.get("{{ route('import.la03.check-data-validation') }}", {
+                                params: data
+                            });
+                // ----------------------------------------------------------------
+                
+                // ----------------------------------------------------------------
+                // Request is success
+                // ----------------------------------------------------------------
+                request.then((response)=>{
+                    let data = response.data;
+                    if(data.status){
+                        toastr.success(data.message);
+                        this.status.form = true;
+                    }else{
+                        toastr.error(data.message);
+                        this.status.form = false;
+                    }
+                });
+                // ----------------------------------------------------------------
+                // Request is failed
+                // ----------------------------------------------------------------
+                request.catch((error)=>{
+                    let data = error.response.data;
+                    toastr.error(data.message);
+                    this.status.form = false;
+                });
+                // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Add row on dynamic form
+            // --------------------------------------------------------------------
+            addRow: function(){
+                this.result.pembayaranDetail.push(_.cloneDeep(_.get(this.preset, 'templateDetail')));
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Delete row on dynamic form
+            // --------------------------------------------------------------------
+            deleteRow: function(index){
+                this.result.pembayaranDetail.splice(index, 1);
+            },
+            // --------------------------------------------------------------------
         },
         // ------------------------------------------------------------------------
 
         // ------------------------------------------------------------------------
-        // Mounted for Cabang page
+        // Mounted for pembayaran page
         // ------------------------------------------------------------------------
         mounted() {
             // --------------------------------------------------------------------
             let vm = this;
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Set template data
+            // --------------------------------------------------------------------\
+            let pageType = "{{ $pageType }}";
+            if(pageType == "create") vm.result.pembayaranDetail = new Array(_.cloneDeep(_.get(vm.preset, 'templateDetail')));
+            else vm.status.form = true;
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Jquery trigger
+            // --------------------------------------------------------------------
+            $("input[name='val_bulan_tahun']").on('change', function(){
+                vm.checkMonthYear();
+            });
             // --------------------------------------------------------------------
         },
         // ------------------------------------------------------------------------
