@@ -18,12 +18,12 @@ class CreateVwPembayaranTable extends Migration
             // ------------------------------------------------------------------------
             $table->bigIncrements('id');
             // ------------------------------------------------------------------------
-            $table->string('bulan', 2);
-            $table->string('tahun', 6);
-            $table->enum('type', [1,2]);
-            $table->string('nama_pembayar');
+            $table->string('bulan', 2)->nullable();
+            $table->string('tahun', 6)->nullable();
+            $table->enum('type', [1,2])->nullable();
+            $table->string('nama_pembayar')->nullable();
             $table->double('nominal')->default(0);
-            $table->string('cabang');
+            $table->string('cabang')->nullable();
             $table->timestamps();
             // ------------------------------------------------------------------------
         });

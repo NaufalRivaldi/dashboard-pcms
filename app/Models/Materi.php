@@ -28,5 +28,9 @@ class Materi extends Model
         return $this->belongsTo(Kategori::class, 'kategori_id')->withTrashed();
     }
     // --------------------------------------------------------------------------------
+    public function siswa_aktif_details(){
+        return $this->hasMany(SiswaAktif::class, 'materi_id');
+    }
+    // --------------------------------------------------------------------------------
 }
 // ------------------------------------------------------------------------------------

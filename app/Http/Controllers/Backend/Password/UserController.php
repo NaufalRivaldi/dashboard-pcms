@@ -72,7 +72,6 @@ class UserController extends Controller
             return redirect()->route('login')->with('success', 'Password berhasil diubah, silahkan login kembali');
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->route('password-user.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------

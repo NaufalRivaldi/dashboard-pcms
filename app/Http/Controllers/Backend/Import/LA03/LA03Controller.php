@@ -35,7 +35,6 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         // Filtering data
         // --------------------------------------------------------------------
-        $filtering->cabang  = Cabang::pluck('nama', 'id');
         $filtering->bulan   = $this->monthArray();
         $filtering->status  = ["Pending", "Accept"];
         $filtering->type    = ["Penerimaan Uang Pendaftaran", "Penerimaan Uang Kursus"];
@@ -52,20 +51,32 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         // --------------------------------------------------------------------
-        $input  = $request->all();
-        $month  = Carbon::parse('01 '.$input['date'])->format('m');
-        $year   = Carbon::parse('01 '.$input['date'])->format('Y');
+        // Use try catch
         // --------------------------------------------------------------------
-        $pembayaran = Pembayaran::where('bulan', $month)->where('tahun', $year)->first();
-        if(empty($pembayaran)){
-            $data->status = true;
-            $data->message = "Data masih kosong, pembuatan form bisa dilakukan.";
-        }else{
+        try {
+            $input  = $request->all();
+            $month  = Carbon::parse('01 '.$input['date'])->format('m');
+            $year   = Carbon::parse('01 '.$input['date'])->format('Y');
+            // ----------------------------------------------------------------
+            $siswaAktif = SiswaAktif::where('bulan', $month)->where('tahun', $year)->where('cabang_id', $input['cabang_id'])->first();
+            if(empty($siswaAktif)){
+                $data->status = true;
+                $data->message = "Data masih kosong, pembuatan form bisa dilakukan.";
+            }else{
+                $data->status = false;
+                $data->message = "Data sudah terisi, mohon cek kembali pada sistem!";
+            }
+            // ----------------------------------------------------------------
+            return response()->json($data);
+            // ----------------------------------------------------------------
+        } catch (\Throwable $th) {
+            // ----------------------------------------------------------------
             $data->status = false;
-            $data->message = "Data sudah terisi, mohon cek kembali pada sistem!";
+            $data->message = "Data tidak valid!";
+            // ----------------------------------------------------------------
+            return response()->json($data);
+            // ----------------------------------------------------------------
         }
-        // --------------------------------------------------------------------
-        return response()->json($data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -142,7 +153,11 @@ class LA03Controller extends Controller
         // Init data
         // --------------------------------------------------------------------
         $data->pageType = "create";
-        $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
+        if(Auth::user()->level_id != 1){
+            $data->cabangs = Cabang::where('status', 1)->where('user_id', Auth::user()->id)->pluck('nama', 'id');
+        }else{
+            $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
+        }
         // --------------------------------------------------------------------
         return view('backend.import.la03.form', (array) $data);
         // --------------------------------------------------------------------
@@ -219,7 +234,6 @@ class LA03Controller extends Controller
             return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             return redirect()->route('import.la03.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
@@ -246,9 +260,17 @@ class LA03Controller extends Controller
             // ----------------------------------------------------------------
 
             // ----------------------------------------------------------------
-            // Import data & set to database penjualan and penjualan detail
+            // Check name file
             // ----------------------------------------------------------------
             $file = $request->file('file_import');
+            if($this->checkNameFile($file->getClientOriginalName())){
+                return redirect()->route('import.la03.import')->with('danger', 'File salah, silahkan masukan file yang sesuai!');
+            }
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            // Import data & set to database penjualan and penjualan detail
+            // ----------------------------------------------------------------
             Excel::import(new LA03Import, $file);
             // ----------------------------------------------------------------
             $vwPembayarans = VWPembayaran::all();
@@ -349,7 +371,11 @@ class LA03Controller extends Controller
         // Init data
         // --------------------------------------------------------------------
         $data->pageType = "edit";
-        $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
+        if(Auth::user()->level_id != 1){
+            $data->cabangs = Cabang::where('status', 1)->where('user_id', Auth::user()->id)->pluck('nama', 'id');
+        }else{
+            $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
+        }
         // --------------------------------------------------------------------
         return view('backend.import.la03.form', (array) $data);
         // --------------------------------------------------------------------
@@ -463,6 +489,17 @@ class LA03Controller extends Controller
         // --------------------------------------------------------------------
         return $array;
         // --------------------------------------------------------------------
+    }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    // Check name file function
+    // ------------------------------------------------------------------------
+    private function checkNameFile($fileName){
+        $valArray = explode('-', $fileName);
+        // --------------------------------------------------------------------
+        if($valArray[1] != "LA03") return true;
+        else return false;
     }
     // ------------------------------------------------------------------------
 }

@@ -60,7 +60,15 @@ class User extends Authenticatable
     }
     // --------------------------------------------------------------------------------
     public function pembayarans(){
-        return $this->hasMany(Pembayaran::class, 'user_id')->withTrashed();
+        return $this->hasMany(Pembayaran::class, 'user_id');
+    }
+    // --------------------------------------------------------------------------------
+    public function siswa_aktifs(){
+        return $this->hasMany(SiswaAktif::class, 'user_id');
+    }
+    // --------------------------------------------------------------------------------
+    public function siswa_barus(){
+        return $this->hasMany(SiswaBaru::class, 'user_id');
     }
     // --------------------------------------------------------------------------------
 }
