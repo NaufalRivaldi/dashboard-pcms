@@ -34,7 +34,6 @@ class LA06DetailController extends Controller
         // Filtering data
         // --------------------------------------------------------------------
         $filtering->bulan   = $this->monthArray();
-        $filtering->status  = ["Pending", "Accept"];
         // --------------------------------------------------------------------
         return view('backend.import.la06.show', (array) $data);
         // --------------------------------------------------------------------
@@ -52,7 +51,7 @@ class LA06DetailController extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $siswaAktifDetails = SiswaAktifDetail::with('materi')->where('siswa_aktif_id', $id);
+                $siswaAktifDetails = SiswaAktifDetail::with('materi')->select('siswa_aktif_detail.*')->where('siswa_aktif_id', $id);
                 // ------------------------------------------------------------
                 $datatable = datatables()->of($siswaAktifDetails)->addIndexColumn();
                 // ------------------------------------------------------------
@@ -60,8 +59,8 @@ class LA06DetailController extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'" '.($row->siswa_aktif->status ? "disabled" : "").' data-toggle="modal" data-target="#modalEdit"><i class="ti-settings"></i></button>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.($row->siswa_aktif->status ? "disabled" : "").'><i class="ti-trash"></i></button>';
+                                    $button .= '<button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'" data-toggle="modal" data-target="#modalEdit"><i class="ti-settings"></i></button>';
+                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;
@@ -121,25 +120,6 @@ class LA06DetailController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('import.la06.show', $id)->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
-        // --------------------------------------------------------------------
-    }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    // Validation accept function
-    // ------------------------------------------------------------------------
-    public function accept($id){
-        // --------------------------------------------------------------------
-        $data = new \stdClass;
-        // --------------------------------------------------------------------
-        $siswaAktif = SiswaAktif::find($id);
-        // --------------------------------------------------------------------
-        $siswaAktif->status = 1;
-        $siswaAktif->save();
-        // --------------------------------------------------------------------
-        $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
-        // --------------------------------------------------------------------
-        return response()->json($data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

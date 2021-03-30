@@ -1,11 +1,7 @@
 @extends('layouts.content_datatable')
 
 @section('card-button')
-    <a href="{{ route('import.la06.show.pdf', $siswaAktif->id) }}" class="btn btn-danger  @if($siswaAktif->status == 0) disabled @endif"><i class="ti-file"></i> Export PDF</a>
-
-    @if($siswaAktif->status == 0)
-        <button class="btn btn-success" data-toggle="modal" data-target="#modalValidation"><i class="ti-check"></i> Accept</button>
-    @endif
+    
 @endsection
 
 @section('card-slot-up')
@@ -29,11 +25,6 @@
         <div class="col-sm-3 font-weight-bold">Tahun</div>
         <div class="col-sm-1 text-right">:</div>
         <div class="col-sm-8">{{ $siswaAktif->tahun }}</div>
-    </div>
-    <div class="row mt-2">
-        <div class="col-sm-3 font-weight-bold">Status</div>
-        <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{!! statusValidate($siswaAktif->status) !!}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Jumlah Total Siswa Aktif</div>
@@ -202,38 +193,6 @@
         // ------------------------------------------------------------------------
         methods: {
             // --------------------------------------------------------------------
-            // Validation accept function
-            // --------------------------------------------------------------------
-            accept: function(){
-                // ----------------------------------------------------------------
-                let url = "{{ route('import.la06.show.accept', ':id') }}";
-                url = url.replace(':id', "{{ $siswaAktif->id }}");
-                let request = axios.put(url);
-                // ----------------------------------------------------------------
-                // If request success
-                // ----------------------------------------------------------------
-                request.then((response)=>{
-                    // ------------------------------------------------------------
-                    let data = response.data;
-                    // ------------------------------------------------------------
-                    location.reload();
-                    // ------------------------------------------------------------
-                    Vue.nextTick(function () {
-                        toastr.success(data.message);    
-                    })
-                    // ------------------------------------------------------------
-                })
-                // ----------------------------------------------------------------
-                // If request error
-                // ----------------------------------------------------------------
-                request.catch((error)=>{
-                    toastr.error(error.message);
-                })
-                // ----------------------------------------------------------------
-            },
-            // --------------------------------------------------------------------
-
-            // --------------------------------------------------------------------
             // Edit data function
             // --------------------------------------------------------------------
             editData: function(id){
@@ -304,14 +263,6 @@
         mounted() {
             // --------------------------------------------------------------------
             let vm = this;
-            // --------------------------------------------------------------------
-
-            // --------------------------------------------------------------------
-            // Accept event
-            // --------------------------------------------------------------------
-            $(document).on('click', '.btn-accept', function(){
-                vm.accept();
-            })
             // --------------------------------------------------------------------
 
             // --------------------------------------------------------------------

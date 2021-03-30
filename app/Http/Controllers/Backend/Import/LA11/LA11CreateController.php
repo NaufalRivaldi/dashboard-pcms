@@ -24,7 +24,7 @@ class LA11CreateController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title            = "LA11 - Form";
+        $data->title            = "LA13 - Form";
         $data->siswaCuti        = new SiswaCuti();
         // --------------------------------------------------------------------
         // Init data
@@ -124,7 +124,7 @@ class LA11CreateController extends Controller
     {
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title            = "LA11 - Edit Form";
+        $data->title            = "LA13 - Edit Form";
         $data->siswaCuti       = SiswaCuti::find($id);
         // --------------------------------------------------------------------
         // Init data

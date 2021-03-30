@@ -9,7 +9,6 @@
     <th data-type="select" data-filtering='{!! parseJson($filtering->bulan) !!}'>Bulan</th>
     <th>Tahun</th>
     <th>Cabang</th>
-    <th data-type="select" data-filtering='{!! parseJson($filtering->status) !!}'>Status</th>
     <th>User</th>
     <th>Action</th>
 @endsection
@@ -20,7 +19,6 @@
         ["data" => "bulan", "name" => "bulan", "defaultContent" => "-"],
         ["data" => "tahun", "name" => "tahun", "defaultContent" => "-"],
         ["data" => "cabang.nama", "name" => "cabang.nama", "defaultContent" => "-"],
-        ["data" => "status", "name" => "status", "defaultContent" => "-"],
         ["data" => "user.nama", "name" => "user.nama", "defaultContent" => "-"],
         ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];
@@ -109,16 +107,6 @@
         mounted() {
             // --------------------------------------------------------------------
             let vm = this;
-            // --------------------------------------------------------------------
-
-            // --------------------------------------------------------------------
-            // Status event
-            // --------------------------------------------------------------------
-            $(document).on('click', '.btn-status', function(){
-                let $id = $(this).data('id');
-                let $type = $(this).data('type');
-                vm.setStatus($type, $id);
-            })
             // --------------------------------------------------------------------
 
             // --------------------------------------------------------------------

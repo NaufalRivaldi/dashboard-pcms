@@ -7,7 +7,7 @@
             <!-- Start - Dashboard link -->
             <li class="panel">
                 <li>
-                    <a href="{{ route('dashboard.index') }}" class="">
+                    <a href="{{ route('dashboard.index') }}" class="@if(strpos(Route::currentRouteName(), 'dashboard') !== false) active @endif">
                         <i class="ti-dashboard"></i> <span class="title">Dashboard</span>
                     </a>
                 </li>
@@ -19,7 +19,7 @@
             <!-- Start - User link -->
             <li class="panel">
                 <li>
-                    <a href="{{ route('master.user.index') }}" class="">
+                    <a href="{{ route('master.user.index') }}" class="@if(strpos(Route::currentRouteName(), 'user') !== false) active @endif">
                         <i class="ti-user"></i> <span class="title">User</span>
                     </a>
                 </li>
@@ -28,7 +28,7 @@
 
             <!-- Start - Cabang collapse -->
             <li class="panel">
-                <a href="#" data-toggle="collapse" data-target="#submenuCabang" data-parent="#sidebar-nav-menu">
+                <a href="#" data-toggle="collapse" data-target="#submenuCabang" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'cabang') !== false) active @endif @if(strpos(Route::currentRouteName(), 'wilayah') !== false) active @endif @if(strpos(Route::currentRouteName(), 'sub-wilayah') !== false) active @endif">
                     <i class="ti-location-pin"></i> <span class="title">Cabang</span><i class="icon-submenu ti-angle-left"></i>
                 </a>
                 <div id="submenuCabang" class="collapse">
@@ -43,7 +43,7 @@
 
             <!-- Start - Materi collapse -->
             <li class="panel">
-                <a href="#" data-toggle="collapse" data-target="#submenuMateri" data-parent="#sidebar-nav-menu">
+                <a href="#" data-toggle="collapse" data-target="#submenuMateri" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'kategori') !== false) active @endif @if(strpos(Route::currentRouteName(), 'materi') !== false) active @endif @if(strpos(Route::currentRouteName(), 'grade') !== false) active @endif">
                     <i class="ti-book"></i> <span class="title">Materi</span><i class="icon-submenu ti-angle-left"></i>
                 </a>
                 <div id="submenuMateri" class="collapse">
@@ -59,9 +59,21 @@
 
             <!-- Start - Main Link -->
             <li class="menu-group">Main</li>
+
+            <!-- Start - summary link -->
+            <li class="panel">
+                <li>
+                    <a href="{{ route('import.summary.index') }}" class="@if(strpos(Route::currentRouteName(), 'summary') !== false) active @endif">
+                        <i class="ti-file"></i> <span class="title">Summary Import</span>
+                        <span class="badge badge-warning">{{ ImportHelper::notifSummary() }}</span>
+                    </a>
+                </li>
+            </li>
+            <!-- End - summary link -->
+
             <!-- Start - Import File collapse -->
             <li class="panel">
-                <a href="#" data-toggle="collapse" data-target="#submenuImportLaporan" data-parent="#sidebar-nav-menu">
+                <a href="#" data-toggle="collapse" data-target="#submenuImportLaporan" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'la03') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la06') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la07') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la09') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la012') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la11') !== false) active @endif">
                     <i class="ti-files"></i> <span class="title">Import Laporan</span><i class="icon-submenu ti-angle-left"></i>
                 </a>
                 <div id="submenuImportLaporan" class="collapse">
@@ -70,8 +82,8 @@
                         <li><a href="{{ route('import.la06.index') }}">LA06</a></li>
                         <li><a href="{{ route('import.la07.index') }}">LA07</a></li>
                         <li><a href="{{ route('import.la09.index') }}">LA09</a></li>
-                        <li><a href="{{ route('import.la11.index') }}">LA11</a></li>
                         <li><a href="{{ route('import.la12.index') }}">LA12</a></li>
+                        <li><a href="{{ route('import.la11.index') }}">LA13</a></li>
                     </ul>
                 </div>
             </li>

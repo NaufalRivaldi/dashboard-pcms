@@ -12,7 +12,6 @@ class SiswaBaru extends Model
     protected $fillable = [
         'bulan', 
         'tahun', 
-        'status', 
         'jumlah', 
         'cabang_id',
         'user_id',

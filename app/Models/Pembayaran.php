@@ -12,7 +12,6 @@ class Pembayaran extends Model
     protected $fillable = [
         'bulan', 
         'tahun', 
-        'status', 
         'user_id',
         'cabang_id',
     ];

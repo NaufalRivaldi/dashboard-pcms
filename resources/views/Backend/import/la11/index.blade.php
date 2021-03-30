@@ -10,7 +10,6 @@
     <th>Tahun</th>
     <th>Cabang</th>
     <th>Jumlah</th>
-    <th data-type="select" data-filtering='{!! parseJson($filtering->status) !!}'>Status</th>
     <th>User</th>
     <th>Action</th>
 @endsection
@@ -22,7 +21,6 @@
         ["data" => "tahun", "name" => "tahun", "defaultContent" => "-"],
         ["data" => "cabang.nama", "name" => "cabang.nama", "defaultContent" => "-"],
         ["data" => "jumlah", "name" => "jumlah", "defaultContent" => "-"],
-        ["data" => "status", "name" => "status", "defaultContent" => "-"],
         ["data" => "user.nama", "name" => "user.nama", "defaultContent" => "-"],
         ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];

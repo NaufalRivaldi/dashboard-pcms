@@ -32,7 +32,6 @@ class LA07Controller extends Controller
         // Filtering data
         // --------------------------------------------------------------------
         $filtering->bulan   = $this->monthArray();
-        $filtering->status  = ["Pending", "Accept"];
         // --------------------------------------------------------------------
         return view('backend.import.la07.index', (array) $data);
         // --------------------------------------------------------------------
@@ -56,10 +55,10 @@ class LA07Controller extends Controller
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
-                $datatable = $datatable->addColumn('status', function($row){
-                                    if($row->status == 0) return "Pending";
-                                    else return "Accept";
-                                });
+                // $datatable = $datatable->addColumn('status', function($row){
+                //                     if($row->status == 0) return "Pending";
+                //                     else return "Accept";
+                //                 });
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
@@ -75,18 +74,18 @@ class LA07Controller extends Controller
                 // ------------------------------------------------------------
                 // Filter column
                 // ------------------------------------------------------------
-                $datatable = $datatable->filterColumn('status', function($query,$keyword){
-                                    $value = 0;
-                                    if($keyword == "Accept") $value = 1;
-                                    $query->where('status', $value);
-                                });
+                // $datatable = $datatable->filterColumn('status', function($query,$keyword){
+                //                     $value = 0;
+                //                     if($keyword == "Accept") $value = 1;
+                //                     $query->where('status', $value);
+                //                 });
                 // ------------------------------------------------------------
                 $datatable = $datatable->filterColumn('bulan', function($query, $keyword){
                     $value = array_search($keyword, $this->monthArray());
                     $query->where('bulan', $value);
                 });
                 // ------------------------------------------------------------
-                return $datatable->rawColumns(['status', 'action'])->make(true);
+                return $datatable->rawColumns(['action'])->make(true);
                 // ------------------------------------------------------------                                    
                 break;
             // ----------------------------------------------------------------
@@ -160,45 +159,37 @@ class LA07Controller extends Controller
             // ----------------------------------------------------------------
             // Check siswa aktif
             // ----------------------------------------------------------------
-            $siswaAktif = SiswaAktif::where('bulan', $vwSiswaAktifs->random()->bulan)->where('tahun', $vwSiswaAktifs->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 1)->first();
+            $siswaAktif = SiswaAktif::where('bulan', $vwSiswaAktifs->random()->bulan)->where('tahun', $vwSiswaAktifs->random()->tahun)->where('cabang_id', $cabang->id)->first();
+            // ------------------------------------------------------------
             if(empty($siswaAktif)){
-                // ------------------------------------------------------------
-                $siswaAktif = SiswaAktif::where('bulan', $vwSiswaAktifs->random()->bulan)->where('tahun', $vwSiswaAktifs->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 0)->first();
-                // ------------------------------------------------------------
-                if(empty($siswaAktif)){
-                    $siswaAktif = SiswaAktif::create([
-                        'bulan'         => $vwSiswaAktifs->random()->bulan,
-                        'tahun'         => $vwSiswaAktifs->random()->tahun,
-                        'status'        => 0,
-                        'user_id'       => Auth::user()->id,
-                        'cabang_id'     => $cabang->id,
-                    ]);
-                }else{
-                    SiswaAktifDetail::where('siswa_aktif_pendidikan_id', $siswaAktif->id)->delete();
-                }
-                // ------------------------------------------------------------
-                // Insert data siswa aktif detail
-                // ------------------------------------------------------------
-                foreach($vwSiswaAktifs as $vwSiswaAktif){
-                    $pendidikan = Pendidikan::where('nama', $vwSiswaAktif->pendidikan)->first();
-                    if(empty($pendidikan)){
-                        $pendidikan = Pendidikan::create([
-                            'nama' => $vwSiswaAktif->pendidikan,
-                            'status' => 1,
-                        ]);
-                    }
-                    // --------------------------------------------------------
-                    SiswaAktifDetail::create([
-                        'jumlah'                    => $vwSiswaAktif->jumlah,
-                        'pendidikan_id'             => $pendidikan->id,
-                        'siswa_aktif_pendidikan_id' => $siswaAktif->id,
-                    ]);
-                }
-                // ------------------------------------------------------------
+                $siswaAktif = SiswaAktif::create([
+                    'bulan'         => $vwSiswaAktifs->random()->bulan,
+                    'tahun'         => $vwSiswaAktifs->random()->tahun,
+                    'user_id'       => Auth::user()->id,
+                    'cabang_id'     => $cabang->id,
+                ]);
             }else{
-                return redirect()->route('import.la07.index')->with('info', 'Data sudah ada dan sudah di approve');
+                SiswaAktifDetail::where('siswa_aktif_pendidikan_id', $siswaAktif->id)->delete();
             }
-            // ----------------------------------------------------------------
+            // ------------------------------------------------------------
+            // Insert data siswa aktif detail
+            // ------------------------------------------------------------
+            foreach($vwSiswaAktifs as $vwSiswaAktif){
+                $pendidikan = Pendidikan::where('nama', $vwSiswaAktif->pendidikan)->first();
+                if(empty($pendidikan)){
+                    $pendidikan = Pendidikan::create([
+                        'nama' => $vwSiswaAktif->pendidikan,
+                        'status' => 1,
+                    ]);
+                }
+                // --------------------------------------------------------
+                SiswaAktifDetail::create([
+                    'jumlah'                    => $vwSiswaAktif->jumlah,
+                    'pendidikan_id'             => $pendidikan->id,
+                    'siswa_aktif_pendidikan_id' => $siswaAktif->id,
+                ]);
+            }
+            // ------------------------------------------------------------
             
             // ----------------------------------------------------------------
             return redirect()->route('import.la07.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));

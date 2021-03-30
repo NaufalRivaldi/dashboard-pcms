@@ -74,7 +74,7 @@ if (! function_exists('statusValidate')) {
     // ------------------------------------------------------------------------
     function statusValidate($val){
         if($val == 1){
-            return '<span class="badge badge-success">Accept</span>';
+            return '<span class="badge badge-success">Approve</span>';
         }else{
             return '<span class="badge badge-secondary">Pending</span>';
         }

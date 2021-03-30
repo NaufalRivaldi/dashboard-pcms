@@ -63,8 +63,8 @@ class LA03DetailController extends Controller
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
-                                    $button .= '<button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'" '.($row->pembayaran->status ? "disabled" : "").' data-toggle="modal" data-target="#modalEdit"><i class="ti-settings"></i></button>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.($row->pembayaran->status ? "disabled" : "").'><i class="ti-trash"></i></button>';
+                                    $button .= '<button class="btn btn-sm btn-warning btn-edit" data-id="'.$row->id.'" data-toggle="modal" data-target="#modalEdit"><i class="ti-settings"></i></button>';
+                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;
@@ -176,25 +176,6 @@ class LA03DetailController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('import.la03.show', $id)->with('success', __('label.FAIL_UPDATE_MESSAGE'));
         }
-        // --------------------------------------------------------------------
-    }
-    // ------------------------------------------------------------------------
-
-    // ------------------------------------------------------------------------
-    // Validation accept function
-    // ------------------------------------------------------------------------
-    public function accept($id){
-        // --------------------------------------------------------------------
-        $data = new \stdClass;
-        // --------------------------------------------------------------------
-        $pembayaran = Pembayaran::find($id);
-        // --------------------------------------------------------------------
-        $pembayaran->status = 1;
-        $pembayaran->save();
-        // --------------------------------------------------------------------
-        $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
-        // --------------------------------------------------------------------
-        return response()->json($data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

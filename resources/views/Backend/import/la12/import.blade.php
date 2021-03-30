@@ -12,6 +12,7 @@
         </label>
         <div class="col-sm-10 input-form">
             <input type="file" name="file_import" class="form-control col-sm-6 @if($errors->has('file_import')) is-invalid @endif" value="">
+            <small class="text-info">File: LA12 Format CSV</small>
             <!-- Start - Error handling -->
             @if($errors->has('file_import'))
                 <div class="invalid-feedback">{{ $errors->first('file_import') }}</div>

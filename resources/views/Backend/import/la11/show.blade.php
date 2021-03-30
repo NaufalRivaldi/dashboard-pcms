@@ -1,11 +1,7 @@
 @extends('layouts.content_show')
 
 @section('card-button')
-    <a href="{{ route('import.la11.show.pdf', $siswaCuti->id) }}" class="btn btn-danger  @if($siswaCuti->status == 0) disabled @endif"><i class="ti-file"></i> Export PDF</a>
-
-    @if($siswaCuti->status == 0)
-        <button class="btn btn-success" data-toggle="modal" data-target="#modalValidation"><i class="ti-check"></i> Accept</button>
-    @endif
+    
 @endsection
 
 @section('card-content')
@@ -29,11 +25,6 @@
         <div class="col-sm-3 font-weight-bold">Tahun</div>
         <div class="col-sm-1 text-right">:</div>
         <div class="col-sm-8">{{ $siswaCuti->tahun }}</div>
-    </div>
-    <div class="row mt-2">
-        <div class="col-sm-3 font-weight-bold">Status</div>
-        <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{!! statusValidate($siswaCuti->status) !!}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Jumlah Total Siswa Cuti</div>

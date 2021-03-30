@@ -130,6 +130,38 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     Route::namespace('Import')->prefix('import')->name('import.')->group(function(){
         // ----------------------------------------------------------------
+        // Summary page
+        // ----------------------------------------------------------------
+        Route::namespace('Summary')->group(function(){
+            // ------------------------------------------------------------
+            // LA06 list page
+            // ------------------------------------------------------------
+            Route::get('summary/', 'SummaryController@index')->name('summary.index');
+            Route::get('summary/json/{param}', 'SummaryController@json')->name('summary.json');
+            Route::delete('summary/{id}/delete', 'SummaryController@destroy')->name('summary.destroy');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // summary create / edit page
+            // ------------------------------------------------------------
+            Route::get('summary/create', 'SummaryCreateController@index')->name('summary.create');
+            Route::get('summary/check-date', 'SummaryCreateController@checkDataValidation')->name('summary.check-data-validation');
+            Route::post('summary/', 'SummaryCreateController@store')->name('summary.store');
+            Route::get('summary/{id}/edit', 'SummaryCreateController@edit')->name('summary.edit');
+            Route::put('summary/{id}/update', 'SummaryCreateController@update')->name('summary.update');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // summary detail page
+            // ------------------------------------------------------------
+            Route::get('summary/{id}', 'SummaryDetailController@index')->name('summary.show');
+            Route::get('summary/{id}/pdf', 'SummaryDetailController@exportPdf')->name('summary.show.pdf');
+            Route::put('summary/{id}/approve-detail', 'SummaryDetailController@approve')->name('summary.show.approve');
+            // ------------------------------------------------------------
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
         // LA03 page
         // ----------------------------------------------------------------
         Route::namespace('LA03')->prefix('la03')->group(function(){
@@ -275,41 +307,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
 
         // ----------------------------------------------------------------
-        // LA06 page
-        // ----------------------------------------------------------------
-        Route::namespace('LA11')->group(function(){
-            // ------------------------------------------------------------
-            // LA11 list page
-            // ------------------------------------------------------------
-            Route::get('la11/', 'LA11Controller@index')->name('la11.index');
-            Route::get('la11/json/{param}', 'LA11Controller@json')->name('la11.json');
-            Route::get('la11/import/', 'LA11Controller@import')->name('la11.import');
-            Route::post('la11/import/', 'LA11Controller@importStore')->name('la11.import.store');
-            Route::delete('la11/{id}/delete', 'LA11Controller@destroy')->name('la11.destroy');
-            // ------------------------------------------------------------
-
-            // ------------------------------------------------------------
-            // LA11 create / edit page
-            // ------------------------------------------------------------
-            Route::get('la11/create', 'LA11CreateController@index')->name('la11.create');
-            Route::get('la11/check-date', 'LA11CreateController@checkDataValidation')->name('la11.check-data-validation');
-            Route::get('la11/{id}/edit', 'LA11CreateController@edit')->name('la11.edit');
-            Route::post('la11/', 'LA11CreateController@store')->name('la11.store');
-            Route::put('la11/{id}/update', 'LA11CreateController@update')->name('la11.update');
-            // ------------------------------------------------------------
-
-            // ------------------------------------------------------------
-            // LA11 detail page
-            // ------------------------------------------------------------
-            Route::get('la11/{id}', 'LA11DetailController@index')->name('la11.show');
-            Route::get('la11/{id}/pdf', 'LA11DetailController@exportPdf')->name('la11.show.pdf');
-            Route::put('la11/{id}/accept-detail', 'LA11DetailController@accept')->name('la11.show.accept');
-            // ------------------------------------------------------------
-        });
-        // ----------------------------------------------------------------
-
-        // ----------------------------------------------------------------
-        // LA06 page
+        // LA12 page
         // ----------------------------------------------------------------
         Route::namespace('LA12')->group(function(){
             // ------------------------------------------------------------
@@ -338,6 +336,40 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             Route::get('la12/{id}', 'LA12DetailController@index')->name('la12.show');
             Route::get('la12/{id}/pdf', 'LA12DetailController@exportPdf')->name('la12.show.pdf');
             Route::put('la12/{id}/accept-detail', 'LA12DetailController@accept')->name('la12.show.accept');
+            // ------------------------------------------------------------
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        // LA13 page
+        // ----------------------------------------------------------------
+        Route::namespace('LA11')->group(function(){
+            // ------------------------------------------------------------
+            // LA13 list page
+            // ------------------------------------------------------------
+            Route::get('la13/', 'LA11Controller@index')->name('la11.index');
+            Route::get('la13/json/{param}', 'LA11Controller@json')->name('la11.json');
+            Route::get('la13/import/', 'LA11Controller@import')->name('la11.import');
+            Route::post('la13/import/', 'LA11Controller@importStore')->name('la11.import.store');
+            Route::delete('la13/{id}/delete', 'LA11Controller@destroy')->name('la11.destroy');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // LA13 create / edit page
+            // ------------------------------------------------------------
+            Route::get('la13/create', 'LA11CreateController@index')->name('la11.create');
+            Route::get('la13/check-date', 'LA11CreateController@checkDataValidation')->name('la11.check-data-validation');
+            Route::get('la13/{id}/edit', 'LA11CreateController@edit')->name('la11.edit');
+            Route::post('la13/', 'LA11CreateController@store')->name('la11.store');
+            Route::put('la13/{id}/update', 'LA11CreateController@update')->name('la11.update');
+            // ------------------------------------------------------------
+
+            // ------------------------------------------------------------
+            // LA13 detail page
+            // ------------------------------------------------------------
+            Route::get('la13/{id}', 'LA11DetailController@index')->name('la11.show');
+            Route::get('la13/{id}/pdf', 'LA11DetailController@exportPdf')->name('la11.show.pdf');
+            Route::put('la13/{id}/accept-detail', 'LA11DetailController@accept')->name('la11.show.accept');
             // ------------------------------------------------------------
         });
         // ----------------------------------------------------------------

@@ -12,7 +12,6 @@ class SiswaInaktif extends Model
     protected $fillable = [
         'bulan', 
         'tahun', 
-        'status', 
         'jumlah', 
         'user_id',
         'cabang_id',

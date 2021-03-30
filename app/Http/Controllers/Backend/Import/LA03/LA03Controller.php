@@ -36,7 +36,6 @@ class LA03Controller extends Controller
         // Filtering data
         // --------------------------------------------------------------------
         $filtering->bulan   = $this->monthArray();
-        $filtering->status  = ["Pending", "Accept"];
         $filtering->type    = ["Penerimaan Uang Pendaftaran", "Penerimaan Uang Kursus"];
         // --------------------------------------------------------------------
         return view('backend.import.la03.index', (array) $data);
@@ -58,8 +57,8 @@ class LA03Controller extends Controller
             $month  = Carbon::parse('01 '.$input['date'])->format('m');
             $year   = Carbon::parse('01 '.$input['date'])->format('Y');
             // ----------------------------------------------------------------
-            $siswaAktif = SiswaAktif::where('bulan', $month)->where('tahun', $year)->where('cabang_id', $input['cabang_id'])->first();
-            if(empty($siswaAktif)){
+            $pembayaran = Pembayaran::where('bulan', $month)->where('tahun', $year)->where('cabang_id', $input['cabang_id'])->first();
+            if(empty($pembayaran)){
                 $data->status = true;
                 $data->message = "Data masih kosong, pembuatan form bisa dilakukan.";
             }else{
@@ -98,10 +97,10 @@ class LA03Controller extends Controller
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
-                $datatable = $datatable->addColumn('status', function($row){
-                                    if($row->status == 0) return "Pending";
-                                    else return "Accept";
-                                });
+                // $datatable = $datatable->addColumn('status', function($row){
+                //                     if($row->status == 0) return "Pending";
+                //                     else return "Accept";
+                //                 });
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
@@ -117,13 +116,13 @@ class LA03Controller extends Controller
                 // ------------------------------------------------------------
                 // Filter column
                 // ------------------------------------------------------------
-                $datatable = $datatable->filterColumn('status', function($query,$keyword){
-                                    $value = 0;
-                                    if($keyword == "Accept") $value = 1;
-                                    $query->where('status', $value);
-                                });
+                // $datatable = $datatable->filterColumn('status', function($query,$keyword){
+                //                     $value = 0;
+                //                     if($keyword == "Accept") $value = 1;
+                //                     $query->where('status', $value);
+                //                 });
                 // ------------------------------------------------------------
-                return $datatable->rawColumns(['status', 'action'])->make(true);
+                return $datatable->rawColumns(['action'])->make(true);
                 // ------------------------------------------------------------                                    
                 break;
             // ----------------------------------------------------------------
@@ -284,38 +283,29 @@ class LA03Controller extends Controller
             // ----------------------------------------------------------------
             // Check pembayaran
             // ----------------------------------------------------------------
-            $pembayaran = Pembayaran::where('bulan', $vwPembayarans->random()->bulan)->where('tahun', $vwPembayarans->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 1)->first();
-            
+            $pembayaran = Pembayaran::where('bulan', $vwPembayarans->random()->bulan)->where('tahun', $vwPembayarans->random()->tahun)->where('cabang_id', $cabang->id)->first();
+            // ------------------------------------------------------------
             if(empty($pembayaran)){
-                // ------------------------------------------------------------
-                $pembayaran = Pembayaran::where('bulan', $vwPembayarans->random()->bulan)->where('tahun', $vwPembayarans->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 0)->first();
-                // ------------------------------------------------------------
-                if(empty($pembayaran)){
-                    $pembayaran = Pembayaran::create([
-                        'bulan'         => $vwPembayarans->random()->bulan,
-                        'tahun'         => $vwPembayarans->random()->tahun,
-                        'status'        => 0,
-                        'user_id'       => Auth::user()->id,
-                        'cabang_id'     => $cabang->id,
-                    ]);
-                }else{
-                    PembayaranDetail::where('pembayaran_id', $pembayaran->id)->delete();
-                }
-                // ------------------------------------------------------------
-                // Insert data Penjualan Detail
-                // ------------------------------------------------------------
-                foreach($vwPembayarans as $vwPembayaran){
-                    PembayaranDetail::create([
-                        'type'              => $vwPembayaran->type,
-                        'nama_pembayar'     => $vwPembayaran->nama_pembayar,
-                        'nominal'           => $vwPembayaran->nominal,
-                        'pembayaran_id'     => $pembayaran->id,
-                        'materi_grade_id'   => null,
-                    ]);
-                }
-                // ------------------------------------------------------------
+                $pembayaran = Pembayaran::create([
+                    'bulan'         => $vwPembayarans->random()->bulan,
+                    'tahun'         => $vwPembayarans->random()->tahun,
+                    'user_id'       => Auth::user()->id,
+                    'cabang_id'     => $cabang->id,
+                ]);
             }else{
-                return redirect()->route('import.la03.index')->with('info', 'Data sudah ada dan sudah di approve');
+                PembayaranDetail::where('pembayaran_id', $pembayaran->id)->delete();
+            }
+            // ------------------------------------------------------------
+            // Insert data Penjualan Detail
+            // ------------------------------------------------------------
+            foreach($vwPembayarans as $vwPembayaran){
+                PembayaranDetail::create([
+                    'type'              => $vwPembayaran->type,
+                    'nama_pembayar'     => $vwPembayaran->nama_pembayar,
+                    'nominal'           => $vwPembayaran->nominal,
+                    'pembayaran_id'     => $pembayaran->id,
+                    'materi_grade_id'   => null,
+                ]);
             }
             // ----------------------------------------------------------------
             

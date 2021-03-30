@@ -30,7 +30,6 @@ class LA09Controller extends Controller
         // Filtering data
         // --------------------------------------------------------------------
         $filtering->bulan   = $this->monthArray();
-        $filtering->status  = ["Pending", "Accept"];
         // --------------------------------------------------------------------
         return view('backend.import.la09.index', (array) $data);
         // --------------------------------------------------------------------
@@ -54,10 +53,10 @@ class LA09Controller extends Controller
                 // ------------------------------------------------------------
                 // Add column
                 // ------------------------------------------------------------
-                $datatable = $datatable->addColumn('status', function($row){
-                                    if($row->status == 0) return "Pending";
-                                    else return "Accept";
-                                });
+                // $datatable = $datatable->addColumn('status', function($row){
+                //                     if($row->status == 0) return "Pending";
+                //                     else return "Accept";
+                //                 });
                 // ------------------------------------------------------------
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
@@ -73,18 +72,18 @@ class LA09Controller extends Controller
                 // ------------------------------------------------------------
                 // Filter column
                 // ------------------------------------------------------------
-                $datatable = $datatable->filterColumn('status', function($query,$keyword){
-                                    $value = 0;
-                                    if($keyword == "Accept") $value = 1;
-                                    $query->where('status', $value);
-                                });
+                // $datatable = $datatable->filterColumn('status', function($query,$keyword){
+                //                     $value = 0;
+                //                     if($keyword == "Accept") $value = 1;
+                //                     $query->where('status', $value);
+                //                 });
                 // ------------------------------------------------------------
                 $datatable = $datatable->filterColumn('bulan', function($query, $keyword){
                     $value = array_search($keyword, $this->monthArray());
                     $query->where('bulan', $value);
                 });
                 // ------------------------------------------------------------
-                return $datatable->rawColumns(['status', 'action'])->make(true);
+                return $datatable->rawColumns(['action'])->make(true);
                 // ------------------------------------------------------------                                    
                 break;
             // ----------------------------------------------------------------
@@ -166,33 +165,25 @@ class LA09Controller extends Controller
             // ----------------------------------------------------------------
             // Check siswa aktif
             // ----------------------------------------------------------------
-            $siswaBaru = SiswaBaru::where('bulan', $vwSiswaBarus->random()->bulan)->where('tahun', $vwSiswaBarus->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 1)->first();
+            $siswaBaru = SiswaBaru::where('bulan', $vwSiswaBarus->random()->bulan)->where('tahun', $vwSiswaBarus->random()->tahun)->where('cabang_id', $cabang->id)->first();
+            // ------------------------------------------------------------
             if(empty($siswaBaru)){
-                // ------------------------------------------------------------
-                $siswaBaru = SiswaBaru::where('bulan', $vwSiswaBarus->random()->bulan)->where('tahun', $vwSiswaBarus->random()->tahun)->where('cabang_id', $cabang->id)->where('status', 0)->first();
-                // ------------------------------------------------------------
-                if(empty($siswaBaru)){
-                    $siswaBaru = SiswaBaru::create([
-                        'bulan'         => $vwSiswaBarus->random()->bulan,
-                        'tahun'         => $vwSiswaBarus->random()->tahun,
-                        'status'        => 0,
-                        'jumlah'        => $vwSiswaBarus->random()->jumlah,
-                        'user_id'       => Auth::user()->id,
-                        'cabang_id'     => $cabang->id,
-                    ]);
-                }else{
-                    $siswaBaru->delete();
-                    $siswaBaru = SiswaBaru::create([
-                        'bulan'         => $vwSiswaBarus->random()->bulan,
-                        'tahun'         => $vwSiswaBarus->random()->tahun,
-                        'status'        => 0,
-                        'jumlah'        => $vwSiswaBarus->random()->jumlah,
-                        'user_id'       => Auth::user()->id,
-                        'cabang_id'     => $cabang->id,
-                    ]);
-                }
+                $siswaBaru = SiswaBaru::create([
+                    'bulan'         => $vwSiswaBarus->random()->bulan,
+                    'tahun'         => $vwSiswaBarus->random()->tahun,
+                    'jumlah'        => $vwSiswaBarus->random()->jumlah,
+                    'user_id'       => Auth::user()->id,
+                    'cabang_id'     => $cabang->id,
+                ]);
             }else{
-                return redirect()->route('import.la09.index')->with('info', 'Data sudah ada dan sudah di approve');
+                $siswaBaru->delete();
+                $siswaBaru = SiswaBaru::create([
+                    'bulan'         => $vwSiswaBarus->random()->bulan,
+                    'tahun'         => $vwSiswaBarus->random()->tahun,
+                    'jumlah'        => $vwSiswaBarus->random()->jumlah,
+                    'user_id'       => Auth::user()->id,
+                    'cabang_id'     => $cabang->id,
+                ]);
             }
             // ----------------------------------------------------------------
             
