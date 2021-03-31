@@ -57,7 +57,7 @@
     <th data-type="select" data-filtering='{!! parseJson($filtering->type) !!}'>Type</th>
     <th>Nama Pembayar</th>
     <th>Nominal (Rp.)</th>
-    <th>Action</th>
+    <!-- <th>Action</th> -->
 @endsection
 
 @section('card-footer')
@@ -74,7 +74,7 @@
         ["data" => "type", "name" => "type", "defaultContent" => "-"],
         ["data" => "nama_pembayar", "name" => "nama_pembayar", "defaultContent" => "-"],
         ["data" => "nominal", "name" => "nominal", "defaultContent" => "-"],
-        ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
+        // ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];
 @endphp
 <!-- End - Set column -->

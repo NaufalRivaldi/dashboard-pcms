@@ -3,6 +3,8 @@
 @section('card-button')
     @if($summary->status == 0)
         <button class="btn btn-success" data-toggle="modal" data-target="#modalValidation"><i class="ti-check"></i> Approve</button>
+    @else
+        <a href="{{ route('import.summary.show.pdf', $summary->id) }}" class="btn btn-danger"><i class="ti-file"></i> Export PDF</a>
     @endif
 @endsection
 
@@ -52,7 +54,7 @@
         <div class="col-sm-8">{{ number_format($summary->uang_pendaftaran + $summary->uang_kursus) }}</div>
     </div>
     <div class="row mt-2">
-        <div class="col-sm-3 font-weight-bold">Total Penerimaan</div>
+        <div class="col-sm-3 font-weight-bold">Royalti (10%)</div>
         <div class="col-sm-1 text-right">:</div>
         <div class="col-sm-8">{{ number_format(($summary->uang_pendaftaran + $summary->uang_kursus) * 0.1) }}</div>
     </div>
@@ -82,27 +84,31 @@
 
     <hr>
 
-    <b>Siswa Aktif berdasarkan jurusan:</b>
-    <table class="table table-striped table-bordered col-md-6">
-        @foreach($summary->summary_sa_materi as $row)
-            <tr>
-                <td width="65%">{{ $row->materi->nama }}</td>
-                <td>{{ $row->jumlah }}</td>
-            </tr>
-        @endforeach
-    </table>
+    <div class="row">
+        <div class="col-md-6">
+            <b>Siswa Aktif berdasarkan jurusan:</b>
+            <table class="table table-striped table-bordered">
+                @foreach($summary->summary_sa_materi as $row)
+                    <tr>
+                        <td width="65%">{{ $row->materi->nama }}</td>
+                        <td>{{ $row->jumlah }}</td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
 
-    <hr>
-
-    <b>Siswa Aktif berdasarkan pendidikan:</b>
-    <table class="table table-striped table-bordered col-md-6">
-        @foreach($summary->summary_sa_pendidikan as $row)
-            <tr>
-                <td width="65%">{{ $row->pendidikan->nama }}</td>
-                <td>{{ $row->jumlah }}</td>
-            </tr>
-        @endforeach
-    </table>
+        <div class="col-md-6">
+            <b>Siswa Aktif berdasarkan pendidikan:</b>
+            <table class="table table-striped table-bordered">
+                @foreach($summary->summary_sa_pendidikan as $row)
+                    <tr>
+                        <td width="65%">{{ $row->pendidikan->nama }}</td>
+                        <td>{{ $row->jumlah }}</td>
+                    </tr>
+                @endforeach
+            </table>
+        </div>
+    </div>
     <!-- End - Detail summary -->
 @endsection
 

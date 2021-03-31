@@ -1,7 +1,7 @@
 @extends('layouts.content_form')
 
 @section('content-form')
-<form action="{{ route('import.summary.store') }}" method="POST">
+<form action="{{ route('import.summary.generate.store') }}" method="POST">
     @csrf
 
     <!-- Start - Row 1 -->
@@ -20,7 +20,7 @@
         <!-- Start - Button -->
         <div class="row">
             <div class="col-sm-12 text-center">
-                <button type="submit" class="btn btn-success" :disabled="(this.statusImport.la03 == true && this.statusImport.la06 == true && this.statusImport.la07 == true && this.statusImport.la09 == true && this.statusImport.la12 == true && this.statusImport.la13 == true) ? false : true">
+                <button type="submit" class="btn btn-success" :disabled="(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false && this.import.la09 != false && this.import.la12 != false && this.import.la13 != false) ? false : true">
                     <i class="ti-save"></i> Simpan
                 </button>
             </div>
@@ -73,18 +73,19 @@
                     year: null,
                     cabang: null,
                 },
-                status: {
-                    la03: false,
-                    la06: false,
-                    la07: false,
-                    la09: false,
-                    la12: false,
-                    la13: false,
-                },
             },
             // --------------------------------------------------------------------
             result:{
                 summary: @json($summary),
+            },
+            // --------------------------------------------------------------------
+            import: {
+                la03: false,
+                la06: false,
+                la07: false,
+                la09: false,
+                la12: false,
+                la13: false,
             },
             // --------------------------------------------------------------------
         },
@@ -95,7 +96,6 @@
         // ------------------------------------------------------------------------
         computed: {
             label: function(){ return this.preset.label },
-            statusImport: function(){ return this.preset.status },
         },
         // ------------------------------------------------------------------------
 
@@ -133,12 +133,12 @@
                         this.preset.label.year = data.year;
                         this.preset.label.cabang = data.cabang;
                         // --------------------------------------------------------
-                        this.preset.status.la03 = data.la03;
-                        this.preset.status.la06 = data.la06;
-                        this.preset.status.la07 = data.la07;
-                        this.preset.status.la09 = data.la09;
-                        this.preset.status.la12 = data.la12;
-                        this.preset.status.la13 = data.la13;
+                        this.import.la03 = data.la03;
+                        this.import.la06 = data.la06;
+                        this.import.la07 = data.la07;
+                        this.import.la09 = data.la09;
+                        this.import.la12 = data.la12;
+                        this.import.la13 = data.la13;
                         // --------------------------------------------------------
                     }else{
                         toastr.error(data.message);
@@ -164,7 +164,7 @@
                 // ----------------------------------------------------------------
                 let valid = false;
                 // ----------------------------------------------------------------
-                if(this.statusImport.la03 == true && this.statusImport.la06 == true && this.statusImport.la07 == true && this.statusImport.la09 == true && this.statusImport.la12 == true && this.statusImport.la13 == true){
+                if(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false && this.import.la09 != false && this.import.la12 != false && this.import.la13 != false){
                     valid = true;
                 }
                 // ----------------------------------------------------------------
@@ -179,6 +179,7 @@
         // Mounted for siswa Cuti page
         // ------------------------------------------------------------------------
         mounted() {
+            console.log(this.import.la03);
             // --------------------------------------------------------------------
             let vm = this;
             // --------------------------------------------------------------------

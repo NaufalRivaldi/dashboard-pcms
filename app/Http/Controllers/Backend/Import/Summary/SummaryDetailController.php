@@ -21,6 +21,7 @@ use App\Models\SiswaCuti;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 use Auth;
+use PDF;
 // ----------------------------------------------------------------------------
 class SummaryDetailController extends Controller
 {
@@ -53,6 +54,15 @@ class SummaryDetailController extends Controller
             $summary->user_approve_id = Auth::user()->id;
             $summary->save();
             // ----------------------------------------------------------------
+            // Delete all import data
+            // ----------------------------------------------------------------
+            Pembayaran::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            SiswaAktif::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            SiswaAktifPendidikan::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            SiswaBaru::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            SiswaInaktif::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            SiswaCuti::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
+            // ----------------------------------------------------------------
             $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
             return response()->json($data);
             // ----------------------------------------------------------------
@@ -61,6 +71,16 @@ class SummaryDetailController extends Controller
             return response()->json($data);
         }
         // --------------------------------------------------------------------
+    }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    public function exportPdf($id){
+        $data['summary'] = Summary::with('summary_sa_materi', 'summary_sa_pendidikan', 'user', 'user_approve', 'cabang')->find($id);
+
+        $pdf = PDF::loadview('pdf.summary-import', $data);
+    	return $pdf->download('summary-import');
+        // return view('pdf.summary-import', $data);
     }
     // ------------------------------------------------------------------------
 }

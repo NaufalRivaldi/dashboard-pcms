@@ -1,7 +1,8 @@
 @extends('layouts.content_datatable')
 
 @section('card-button')
-    <a href="{{ route('import.summary.create') }}" class="btn btn-info"><i class="ti-plus"></i> Add Summary</a>
+    <a href="{{ route('import.summary.generate') }}" class="btn btn-primary"><i class="ti-plus"></i> Generate Summary</a>
+    <a href="{{ route('import.summary.create') }}" class="btn btn-info"><i class="ti-plus"></i> Add data</a>
 @endsection
 
 @section('card-slot-up')

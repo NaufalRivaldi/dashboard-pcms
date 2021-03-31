@@ -41,7 +41,7 @@
 @section('content-table')
     <th>Materi / Jurusan</th>
     <th>Jumlah</th>
-    <th>Action</th>
+    <!-- <th>Action</th> -->
 @endsection
 
 @section('card-footer')
@@ -57,7 +57,7 @@
     $column = [
         ["data" => "materi.nama", "name" => "materi.nama", "defaultContent" => "-"],
         ["data" => "jumlah", "name" => "jumlah", "defaultContent" => "-"],
-        ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
+        //["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],
     ];
 @endphp
 <!-- End - Set column -->

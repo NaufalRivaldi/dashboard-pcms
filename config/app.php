@@ -181,6 +181,7 @@ return [
         Yajra\DataTables\DataTablesServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         App\Providers\ImportServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
         // --------------------------------------------------------------------
 
     ],
@@ -240,6 +241,7 @@ return [
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'ImportHelper' => App\Helpers\ImportHelper::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
         // --------------------------------------------------------------------
 
     ],

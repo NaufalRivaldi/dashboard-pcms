@@ -1,0 +1,9 @@
+/* Start - Table */
+.t-scroll-vertikal{
+    overflow-y: overlay;
+}
+
+.t-max-height-400{
+    max-height: 350px;
+}
+/* Start - Table */

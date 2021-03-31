@@ -1,99 +1,67 @@
-<!-- Start - Alert -->
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <strong>Lengkapi data import!</strong> Jika sudah lengkap anda dapat membuat summary import.
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<!-- End - Alert -->
-
-<!-- Start - Table status import -->
-<div class="container-fluid">
-    <div class="row text-center">
-
-        <!-- Start - LA03 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la03">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA03-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA03-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la03.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA03 -->
-
-        <!-- Start - LA06 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la06">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA06-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA06-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la06.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA06 -->
-
-        <!-- Start - LA07 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la07">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA07-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA07-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la07.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA07 -->
-
-        <!-- Start - LA09 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la09">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA09-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA09-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la09.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA09 -->
-
-        <!-- Start - LA12 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la12">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA12-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA12-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la12.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA12 -->
-
-        <!-- Start - LA13 -->
-        <div class="col-md-2 col-sm-3 border p-3">
-            <template v-if="this.statusImport.la13">
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA13-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <button type="button" class="btn btn-sm btn-block btn-success">Sudah diimport</button>
-            </template>
-
-            <template v-else>
-                <span class="badge badge-success">@{{ this.label.cabang.kode + "-LA13-" + this.label.year + this.label.month + ".CSV" }}</span><br><br>
-                <a href="{{ route('import.la11.index') }}" class="btn btn-sm btn-block btn-danger">Import data</a>
-            </template>
-        </div>
-        <!-- End - LA13 -->
+<!-- Start - uang_pendaftaran -->
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">
+        <span class="badge badge-danger">Required</span><br>
+        <div class="label-form">Penerimaan Uang Pendaftaran</div>
+    </label>
+    <div class="col-sm-10 input-form">
+        <input type="text" name="uang_pendaftaran" v-model="result.summary.uang_pendaftaran" class="form-control col-sm-6 @if($errors->has('uang_pendaftaran')) is-invalid @endif" value="{{ $summary->id ? $summary->uang_pendaftaran : old('uang_pendaftaran') }}" onkeypress="return onlyNumberKey(event)" required>
+        <!-- Start - Error handling -->
+        @if($errors->has('uang_pendaftaran'))
+            <div class="invalid-feedback">{{ $errors->first('uang_pendaftaran') }}</div>
+        @endif
+        <!-- End - Error handling -->
     </div>
 </div>
-<!-- End - Table status import -->
+<!-- End - uang_pendaftaran -->
+
+<!-- Start - uang_kursus -->
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">
+        <span class="badge badge-danger">Required</span><br>
+        <div class="label-form">Penerimaan Uang Kursus</div>
+    </label>
+    <div class="col-sm-10 input-form">
+        <input type="text" name="uang_kursus" v-model="result.summary.uang_kursus" class="form-control col-sm-6 @if($errors->has('uang_kursus')) is-invalid @endif" value="{{ $summary->id ? $summary->uang_kursus : old('uang_kursus') }}" onkeypress="return onlyNumberKey(event)" required>
+        <!-- Start - Error handling -->
+        @if($errors->has('uang_kursus'))
+            <div class="invalid-feedback">{{ $errors->first('uang_kursus') }}</div>
+        @endif
+        <!-- End - Error handling -->
+    </div>
+</div>
+<!-- End - uang_kursus -->
+
+<!-- Start - total_penerimaan -->
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">
+        <span class="badge badge-success">Optional</span><br>
+        <div class="label-form">Total Penerimaan</div>
+    </label>
+    <div class="col-sm-10 input-form">
+        <input type="text" name="total_penerimaan" v-model="totalPenerimaan" class="form-control col-sm-6 @if($errors->has('total_penerimaan')) is-invalid @endif" value="{{ old('total_penerimaan') }}" onkeypress="return onlyNumberKey(event)" disabled>
+        <!-- Start - Error handling -->
+        @if($errors->has('total_penerimaan'))
+            <div class="invalid-feedback">{{ $errors->first('total_penerimaan') }}</div>
+        @endif
+        <!-- End - Error handling -->
+    </div>
+</div>
+<!-- End - total_penerimaan -->
+
+<!-- Start - royalti -->
+<div class="form-group row">
+    <label class="col-sm-2 col-form-label">
+        <span class="badge badge-success">Optional</span><br>
+        <div class="label-form">Royalti (10%)</div>
+    </label>
+    <div class="col-sm-10 input-form">
+        <input type="text" name="royalti" v-model="royalti" class="form-control col-sm-6 @if($errors->has('royalti')) is-invalid @endif" value="{{ old('royalti') }}" onkeypress="return onlyNumberKey(event)" disabled>
+        <!-- Start - Error handling -->
+        @if($errors->has('royalti'))
+            <div class="invalid-feedback">{{ $errors->first('royalti') }}</div>
+        @endif
+        <!-- End - Error handling -->
+    </div>
+</div>
+<!-- End - royalti -->

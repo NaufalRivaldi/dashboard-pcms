@@ -2,7 +2,9 @@
 
 @section('card-button')
     <a href="{{ route('import.la07.import') }}" class="btn btn-success"><i class="ti-file"></i> Import Data</a>
+    {{--
     <a href="{{ route('import.la07.create') }}" class="btn btn-info"><i class="ti-plus"></i> Add data</a>
+    --}}
 @endsection
 
 @section('content-table')

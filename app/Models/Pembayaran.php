@@ -17,7 +17,7 @@ class Pembayaran extends Model
     ];
     // --------------------------------------------------------------------------------
     protected $appends = [
-        'bulan_tahun'
+        'bulan_tahun', 'u_pendaftaran', 'u_kursus'
     ];
     // --------------------------------------------------------------------------------
 
@@ -43,6 +43,24 @@ class Pembayaran extends Model
     public function getBulanTahunAttribute(){
         $date = $this->tahun.'/'.$this->bulan.'/01';
         return date('F Y', strtotime($date));
+    }
+    // --------------------------------------------------------------------------------
+    public function getUPendaftaranAttribute(){
+        $nominal = 0;
+        foreach($this->pembayaran_details as $row){
+            if($row->type == 1) $nominal += $row->nominal;
+        }
+
+        return $nominal;
+    }
+    // --------------------------------------------------------------------------------
+    public function getUKursusAttribute(){
+        $nominal = 0;
+        foreach($this->pembayaran_details as $row){
+            if($row->type == 2) $nominal += $row->nominal;
+        }
+
+        return $nominal;
     }
     // --------------------------------------------------------------------------------
 }

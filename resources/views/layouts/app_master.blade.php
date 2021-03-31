@@ -26,6 +26,7 @@
 	<!-- End - Favicon -->
 
     <!-- Start - Stack CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
     @stack('css')
     <!-- End - Stack CSS -->
 </head>

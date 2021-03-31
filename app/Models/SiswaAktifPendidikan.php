@@ -17,7 +17,7 @@ class SiswaAktifPendidikan extends Model
     ];
     // --------------------------------------------------------------------------------
     protected $appends = [
-        'bulan_tahun'
+        'bulan_tahun', 'jumlah_siswa'
     ];
     // --------------------------------------------------------------------------------
 
@@ -43,6 +43,10 @@ class SiswaAktifPendidikan extends Model
     public function getBulanTahunAttribute(){
         $date = $this->tahun.'/'.$this->bulan.'/01';
         return date('F Y', strtotime($date));
+    }
+    // --------------------------------------------------------------------------------
+    public function getJumlahSiswaAttribute(){
+        return $this->siswa_aktif_pendidikan_details->sum('jumlah');
     }
     // --------------------------------------------------------------------------------
 }

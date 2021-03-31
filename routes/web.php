@@ -134,7 +134,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
         Route::namespace('Summary')->group(function(){
             // ------------------------------------------------------------
-            // LA06 list page
+            // Summary list page
             // ------------------------------------------------------------
             Route::get('summary/', 'SummaryController@index')->name('summary.index');
             Route::get('summary/json/{param}', 'SummaryController@json')->name('summary.json');
@@ -145,9 +145,11 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             // summary create / edit page
             // ------------------------------------------------------------
             Route::get('summary/create', 'SummaryCreateController@index')->name('summary.create');
+            Route::get('summary/{id}/edit', 'SummaryCreateController@edit')->name('summary.edit');
+            Route::get('summary/generate', 'SummaryCreateController@generate')->name('summary.generate');
             Route::get('summary/check-date', 'SummaryCreateController@checkDataValidation')->name('summary.check-data-validation');
             Route::post('summary/', 'SummaryCreateController@store')->name('summary.store');
-            Route::get('summary/{id}/edit', 'SummaryCreateController@edit')->name('summary.edit');
+            Route::post('summary/generate', 'SummaryCreateController@storeGenerate')->name('summary.generate.store');
             Route::put('summary/{id}/update', 'SummaryCreateController@update')->name('summary.update');
             // ------------------------------------------------------------
 
