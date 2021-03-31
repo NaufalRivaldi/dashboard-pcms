@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $data = new \stdClass;
         $data->title    = 'Dashboard';
         // --------------------------------------------------------------------
-        return view('backend.dashboard.index', (array) $data);
+        return view('Backend.dashboard.index', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
