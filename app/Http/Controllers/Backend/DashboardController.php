@@ -11,7 +11,7 @@ class DashboardController extends Controller
     public function index(){
         // --------------------------------------------------------------------
         $data = new \stdClass;
-        $data->title    = 'Dashboard';
+        $data->title    = 'Dashboard';dd('asd');
         // --------------------------------------------------------------------
         return view('backend.dashboard.index', (array) $data);
         // --------------------------------------------------------------------
