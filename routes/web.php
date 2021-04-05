@@ -49,7 +49,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     // Master page
     // --------------------------------------------------------------------
-    Route::namespace('Master')->prefix('master')->name('master.')->group(function(){
+    Route::namespace('Master')->prefix('master')->middleware(['level:1'])->name('master.')->group(function(){
         // ----------------------------------------------------------------
         //  User page
         // ----------------------------------------------------------------
@@ -128,7 +128,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     // Import page
     // --------------------------------------------------------------------
-    Route::namespace('Import')->prefix('import')->name('import.')->group(function(){
+    Route::namespace('Import')->prefix('import')->middleware(['level:1,2,4'])->name('import.')->group(function(){
         // ----------------------------------------------------------------
         // Summary page
         // ----------------------------------------------------------------
@@ -373,6 +373,22 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             Route::get('la13/{id}/pdf', 'LA11DetailController@exportPdf')->name('la11.show.pdf');
             Route::put('la13/{id}/accept-detail', 'LA11DetailController@accept')->name('la11.show.accept');
             // ------------------------------------------------------------
+        });
+        // ----------------------------------------------------------------
+    });
+    // --------------------------------------------------------------------
+
+    // --------------------------------------------------------------------
+    // Main page
+    // --------------------------------------------------------------------
+    Route::namespace('Analisa')->middleware(['level:1,2'])->name('main.')->group(function(){
+        // ----------------------------------------------------------------
+        //  Analisa page
+        // ----------------------------------------------------------------
+        Route::prefix('analisa')->group(function(){
+            Route::get('/', 'AnalisaController@index')->name('analisa.index');
+            Route::get('json/{param}', 'AnalisaController@json')->name('user.json');
+            Route::post('/search', 'AnalisaController@search')->name('analisa.search');
         });
         // ----------------------------------------------------------------
     });

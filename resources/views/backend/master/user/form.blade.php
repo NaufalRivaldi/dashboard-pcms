@@ -17,7 +17,7 @@
             <div class="label-form">Nama</div>
         </label>
         <div class="col-sm-10 input-form">
-            <input type="text" name="nama" class="form-control @if($errors->has('nama')) is-invalid @endif" value="{{ $user->nama ? $user->nama : old('nama') }}">
+            <input type="text" name="nama" class="form-control @if($errors->has('nama')) is-invalid @endif" value="{{ $user->nama ? $user->nama : old('nama') }}" required>
             <!-- Start - Error handling -->
             @if($errors->has('nama'))
                 <div class="invalid-feedback">{{ $errors->first('nama') }}</div>
@@ -34,7 +34,7 @@
             <div class="label-form">Username</div>
         </label>
         <div class="col-sm-10 input-form">
-            <input type="text" name="username" class="form-control @if($errors->has('username')) is-invalid @endif" value="{{ $user->username ? $user->username : old('username') }}">
+            <input type="text" name="username" class="form-control @if($errors->has('username')) is-invalid @endif" value="{{ $user->username ? $user->username : old('username') }}" required>
             <!-- Start - Error handling -->
             @if($errors->has('username'))
                 <div class="invalid-feedback">{{ $errors->first('username') }}</div>
@@ -51,7 +51,7 @@
             <div class="label-form">Email</div>
         </label>
         <div class="col-sm-10 input-form">
-            <input type="email" name="email" class="form-control @if($errors->has('email')) is-invalid @endif" value="{{ $user->email ? $user->email : old('email') }}">
+            <input type="email" name="email" class="form-control @if($errors->has('email')) is-invalid @endif" value="{{ $user->email ? $user->email : old('email') }}" required>
             <!-- Start - Error handling -->
             @if($errors->has('email'))
                 <div class="invalid-feedback">{{ $errors->first('email') }}</div>
@@ -68,7 +68,7 @@
             <div class="label-form">Level</div>
         </label>
         <div class="col-sm-10 input-form">
-            <select name="level_id" class="form-control @if($errors->has('level_id')) is-invalid @endif">
+            <select name="level_id" class="form-control @if($errors->has('level_id')) is-invalid @endif" required>
                 <option value="">Pilih</option>
                 @foreach($level as $id => $value)
                     <option value="{{ $id }}" @if($id == $user->level_id) selected @endif>{{ $value }}</option>
@@ -82,6 +82,30 @@
         </div>
     </div>
     <!-- End - level_id -->
+
+    @if(Auth::user()->level_id == 4)
+    <!-- Start - cabang_id -->
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+            <span class="badge badge-success">Optional</span><br>
+            <div class="label-form">Cabang</div>
+        </label>
+        <div class="col-sm-10 input-form">
+            <select name="cabang_id" class="form-control @if($errors->has('cabang_id')) is-invalid @endif">
+                <option value="">Pilih</option>
+                @foreach($cabang as $id => $value)
+                    <option value="{{ $id }}" @if($id == $user->cabang_id) selected @endif>{{ $value }}</option>
+                @endforeach
+            </select>
+            <!-- Start - Error handling -->
+            @if($errors->has('cabang_id'))
+                <div class="invalid-feedback">{{ $errors->first('cabang_id') }}</div>
+            @endif
+            <!-- End - Error handling -->
+        </div>
+    </div>
+    <!-- End - cabang_id -->
+    @endif
 
     <!-- Start - Button -->
     <div class="row">

@@ -14,6 +14,7 @@
             </li>
             <!-- End - Dashboard link -->
 
+            @if(Auth::user()->level_id == 1)
             <!-- Start - Master Link -->
             <li class="menu-group">Master</li>
             <!-- Start - User link -->
@@ -56,9 +57,26 @@
             </li>
             <!-- End - Materi collapse -->
             <!-- End - Master Link -->
+            @endif
 
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
             <!-- Start - Main Link -->
             <li class="menu-group">Main</li>
+            <!-- Start - User link -->
+            <li class="panel">
+                <li>
+                    <a href="{{ route('main.analisa.index') }}" class="@if(strpos(Route::currentRouteName(), 'analisa') !== false) active @endif">
+                        <i class="ti-stats-up"></i> <span class="title">Analisa</span>
+                    </a>
+                </li>
+            </li>
+            <!-- End - User link -->
+            <!-- End - Main Link -->
+            @endif
+
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 4)
+            <!-- Start - Import data Link -->
+            <li class="menu-group">Import Data</li>
 
             <!-- Start - summary link -->
             <li class="panel">
@@ -88,7 +106,8 @@
                 </div>
             </li>
             <!-- End - Import File collapse -->
-            <!-- End - Main Link -->
+            <!-- End - Import data Link -->
+            @endif
         </ul>
         <button type="button" class="btn-toggle-minified" title="Toggle Minified Menu"><i class="ti-arrows-horizontal"></i></button>
     </nav>

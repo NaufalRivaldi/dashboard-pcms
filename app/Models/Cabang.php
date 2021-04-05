@@ -32,6 +32,10 @@ class Cabang extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
     // --------------------------------------------------------------------------------
+    public function cabang_users(){
+        return $this->hasMany(User::class, 'user_id');
+    }
+    // --------------------------------------------------------------------------------
     public function pembayarans(){
         return $this->hasMany(Pembayaran::class, 'cabang_id')->withTrashed();
     }

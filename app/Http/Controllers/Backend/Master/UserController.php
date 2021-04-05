@@ -10,6 +10,7 @@ use Auth;
 // ----------------------------------------------------------------------------
 use App\Models\User;
 use App\Models\Level;
+use App\Models\Cabang;
 // ----------------------------------------------------------------------------
 class UserController extends Controller
 {
@@ -107,6 +108,7 @@ class UserController extends Controller
         $data->title        = "User - Form";
         $data->user         = new User();
         $data->level        = Level::pluck('nama','id');
+        $data->cabang       = Cabang::pluck('nama','id');
         // --------------------------------------------------------------------
         return view('backend.master.user.form', (array) $data);
         // --------------------------------------------------------------------
@@ -179,6 +181,7 @@ class UserController extends Controller
         $data->title        = "User - Form Edit";
         $data->user         = User::find($id);
         $data->level        = Level::pluck('nama','id');
+        $data->cabang       = Cabang::pluck('nama','id');
         // --------------------------------------------------------------------
         return view('backend.master.user.form', (array) $data);
         // -------------------------------------------  -------------------------
@@ -218,6 +221,7 @@ class UserController extends Controller
             $user->username             = $data['username'];
             $user->email                = $data['email'];
             $user->level_id             = $data['level_id'];
+            $user->cabang_id            = $data['cabang_id'];
             $user->save();
             // ----------------------------------------------------------------
             return redirect()->route('master.user.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));

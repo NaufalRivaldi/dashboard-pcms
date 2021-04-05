@@ -2,7 +2,12 @@
 
 @section('card-button')
     <a href="{{ route('import.summary.generate') }}" class="btn btn-primary"><i class="ti-plus"></i> Generate Summary</a>
+
+    <!-- Start - Set level if admin and approver (user cabang pusat) -->
+    @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
     <a href="{{ route('import.summary.create') }}" class="btn btn-info"><i class="ti-plus"></i> Add data</a>
+    @endif
+    <!-- End - Set level if admin and approver (user cabang pusat) -->
 @endsection
 
 @section('card-slot-up')

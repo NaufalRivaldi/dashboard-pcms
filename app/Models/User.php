@@ -22,7 +22,7 @@ class User extends Authenticatable
     protected $table = 'user';
     // --------------------------------------------------------------------------------
     protected $fillable = [
-        'nama', 'username', 'email', 'password', 'status', 'level_id'
+        'nama', 'username', 'email', 'password', 'status', 'level_id', 'cabang_id'
     ];
     // --------------------------------------------------------------------------------
 
@@ -57,6 +57,10 @@ class User extends Authenticatable
     // --------------------------------------------------------------------------------
     public function cabangs(){
         return $this->hasMany(Cabang::class, 'user_id');
+    }
+    // --------------------------------------------------------------------------------
+    public function cabang_user(){
+        return $this->belongsTo(Cabang::class, 'user_id');
     }
     // --------------------------------------------------------------------------------
     public function pembayarans(){

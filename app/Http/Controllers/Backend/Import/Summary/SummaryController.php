@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 // ----------------------------------------------------------------------------
 use App\Helpers\ImportHelper;
 // ----------------------------------------------------------------------------
+use App\Models\Cabang;
 use App\Models\Summary;
 use App\Models\SummarySAMateri;
 use App\Models\SummarySAPendidikan;
@@ -47,6 +48,12 @@ class SummaryController extends Controller
             case 'datatable':
                 // ------------------------------------------------------------
                 $summarys = Summary::with('summary_sa_materi', 'summary_sa_pendidikan', 'cabang', 'user', 'user_approve')->select('summary.*');
+                // ------------------------------------------------------------
+                // Set level view for list
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 4){
+                    $summarys->where('cabang_id', Auth::user()->cabang_id);
+                }
                 // ------------------------------------------------------------
                 $datatable = datatables()->of($summarys)->addIndexColumn();
                 // ------------------------------------------------------------
