@@ -2,7 +2,17 @@
     <div class="col-md-12 text-center">
         <h6>
             SUMMARY LAPORAN SISWA AKTIF<br>
-            CABANG: @{{ cabang }}<br>
+            <span v-if="cabang != null">
+                CABANG: @{{ cabang }}<br>
+            </span>
+
+            <span v-if="wilayah != null">
+                WILAYAH: @{{ wilayah }}<br>
+            </span>
+
+            <span v-if="subWilayah != null">
+                SUB WILAYAH: @{{ subWilayah }}<br>
+            </span>
             PERIODE: @{{ labels.length > 0 ? labels[0]+' - '+labels[labels.length - 1] : '-' }}
         </h6>
     </div>

@@ -36,7 +36,7 @@
 				</div>
 			</div>
 			<div class="right">
-				<div class="overlay"></div>
+				<div class="overlay" style="background: rgba(99,156,185,.60);"></div>
 				<div class="content text">
 					<h1 class="heading">{{ replaceUnderscore(env('APP_NAME')) }}</h1>
 					<p>by The Develovers</p>

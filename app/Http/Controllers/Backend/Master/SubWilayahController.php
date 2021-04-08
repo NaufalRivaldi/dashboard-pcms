@@ -58,7 +58,7 @@ class SubWilayahController extends Controller
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
                                     $button .= '<a href="'.route('master.sub-wilayah.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
+                                    // $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;

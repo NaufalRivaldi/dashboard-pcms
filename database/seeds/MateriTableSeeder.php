@@ -2,54 +2,67 @@
 // ----------------------------------------------------------------------------
 use Illuminate\Database\Seeder;
 // ----------------------------------------------------------------------------
-use App\Models\SubWilayah;
+use App\Models\Materi;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 // ----------------------------------------------------------------------------
-class SubWilayahTableSeeder extends Seeder
+class MateriTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      *
      * @return void
      */
-    // ------------------------------------------------------------------------
     public function run()
     {
         // --------------------------------------------------------------------
-        SubWilayah::query()->forceDelete();
+        Materi::query()->forceDelete();
         // --------------------------------------------------------------------
         $data = [
             [   
-                'kode'              => '0109',
-                'nama'              => 'Jakarta Pusat',
+                'nama'              => 'DRUM',
                 'status'            => 1,
             ],
             [   
-                'kode'              => '0101',
-                'nama'              => 'Jakarta Barat',
+                'nama'              => 'KEYBOARD',
                 'status'            => 1,
             ],
             [   
-                'kode'              => '0107',
-                'nama'              => 'Depok',
+                'nama'              => 'PIANO POP',
                 'status'            => 1,
             ],
             [   
-                'kode'              => '0102',
-                'nama'              => 'Tanggerang',
+                'nama'              => 'PIANO KLASIK',
                 'status'            => 1,
             ],
             [   
-                'kode'              => '0201',
-                'nama'              => 'Bandung',
+                'nama'              => 'VOCAL',
+                'status'            => 1,
+            ],
+            [   
+                'nama'              => 'BIOLA',
+                'status'            => 1,
+            ],
+            [   
+                'nama'              => 'GITAR KLASIK',
+                'status'            => 1,
+            ],
+            [   
+                'nama'              => 'GITAR BASS',
+                'status'            => 1,
+            ],
+            [   
+                'nama'              => 'GITAR ELEKTRIK',
+                'status'            => 1,
+            ],
+            [   
+                'nama'              => 'TEORI MUSIC',
                 'status'            => 1,
             ],
         ];
         // --------------------------------------------------------------------
-        SubWilayah::insert($data);
+        Materi::insert($data);
         // --------------------------------------------------------------------
     }
-    // ------------------------------------------------------------------------
 }
 // ----------------------------------------------------------------------------

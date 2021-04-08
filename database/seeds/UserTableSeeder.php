@@ -43,6 +43,17 @@ class UserTableSeeder extends Seeder
                 'updated_at'        => Carbon::now(),
             ],
             [
+                'nama'              => 'Owner2',
+                'username'          => 'owner2',
+                'email'             => 'owner2@gmail.com',
+                'email_verified_at' => Carbon::now(),
+                'password'          => bcrypt('123456'),
+                'status'            => 1,
+                'level_id'          => 2,
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now(),
+            ],
+            [
                 'nama'              => 'Approver',
                 'username'          => 'approver',
                 'email'             => 'approver@gmail.com',

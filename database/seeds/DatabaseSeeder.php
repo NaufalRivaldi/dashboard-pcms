@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         // --------------------------------------------------------------------
         // Materi Table and relation with materi
         // --------------------------------------------------------------------
+        $this->call(MateriTableSeeder::class);
         $this->call(GradeTableSeeder::class);
         // --------------------------------------------------------------------
 
@@ -36,6 +37,7 @@ class DatabaseSeeder extends Seeder
         // Laporan seeder
         // --------------------------------------------------------------------
         $this->call(PendidikanTableSeeder::class);
+        $this->call(SummarySeeder::class);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

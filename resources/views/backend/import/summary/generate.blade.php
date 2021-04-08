@@ -1,7 +1,7 @@
 @extends('layouts.content_form')
 
 @section('content-form')
-<form action="{{ route('import.summary.generate.store') }}" method="POST">
+<form action="{{ route('import.summary.generate.store') }}" method="POST" id="summary-form">
     @csrf
 
     <!-- Start - Row 1 -->
@@ -12,7 +12,7 @@
 
     <template v-if="status.form">
         <!-- Start - Row 2 -->
-        @include('backend.import.summary.includes.add.row-2.input')
+        @include('backend.import.summary.includes.generate.input')
         <!-- End - Row 2 -->
 
         <hr>
@@ -20,7 +20,7 @@
         <!-- Start - Button -->
         <div class="row">
             <div class="col-sm-12 text-center">
-                <button type="submit" class="btn btn-success" :disabled="(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false && this.import.la09 != false && this.import.la12 != false && this.import.la13 != false) ? false : true">
+                <button type="button" class="btn btn-success" :disabled="(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false) ? false : true" @click="checkImportStatus()">
                     <i class="ti-save"></i> Simpan
                 </button>
             </div>
@@ -162,13 +162,33 @@
             // --------------------------------------------------------------------
             checkImportStatus: function(){
                 // ----------------------------------------------------------------
-                let valid = false;
+                let valid = true;
                 // ----------------------------------------------------------------
-                if(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false && this.import.la09 != false && this.import.la12 != false && this.import.la13 != false){
-                    valid = true;
+                if(this.import.la09 == false || this.import.la12 == false || this.import.la13 == false){
+                    valid = false;
                 }
                 // ----------------------------------------------------------------
-                return valid;
+                if(valid){
+                    $('#summary-form').submit();
+                }else{
+                    Swal.fire({
+                        title: 'Beberapa file belum di import',
+                        text: "Lanjutkan pembuatan summary?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Save',
+                        cancelButtonText: 'Batal',
+                    }).then((result) => {
+                        // ------------------------------------------------------------
+                        if (result.value) {
+                            $('#summary-form').submit();
+                        }
+                        // ------------------------------------------------------------
+                    })
+                    // ----------------------------------------------------------------
+                }
                 // ----------------------------------------------------------------
             },
             // --------------------------------------------------------------------

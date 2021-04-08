@@ -2,7 +2,17 @@
     <div class="col-md-12 text-center">
         <h6>
             LAPORAN JUMLAH ROYALTI<br>
-            CABANG: @{{ cabang }}<br>
+            <span v-if="cabang != null">
+                CABANG: @{{ cabang }}<br>
+            </span>
+
+            <span v-if="wilayah != null">
+                WILAYAH: @{{ wilayah }}<br>
+            </span>
+
+            <span v-if="subWilayah != null">
+                SUB WILAYAH: @{{ subWilayah }}<br>
+            </span>
             PERIODE: @{{ labels[0]+' - '+labels[11] }}
         </h6>
     </div>

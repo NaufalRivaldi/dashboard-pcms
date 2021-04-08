@@ -63,7 +63,7 @@ class CabangController extends Controller
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
                                     $button .= '<a href="'.route('master.cabang.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
+                                    // $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete"><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;
@@ -222,6 +222,7 @@ class CabangController extends Controller
             $cabang->nama               = $data['nama'];
             $cabang->wilayah_id         = $data['wilayah_id'];
             $cabang->sub_wilayah_id     = $data['sub_wilayah_id'];
+            $cabang->user_id            = $data['user_id'];
             $cabang->save();
             // ----------------------------------------------------------------
             return redirect()->route('master.cabang.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));

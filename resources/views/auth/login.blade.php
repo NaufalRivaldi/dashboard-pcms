@@ -3,7 +3,7 @@
 @section('content')
 <!-- Start - Header -->
 <div class="header">
-    <div class="logo text-center"><img src="{{ asset('assets/images/logo-dark.png') }}" alt="Klorofil Logo"></div>
+    <div class="logo text-center"><img src="{{ asset('assets/images/logo-dark.png') }}" alt="Dashboard PCMS Logo" width="40%"></div>
     <p class="lead">Login {{ replaceUnderscore(env('APP_NAME')) }}</p>
 </div>
 <!-- End - Header -->
@@ -46,13 +46,13 @@
     <!-- End - Password -->
 
     <!-- Start - Button -->
-    <button type="submit" class="btn btn-primary btn-lg btn-block">LOGIN</button>
+    <button type="submit" class="btn btn-primary btn-lg btn-block" style="background: #FF931E; border: none">LOGIN</button>
     <!-- End - Button -->
 
     <!-- Start - Bottom -->
-    <div class="bottom">
+    <!-- <div class="bottom">
         <span class="helper-text"><i class="fa fa-lock"></i> <a href="#">Forgot password?</a></span>
-    </div>
+    </div> -->
     <!-- End - Bottom -->
 </form>
 <!-- End - Form Login -->

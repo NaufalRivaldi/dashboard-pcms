@@ -63,7 +63,7 @@ class UserController extends Controller
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
                                     $button .= '<button data-id="'.$row->id.'" class="btn btn-sm btn-info btn-password " title="Reset password" '.(Auth::user()->id == $row->id ? 'disabled' : '').'><i class="ti-key"></i></button>';
                                     $button .= '<a href="'.route('master.user.edit', $row->id).'" class="btn btn-sm btn-warning"><i class="ti-settings"></i></a>';
-                                    $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.(Auth::user()->id == $row->id ? 'disabled' : '').'><i class="ti-trash"></i></button>';
+                                    // $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '.(Auth::user()->id == $row->id ? 'disabled' : '').'><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 
                                     return $button;
@@ -130,7 +130,7 @@ class UserController extends Controller
         Validator::make($request->all(), [
             'nama'              => 'required|max:191',
             'username'          => 'required|max:191',
-            'email'             => 'required|email',
+            'email'             => 'required|email|unique:user,email',
             'level_id'          => 'required',
         ])->validate();
         // --------------------------------------------------------------------
@@ -204,7 +204,7 @@ class UserController extends Controller
         Validator::make($request->all(), [
             'nama'              => 'required|max:191',
             'username'          => 'required|max:191',
-            'email'             => 'required|email',
+            'email'             => 'required|email|unique:user,email,'.$id,
             'level_id'          => 'required',
         ])->validate();
         // --------------------------------------------------------------------
@@ -221,7 +221,6 @@ class UserController extends Controller
             $user->username             = $data['username'];
             $user->email                = $data['email'];
             $user->level_id             = $data['level_id'];
-            $user->cabang_id            = $data['cabang_id'];
             $user->save();
             // ----------------------------------------------------------------
             return redirect()->route('master.user.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));

@@ -389,6 +389,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             Route::get('/', 'AnalisaController@index')->name('analisa.index');
             Route::get('json/{param}', 'AnalisaController@json')->name('user.json');
             Route::post('/search', 'AnalisaController@search')->name('analisa.search');
+            Route::get('/export', 'AnalisaController@export')->name('analisa.export');
         });
         // ----------------------------------------------------------------
     });

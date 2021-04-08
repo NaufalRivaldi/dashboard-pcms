@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 // ----------------------------------------------------------------------------
 use App\Models\Cabang;
+use App\Models\Wilayah;
+use App\Models\SubWilayah;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 // ----------------------------------------------------------------------------
@@ -19,7 +21,62 @@ class CabangTableSeeder extends Seeder
         // --------------------------------------------------------------------
         Cabang::query()->forceDelete();
         // --------------------------------------------------------------------
-        factory(Cabang::class, 20)->create();
+        $wilayah = Wilayah::all();
+        $subWilayah = SubWilayah::all();
+        // --------------------------------------------------------------------
+
+        $data = [
+            [   
+                'kode'              => 'CKP',
+                'nama'              => 'CIKUPA',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 2,
+            ],
+            [   
+                'kode'              => 'CMP',
+                'nama'              => 'CEMPAKA PUTIH',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 2,
+            ],
+            [   
+                'kode'              => 'CNR',
+                'nama'              => 'CINERE',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 3,
+            ],
+            [   
+                'kode'              => 'GDS',
+                'nama'              => 'GADING SERPONG',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 2,
+            ],
+            [   
+                'kode'              => 'MGA',
+                'nama'              => 'MANGGA',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 3,
+            ],
+            [   
+                'kode'              => 'TMG',
+                'nama'              => 'TOMANG',
+                'status'            => 1,
+                'wilayah_id'        => $wilayah->random()->id,
+                'sub_wilayah_id'    => $subWilayah->random()->id,
+                'user_id'           => 3,
+            ],
+        ];
+        // --------------------------------------------------------------------
+        Cabang::insert($data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------

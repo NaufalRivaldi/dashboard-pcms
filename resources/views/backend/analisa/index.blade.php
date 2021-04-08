@@ -16,35 +16,101 @@
 @endpush
 
 @section('card-button')
-    <a href="" class="btn btn-danger"><i class="ti-file"></i> Export PDF</a>
+    <button type="button" class="btn btn-danger" @click="exportData()"><i class="ti-file"></i> Export PDF</button>
 @endsection
 
 @section('card-content')
     <!-- Start - Filter data -->
+    <!-- Start - Change year or month -->
+    <div class="custom-control custom-switch">
+        <input type="checkbox" v-model="filterState" class="custom-control-input" id="switchForm">
+        <label class="custom-control-label" for="switchForm">Filter per tahun?</label>
+    </div>
+    <!-- Emd - Change year or month -->
+    
+    <hr>
+
+
     <div class="row">
+        <!-- Start - Dari -->
         <div class="col-md-3">
             <div class="form-group">
                 <label>Dari</label>
-                <input type="text" name="startDate" class="form-control date-picker-month" value="{{ $item->filterDate[0] }}">
+                <input type="text" name="startDate" class="form-control date-picker-month" value="{{ $item->filterDate[0] }}" v-if="filterState == false">
+
+                <select name="startYear" class="form-control" v-if="filterState">
+                    <option value="">Pilih</option>
+                    @for($i = 2000; $i <= 2100; $i++)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                    @endfor
+                </select>
             </div>
         </div>
+        <!-- End - Dari -->
 
+        <!-- Start - Sampai -->
         <div class="col-md-3">
             <div class="form-group">
                 <label>Sampai</label>
-                <input type="text" name="endDate" class="form-control date-picker-month" value="{{ $item->filterDate[1] }}">
+                <input type="text" name="endDate" class="form-control date-picker-month" value="{{ $item->filterDate[1] }}" v-if="filterState == false">
+
+                <select name="endYear" class="form-control" v-if="filterState">
+                    <option value="">Pilih</option>
+                    @for($i = 2000; $i <= 2100; $i++)
+                        <option value="{{ $i }}">{{ $i }}</option>
+                    @endfor
+                </select>
             </div>
         </div>
+        <!-- End - Sampai -->
+    </div>
 
-        <div class="col-md-4">
+    <div class="row">
+        <div class="col-md-3">
             <div class="form-group">
                 <label>Cabang</label>
-                <select name="cabang_id" class="form-control select2">
+                <select name="cabang_id" class="form-control select2" :disabled="filter.cabang == false ? true : false">
                     <option value="">Pilih</option>
                     @foreach($cabangs as $id => $value)
                         <option value="{{ $id }}">{{ $value }}</option>
                     @endforeach
                 </select>
+
+                <!-- Start - Checkbox -->
+                <input type="checkbox" v-model="filter.cabang" @click="checkFilter('cabang')"> Filter sesuai dengan cabang?
+                <!-- End - Checkbox -->
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Wilayah</label>
+                <select name="wilayah_id" class="form-control select2" :disabled="filter.wilayah == false ? true : false">
+                    <option value="">Pilih</option>
+                    @foreach($wilayahs as $id => $value)
+                        <option value="{{ $id }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Start - Checkbox -->
+                <input type="checkbox" v-model="filter.wilayah" @click="checkFilter('wilayah')"> Filter sesuai dengan wilayah?
+                <!-- End - Checkbox -->
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Sub Wilayah</label>
+                <select name="sub_wilayah_id" class="form-control select2" :disabled="filter.subWilayah == false ? true : false">
+                    <option value="">Pilih</option>
+                    @foreach($subWilayahs as $id => $value)
+                        <option value="{{ $id }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Start - Checkbox -->
+                <input type="checkbox" v-model="filter.subWilayah" @click="checkFilter('subWilayah')"> Filter sesuai dengan sub wilayah?
+                <!-- End - Checkbox -->
             </div>
         </div>
 
@@ -284,10 +350,21 @@
                 loading: true,
             },
             // --------------------------------------------------------------------
+            filter: {
+                cabang: true,
+                wilayah: false,
+                subWilayah: false,
+            },
+            // --------------------------------------------------------------------
+            // Form data
+            // --------------------------------------------------------------------
+            filterState: false,
+            // --------------------------------------------------------------------
             // Chart global data
             // --------------------------------------------------------------------
             cabang: "{{ $cabang }}",
-            periode: [],
+            wilayah: null,
+            subWilayah: null,
             labels: @json($labels),
             // --------------------------------------------------------------------
 
@@ -325,10 +402,44 @@
         },
         // ------------------------------------------------------------------------
 
+        computed: {
+            //
+        },
+
         // ------------------------------------------------------------------------
         // Methods for Cabang page
         // ------------------------------------------------------------------------
         methods: {
+            // --------------------------------------------------------------------
+            // Check filter condition form
+            // --------------------------------------------------------------------
+            checkFilter: function(type){
+                // ----------------------------------------------------------------
+                switch (type) {
+                    case 'cabang':
+                        this.filter.wilayah = false;
+                        this.filter.subWilayah = false;
+                        break;
+
+                    case 'wilayah':
+                        this.filter.cabang = false;
+                        this.filter.subWilayah = false;
+                        break;
+
+                    case 'subWilayah':
+                        this.filter.wilayah = false;
+                        this.filter.cabang = false;
+                        break;
+                
+                    default:
+                        break;
+                }
+                // ----------------------------------------------------------------
+                $('.select2').val(null).trigger('change');
+                // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
             // --------------------------------------------------------------------
             search: function(){
                 // ----------------------------------------------------------------
@@ -336,11 +447,19 @@
                 // ----------------------------------------------------------------
                 let startDate   = $("input[name='startDate']").val();
                 let endDate     = $("input[name='endDate']").val();
+                let startYear   = $("select[name='startYear']").val();
+                let endYear     = $("select[name='endYear']").val();
                 let cabang_id   = $("select[name='cabang_id']").val();
+                let wilayah_id  = $("select[name='wilayah_id']").val();
+                let sub_wilayah_id   = $("select[name='sub_wilayah_id']").val();
                 let data = {
                     startDate: startDate,
                     endDate: endDate,
+                    startYear: startYear,
+                    endYear: endYear,
                     cabang_id: cabang_id,
+                    wilayah_id: wilayah_id,
+                    sub_wilayah_id: sub_wilayah_id,
                 };
                 // ----------------------------------------------------------------
                 let request = axios.post("{{ route('main.analisa.search') }}", data);
@@ -355,7 +474,9 @@
                     // ------------------------------------------------------------
                     if(data.status){
                         this.labels = data.labels;
-                        this.cabang = data.cabang.nama;
+                        this.cabang = data.cabang;
+                        this.wilayah = data.wilayah;
+                        this.subWilayah = data.sub_wilayah;
                         this.chartPenerimaan.dataSets = data.dataSetPenerimaan;
                         this.chartRoyalti.dataSets = data.dataSetRoyalti;
                         this.chartSiswaAktif.dataSets = data.dataSetSiswaAktif;
@@ -384,6 +505,24 @@
                         $('.defaultDatatable').DataTable({ "ordering": false });
                     }, 500);
                 })
+                // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            exportData: function(){
+                // ----------------------------------------------------------------
+                let startDate   = $("input[name='startDate']").val();
+                let endDate     = $("input[name='endDate']").val();
+                let startYear   = $("select[name='startYear']").val();
+                let endYear     = $("select[name='endYear']").val();
+                let cabang_id   = $("select[name='cabang_id']").val();
+                let wilayah_id  = $("select[name='wilayah_id']").val();
+                let sub_wilayah_id   = $("select[name='sub_wilayah_id']").val();
+                // ----------------------------------------------------------------
+                let url = "{{ route('main.analisa.export') }}?start_date="+startDate+"&end_date="+endDate+"&start_year="+startYear+"&end_year="+endYear+"&cabang_id="+cabang_id+"&wilayah_id="+wilayah_id+"&sub_wilayah_id="+sub_wilayah_id;
+                // ----------------------------------------------------------------
+                window.open(url, '_blank');
                 // ----------------------------------------------------------------
             }
             // --------------------------------------------------------------------

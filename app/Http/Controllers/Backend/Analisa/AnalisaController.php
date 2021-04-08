@@ -17,6 +17,7 @@ use App\Models\SummarySAPendidikan;
 use Carbon\Carbon;
 use Auth;
 use DB;
+use PDF;
 // ----------------------------------------------------------------------------
 class AnalisaController extends Controller
 {
@@ -40,7 +41,27 @@ class AnalisaController extends Controller
         $yearArray[1] = Carbon::now()->format('Y');
         // --------------------------------------------------------------------
         $data->cabang               = "ALL";
-        $data->cabangs              = Cabang::where('status', 1)->pluck('nama', 'id');
+        // --------------------------------------------------------------------
+        // If admin
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 1){
+            $data->cabangs              = Cabang::where('status', 1)->pluck('nama', 'id');
+            $data->wilayahs             = Wilayah::where('status', 1)->pluck('nama', 'id');
+            $data->subWilayahs          = SubWilayah::where('status', 1)->pluck('nama', 'id');
+        }
+        // --------------------------------------------------------------------
+        // if owner
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $data->cabangs              = Cabang::where('user_id', Auth::user()->id)->where('status', 1)->pluck('nama', 'id');
+            $data->wilayahs             = Wilayah::whereHas('cabangs', function($query){
+                                                $query->where('user_id', Auth::user()->id);
+                                            })->where('status', 1)->pluck('nama', 'id');
+            $data->subWilayahs          = SubWilayah::whereHas('cabangs', function($query){
+                                                $query->where('user_id', Auth::user()->id);
+                                            })->where('status', 1)->pluck('nama', 'id');
+        }
+        // --------------------------------------------------------------------
         $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($item->filterDate);
         $data->dataSetRoyalti       = $this->getDataSetRoyalti($item->filterDate);
         $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($item->filterDate);
@@ -67,27 +88,49 @@ class AnalisaController extends Controller
             return response()->json($data);
         }
         // --------------------------------------------------------------------
+        if($request->startYear > $request->endYear){
+            $data->status = false;
+            $data->message = "Tahun awal melebihi tahun akhir!";
+            return response()->json($data);
+        }
+        // --------------------------------------------------------------------
         // Use try catch
         // --------------------------------------------------------------------
         try {
             // ----------------------------------------------------------------
-            $filterDate[0] = $request->startDate;
-            $filterDate[1] = $request->endDate;
+            // Set filter date
             // ----------------------------------------------------------------
-            $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($filterDate, $request->cabang_id);
-            $data->dataSetRoyalti       = $this->getDataSetRoyalti($filterDate, $request->cabang_id);
-            $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($filterDate, $request->cabang_id);
-            $data->dataSetSiswaAktifJurusan    = $this->getDataSetSiswaAktifJurusan($filterDate, $request->cabang_id);
-            $data->dataSetSiswaAktifPendidikan = $this->getDataSetSiswaAktifPendidikan($filterDate, $request->cabang_id);
-            $data->labels               = $this->getLabel($filterDate);
+            if($request->startDate != null && $request->endDate != null){
+                $filterDate[0] = $request->startDate;
+                $filterDate[1] = $request->endDate;
+            }else{
+                $filterDate = null;
+            }
+            // ----------------------------------------------------------------
+            // Set filter year
+            // ----------------------------------------------------------------
+            if($request->startYear != null && $request->endYear != null){
+                $filterYear[0] = $request->startYear;
+                $filterYear[1] = $request->endYear;
+            }else{
+                $filterYear = null;
+            }
+            // ----------------------------------------------------------------
+            $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+            $data->dataSetRoyalti       = $this->getDataSetRoyalti($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+            $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+            $data->dataSetSiswaAktifJurusan    = $this->getDataSetSiswaAktifJurusan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+            $data->dataSetSiswaAktifPendidikan = $this->getDataSetSiswaAktifPendidikan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+            $data->labels               = $this->getLabel($filterDate, $filterYear);
             // ----------------------------------------------------------------
             $data->status = true;
-            $data->cabang = $request->cabang_id != null ? Cabang::find($request->cabang_id) : 'ALL';
+            $data->cabang = ($request->cabang_id != null ? strtoupper(Cabang::find($request->cabang_id)->nama) : ($request->wilayah_id == null && $request->sub_wilayah_id == null ? "ALL" : null ));
+            $data->wilayah = $request->wilayah_id != null ? strtoupper(Wilayah::find($request->wilayah_id)->nama) : null;
+            $data->sub_wilayah = $request->sub_wilayah_id != null ? strtoupper(SubWilayah::find($request->sub_wilayah_id)->nama) : null;
             $data->message = "Filter data berhasil";
             return response()->json($data);
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             $data->status = false;
             $data->message = "Filter data gagal";
             return response()->json($data);
@@ -96,21 +139,79 @@ class AnalisaController extends Controller
     }
     // ------------------------------------------------------------------------
 
+    public function export(Request $request){
+        // --------------------------------------------------------------------
+        $data = new \stdClass;
+        // --------------------------------------------------------------------
+        // Use try catch
+        // --------------------------------------------------------------------
+        // Set filter date
+        // ----------------------------------------------------------------
+        if($request->start_date != null && $request->end_date != null){
+            $filterDate[0] = $request->start_date;
+            $filterDate[1] = $request->end_date;
+        }else{
+            $filterDate = null;
+        }
+        // ----------------------------------------------------------------
+        // Set filter year
+        // ----------------------------------------------------------------
+        if($request->start_year != null && $request->end_year != null){
+            $filterYear[0] = $request->start_year;
+            $filterYear[1] = $request->end_year;
+        }else{
+            $filterYear = null;
+        }
+        // ----------------------------------------------------------------
+        $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+        $data->dataSetRoyalti       = $this->getDataSetRoyalti($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+        $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+        $data->dataSetSiswaAktifJurusan    = $this->getDataSetSiswaAktifJurusan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+        $data->dataSetSiswaAktifPendidikan = $this->getDataSetSiswaAktifPendidikan($filterDate, $request->cabang_id, $request->wilayah_id, $request->sub_wilayah_id, $filterYear);
+        $data->labels               = $this->getLabel($filterDate, $filterYear);
+        // ----------------------------------------------------------------
+        $data->cabang = ($request->cabang_id != null ? strtoupper(Cabang::find($request->cabang_id)->nama) : ($request->wilayah_id == null && $request->sub_wilayah_id == null ? "ALL" : null ));
+        $data->wilayah = $request->wilayah_id != null ? strtoupper(Wilayah::find($request->wilayah_id)->nama) : null;
+        $data->sub_wilayah = $request->sub_wilayah_id != null ? strtoupper(SubWilayah::find($request->sub_wilayah_id)->nama) : null;
+
+        // $pdf = PDF::loadview('pdf.analisa-export', (array) $data);
+        // return $pdf->download('analisa-export');
+
+        // --------------------------------------------------------------------
+        // $data = new \stdClass; $item = new \stdClass;
+        // $data->title        = "Analisa";
+        // $data->item = $item;
+        // // --------------------------------------------------------------------
+        // // Init data
+        // // --------------------------------------------------------------------
+        // $filterDate[0] = viewDate(Carbon::now()->startOfYear()->format('Y-m-d'));
+        // $filterDate[1] = viewDate(Carbon::now()->endOfYear()->format('Y-m-d'));
+        // // --------------------------------------------------------------------
+        // $item->filterDate = $filterDate;
+        // // --------------------------------------------------------------------
+        // $year = Carbon::now()->format('Y');
+        // $yearArray[0] = Carbon::now()->format('Y');
+        // $yearArray[1] = Carbon::now()->format('Y');
+        // // --------------------------------------------------------------------
+        // $data->cabang               = "ALL";
+        // $data->cabangs              = Cabang::where('status', 1)->pluck('nama', 'id');
+        // $data->wilayahs             = Wilayah::where('status', 1)->pluck('nama', 'id');
+        // $data->subWilayahs          = SubWilayah::where('status', 1)->pluck('nama', 'id');
+        // $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($item->filterDate);
+        // $data->dataSetRoyalti       = $this->getDataSetRoyalti($item->filterDate);
+        // $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($item->filterDate);
+        // $data->dataSetSiswaAktifJurusan    = $this->getDataSetSiswaAktifJurusan($item->filterDate);
+        // $data->dataSetSiswaAktifPendidikan = $this->getDataSetSiswaAktifPendidikan($item->filterDate);
+        // $data->labels               = $this->getLabel($item->filterDate);
+        return view('pdf.analisa-export', (array) $data);
+    }
+
     // ------------------------------------------------------------------------
-    public function getLabel($filterDate = null){
+    public function getLabel($filterDate = null, $filterYear = null){
         // --------------------------------------------------------------------
         $labels = [];
         // --------------------------------------------------------------------
-        if($filterDate == null){
-            // ----------------------------------------------------------------
-            $year = Carbon::now()->format('Y');
-            // ----------------------------------------------------------------
-            for($i = 0; $i < 12; $i++){
-                $month = strlen($i) == 1 ? "0".$i+1 : $i+1;
-                $labels[] = Carbon::parse($year.'-'.$month.'-01')->format('M Y');
-            }
-            // ----------------------------------------------------------------
-        }else{
+        if($filterDate != null){
             // ----------------------------------------------------------------
             $firstYear  = Carbon::parse('01 '.$filterDate[0])->format('Y');
             $secondYear = Carbon::parse('01 '.$filterDate[1])->format('Y');
@@ -145,6 +246,10 @@ class AnalisaController extends Controller
                 // ------------------------------------------------------------
             }
             // ----------------------------------------------------------------
+        }else if($filterYear != null){
+            for($i = $filterYear[0]; $i <= $filterYear[1]; $i++){
+                $labels[] = $i;
+            }
         }
         // --------------------------------------------------------------------
         return $labels;
@@ -155,23 +260,32 @@ class AnalisaController extends Controller
     // ------------------------------------------------------------------------
     // Get data penerimaan summery (Chart data)
     // ------------------------------------------------------------------------
-    public function getDataSetPenerimaan($filterDate, $cabang = null){
+    public function getDataSetPenerimaan($filterDate, $cabang = null, $wilayah = null, $subWilayah = null, $filterYear = null){
         // --------------------------------------------------------------------
-        $month = $this->setMonth($filterDate);
+        // Make condition if filter with date or year
         // --------------------------------------------------------------------
-        $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
-        $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
-        // --------------------------------------------------------------------
-        $query = Summary::selectRaw('bulan, tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+        if($filterDate != null){
+            $month = $this->setMonth($filterDate);
+            // ----------------------------------------------------------------
+            $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
+            $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
+            // ----------------------------------------------------------------
+            $query = Summary::selectRaw('bulan, tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+        }else if($filterYear != null){
+            $year = $filterYear;
+            $query = Summary::selectRaw('tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+        }
         // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
-        $query->where(function($query)use($month){
-            foreach($month as $row){
-                $month_format = strlen($row) == 1 ? "0".$row : $row;
-                $query->orWhere('bulan', $month_format);
-            }
-        });
+        if($filterDate != null){
+            $query->where(function($query)use($month){
+                foreach($month as $row){
+                    $month_format = strlen($row) == 1 ? "0".$row : $row;
+                    $query->orWhere('bulan', $month_format);
+                }
+            });
+        }
         // --------------------------------------------------------------------
         // Where Year
         // --------------------------------------------------------------------
@@ -183,33 +297,135 @@ class AnalisaController extends Controller
             $query->where(function($query)use($cabang){
                 $query->where('cabang_id', $cabang);
             });
+        }else if(Auth::user()->level_id == 2){
+            $query->where(function($query){
+                $query->whereHas('cabang', function($query){
+                    $query->where('user_id', Auth::user()->id);
+                });
+            });
         }
         // --------------------------------------------------------------------
-        // $query->orderBy('tahun', 'desc')->orderBy('bulan', 'asc');
+        // Where wilayah
+        // --------------------------------------------------------------------
+        if($wilayah != null){
+            $query->whereHas('cabang', function($query)use($wilayah){
+                $query->where('wilayah_id', $wilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where sub wilayah
+        // --------------------------------------------------------------------
+        if($subWilayah != null){
+            $query->whereHas('cabang', function($query)use($subWilayah){
+                $query->where('sub_wilayah_id', $subWilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Order by data
         // --------------------------------------------------------------------
         $query->orderBy('tahun', 'asc');
-        $query->orderBy('bulan', 'asc');
+        if($filterDate != null){
+            $query->orderBy('bulan', 'asc');
+        }
         // --------------------------------------------------------------------
-        // Set array dataset
+        // Group by data
         // --------------------------------------------------------------------
-        $data = $query->groupBy('tahun', 'bulan')->get();
+        if($filterDate != null){
+            $query->groupBy('tahun', 'bulan');
+        }else if($filterYear != null){
+            $query->groupBy('tahun');
+        }
         // -------------------------------------------------------------------
-        // Pendaftaran
+        $labels = $this->getLabel($filterDate, $filterYear);
         $totalPendaftaran = [];
-        foreach($query->get() as $row){
-            $totalPendaftaran[] = $row->total_up;
-        }
-
-        // Kursus
         $totalKursus = [];
-        foreach($query->get() as $row){
-            $totalKursus[] = $row->total_k;
-        }
-
-        // penerimaan
         $totalPenerimaan = [];
-        foreach($query->get() as $row){
-            $totalPenerimaan[] = $row->total_k + $row->total_up;
+        // Pendaftaran
+        if($filterDate != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
+                $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
+                // -----------------------------------------------------------
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalPendaftaran[] = $row->total_up;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalPendaftaran[] = 0;
+                // -----------------------------------------------------------
+
+                // Kursus
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalKursus[] = $row->total_k;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalKursus[] = 0;
+                // -----------------------------------------------------------
+
+                // penerimaan
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalPenerimaan[] = 0;
+                // -----------------------------------------------------------
+            }
+        }else if($filterYear != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalPendaftaran[] = $row->total_up;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalPendaftaran[] = 0;
+                // -----------------------------------------------------------
+
+                // Kursus
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalKursus[] = $row->total_k;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalKursus[] = 0;
+                // -----------------------------------------------------------
+
+                // penerimaan
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalPenerimaan[] = 0;
+                // -----------------------------------------------------------
+            }
         }
 
         // Result
@@ -242,25 +458,34 @@ class AnalisaController extends Controller
     // ------------------------------------------------------------------------
     // Get data royalti summery (Chart data)
     // ------------------------------------------------------------------------
-    public function getDataSetRoyalti($filterDate, $cabang = null){
+    public function getDataSetRoyalti($filterDate, $cabang = null, $wilayah = null, $subWilayah = null, $filterYear = null){
         // --------------------------------------------------------------------
-        $month = $this->setMonth($filterDate);
+        // Make condition if filter with date or year
         // --------------------------------------------------------------------
-        $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
-        $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
-        // --------------------------------------------------------------------
-        $cabang = $cabang == null ? [] : $cabang;
-        // --------------------------------------------------------------------
-        $query = Summary::selectRaw('bulan, tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+        if($filterDate != null){
+            // ----------------------------------------------------------------
+            $month = $this->setMonth($filterDate);
+            // ----------------------------------------------------------------
+            $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
+            $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
+            // ----------------------------------------------------------------
+            $query = Summary::selectRaw('bulan, tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+            // ----------------------------------------------------------------
+        }else if($filterYear != null){
+            $year = $filterYear;
+            $query = Summary::selectRaw('tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+        }
         // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
-        $query->where(function($query)use($month){
-            foreach($month as $row){
-                $month_format = strlen($row) == 1 ? "0".$row : $row;
-                $query->orWhere('bulan', $month_format);
-            }
-        });
+        if($filterDate != null){
+            $query->where(function($query)use($month){
+                foreach($month as $row){
+                    $month_format = strlen($row) == 1 ? "0".$row : $row;
+                    $query->orWhere('bulan', $month_format);
+                }
+            });
+        }
         // --------------------------------------------------------------------
         // Where Year
         // --------------------------------------------------------------------
@@ -269,22 +494,90 @@ class AnalisaController extends Controller
         // Where Cabang
         // --------------------------------------------------------------------
         if($cabang != null){
-            $query->where('cabang_id', $cabang);
+            $query->where(function($query)use($cabang){
+                $query->where('cabang_id', $cabang);
+            });
+        }else if(Auth::user()->level_id == 2){
+            $query->where(function($query){
+                $query->whereHas('cabang', function($query){
+                    $query->where('user_id', Auth::user()->id);
+                });
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where wilayah
+        // --------------------------------------------------------------------
+        if($wilayah != null){
+            $query->whereHas('cabang', function($query)use($wilayah){
+                $query->where('wilayah_id', $wilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where sub wilayah
+        // --------------------------------------------------------------------
+        if($subWilayah != null){
+            $query->whereHas('cabang', function($query)use($subWilayah){
+                $query->where('sub_wilayah_id', $subWilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
         }
         // --------------------------------------------------------------------
         // $query->orderBy('tahun', 'desc')->orderBy('bulan', 'asc');
         // --------------------------------------------------------------------
         $query->orderBy('tahun', 'asc');
-        $query->orderBy('bulan', 'asc');
+        if($filterDate != null){
+            $query->orderBy('bulan', 'asc');
+        }
         // --------------------------------------------------------------------
         // Set array dataset
         // --------------------------------------------------------------------
-        $data = $query->groupBy('tahun', 'bulan')->get();
+        if($filterDate != null){
+            $query->groupBy('tahun', 'bulan');
+        }else if($filterYear != null){
+            $query->groupBy('tahun');
+        }
         // --------------------------------------------------------------------
-        // royalti
+        $labels = $this->getLabel($filterDate, $filterYear);
         $totalRoyalti = [];
-        foreach($query->get() as $row){
-            $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+        // Pendaftaran
+        if($filterDate != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
+                $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
+                // -----------------------------------------------------------
+                // royalti
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalRoyalti[] = 0;
+                // -----------------------------------------------------------
+            }
+        }else if($filterYear != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                // royalti
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalRoyalti[] = 0;
+                // -----------------------------------------------------------
+            }
         }
 
         // Result
@@ -305,25 +598,32 @@ class AnalisaController extends Controller
     // ------------------------------------------------------------------------
     // Get data siswa aktif summery (Chart data)
     // ------------------------------------------------------------------------
-    public function getDataSetSiswaAktif($filterDate, $cabang = null){
+    public function getDataSetSiswaAktif($filterDate, $cabang = null, $wilayah = null, $subWilayah = null, $filterYear = null){
         // --------------------------------------------------------------------
-        $month = $this->setMonth($filterDate);
+        // Make condition if filter with date or year
         // --------------------------------------------------------------------
-        $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
-        $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
-        // --------------------------------------------------------------------
-        $cabang = $cabang == null ? [] : $cabang;
-        // --------------------------------------------------------------------
-        $query = Summary::selectRaw('bulan, tahun, SUM(siswa_aktif) as total_sa, SUM(siswa_baru) as total_sb, SUM(siswa_cuti) as total_sc, SUM(siswa_keluar) as total_sk')->where('status', 1);
+        if($filterDate != null){
+            $month = $this->setMonth($filterDate);
+            // ----------------------------------------------------------------
+            $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
+            $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
+            // ----------------------------------------------------------------
+            $query = Summary::selectRaw('bulan, tahun, SUM(siswa_aktif) as total_sa, SUM(siswa_baru) as total_sb, SUM(siswa_cuti) as total_sc, SUM(siswa_keluar) as total_sk')->where('status', 1);
+        }else if($filterYear != null){
+            $year = $filterYear;
+            $query = Summary::selectRaw('tahun, SUM(siswa_aktif) as total_sa, SUM(siswa_baru) as total_sb, SUM(siswa_cuti) as total_sc, SUM(siswa_keluar) as total_sk')->where('status', 1);
+        }
         // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
-        $query->where(function($query)use($month){
-            foreach($month as $row){
-                $month_format = strlen($row) == 1 ? "0".$row : $row;
-                $query->orWhere('bulan', $month_format);
-            }
-        });
+        if($filterDate != null){
+            $query->where(function($query)use($month){
+                foreach($month as $row){
+                    $month_format = strlen($row) == 1 ? "0".$row : $row;
+                    $query->orWhere('bulan', $month_format);
+                }
+            });
+        }
         // --------------------------------------------------------------------
         // Where Year
         // --------------------------------------------------------------------
@@ -332,40 +632,159 @@ class AnalisaController extends Controller
         // Where Cabang
         // --------------------------------------------------------------------
         if($cabang != null){
-            $query->where('cabang_id', $cabang);
+            $query->where(function($query)use($cabang){
+                $query->where('cabang_id', $cabang);
+            });
+        }else if(Auth::user()->level_id == 2){
+            $query->where(function($query){
+                $query->whereHas('cabang', function($query){
+                    $query->where('user_id', Auth::user()->id);
+                });
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where wilayah
+        // --------------------------------------------------------------------
+        if($wilayah != null){
+            $query->whereHas('cabang', function($query)use($wilayah){
+                $query->where('wilayah_id', $wilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where sub wilayah
+        // --------------------------------------------------------------------
+        if($subWilayah != null){
+            $query->whereHas('cabang', function($query)use($subWilayah){
+                $query->where('sub_wilayah_id', $subWilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
         }
         // --------------------------------------------------------------------
         // $query->orderBy('tahun', 'desc')->orderBy('bulan', 'asc');
         // --------------------------------------------------------------------
         $query->orderBy('tahun', 'asc');
-        $query->orderBy('bulan', 'asc');
+        if($filterDate != null){
+            $query->orderBy('bulan', 'asc');
+        }
         // --------------------------------------------------------------------
         // Set array dataset
         // --------------------------------------------------------------------
-        $data = $query->groupBy('tahun', 'bulan')->get();
+        if($filterDate != null){
+            $query->groupBy('tahun', 'bulan');
+        }else if($filterYear != null){
+            $query->groupBy('tahun');
+        }
         // --------------------------------------------------------------------
-        // Siswa aktif
+        $labels = $this->getLabel($filterDate, $filterYear);
         $totalSiswaAktif = [];
-        foreach($query->get() as $row){
-            $totalSiswaAktif[] = $row->total_sa;
-        }
-
-        // Siswa baru
         $totalSiswaBaru = [];
-        foreach($query->get() as $row){
-            $totalSiswaBaru[] = $row->total_sb;
-        }
-
-        // Siswa cuti
         $totalSiswaCuti = [];
-        foreach($query->get() as $row){
-            $totalSiswaCuti[] = $row->total_sc;
-        }
-
-        // Siswa keluar
         $totalSiswaKeluar = [];
-        foreach($query->get() as $row){
-            $totalSiswaKeluar[] = $row->total_sk;
+        // Pendaftaran
+        if($filterDate != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
+                $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
+                // -----------------------------------------------------------
+                // Siswa aktif
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalSiswaAktif[] = $row->total_sa;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaAktif[] = 0;
+                // -----------------------------------------------------------
+                // Siswa baru
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalSiswaBaru[] = $row->total_sb;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaBaru[] = 0;
+                // -----------------------------------------------------------
+                // Siswa cuti
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalSiswaCuti[] = $row->total_sc;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaCuti[] = 0;
+                // -----------------------------------------------------------
+                // Siswa keluar
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->bulan == $bulan && $row->tahun == $tahun){
+                        $totalSiswaKeluar[] = $row->total_sk;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaKeluar[] = 0;
+                // -----------------------------------------------------------
+            }
+        }else if($filterYear != null){
+            for($i = 0; $i < count($labels); $i++){
+                // -----------------------------------------------------------
+                // Siswa aktif
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalSiswaAktif[] = $row->total_sa;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaAktif[] = 0;
+                // -----------------------------------------------------------
+                // Siswa baru
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalSiswaBaru[] = $row->total_sb;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaBaru[] = 0;
+                // -----------------------------------------------------------
+                // Siswa cuti
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalSiswaCuti[] = $row->total_sc;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaCuti[] = 0;
+                // -----------------------------------------------------------
+                // Siswa keluar
+                $status = true;
+                foreach($query->get() as $row){
+                    if($row->tahun == $labels[$i]){
+                        $totalSiswaKeluar[] = $row->total_sk;
+                        $status = false;
+                    }
+                }
+
+                if($status) $totalSiswaKeluar[] = 0;
+                // -----------------------------------------------------------
+            }
         }
 
         // Result
@@ -400,25 +819,32 @@ class AnalisaController extends Controller
     // ------------------------------------------------------------------------
     // Get data siswa aktif jurusan summery (Chart data)
     // ------------------------------------------------------------------------
-    public function getDataSetSiswaAktifJurusan($filterDate, $cabang = null){
+    public function getDataSetSiswaAktifJurusan($filterDate, $cabang = null, $wilayah = null, $subWilayah = null, $filterYear = null){
         // --------------------------------------------------------------------
-        $month = $this->setMonth($filterDate);
+        // Make condition if filter with date or year
         // --------------------------------------------------------------------
-        $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
-        $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
-        // --------------------------------------------------------------------
-        $cabang = $cabang == null ? [] : $cabang;
-        // --------------------------------------------------------------------
-        $query = Summary::where('status', 1);
+        if($filterDate != null){
+            $month = $this->setMonth($filterDate);
+            // ----------------------------------------------------------------
+            $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
+            $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
+            // ----------------------------------------------------------------
+            $query = Summary::where('status', 1);
+        }else if($filterYear != null){
+            $year = $filterYear;
+            $query = Summary::where('status', 1);
+        }
         // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
-        $query->where(function($query)use($month){
-            foreach($month as $row){
-                $month_format = strlen($row) == 1 ? "0".$row : $row;
-                $query->orWhere('bulan', $month_format);
-            }
-        });
+        if($filterDate != null){
+            $query->where(function($query)use($month){
+                foreach($month as $row){
+                    $month_format = strlen($row) == 1 ? "0".$row : $row;
+                    $query->orWhere('bulan', $month_format);
+                }
+            });
+        }
         // --------------------------------------------------------------------
         // Where Year
         // --------------------------------------------------------------------
@@ -427,13 +853,45 @@ class AnalisaController extends Controller
         // Where Cabang
         // --------------------------------------------------------------------
         if($cabang != null){
-            $query->where('cabang_id', $cabang);
+            $query->where(function($query)use($cabang){
+                $query->where('cabang_id', $cabang);
+            });
+        }else if(Auth::user()->level_id == 2){
+            $query->where(function($query){
+                $query->whereHas('cabang', function($query){
+                    $query->where('user_id', Auth::user()->id);
+                });
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where wilayah
+        // --------------------------------------------------------------------
+        if($wilayah != null){
+            $query->whereHas('cabang', function($query)use($wilayah){
+                $query->where('wilayah_id', $wilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where sub wilayah
+        // --------------------------------------------------------------------
+        if($subWilayah != null){
+            $query->whereHas('cabang', function($query)use($subWilayah){
+                $query->where('sub_wilayah_id', $subWilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
         }
         // --------------------------------------------------------------------
         // $query->orderBy('tahun', 'desc')->orderBy('bulan', 'asc');
         // --------------------------------------------------------------------
         $query->orderBy('tahun', 'asc');
-        $query->orderBy('bulan', 'asc');
+        if($filterDate != null){
+            $query->orderBy('bulan', 'asc');
+        }
         // --------------------------------------------------------------------
         $summaryArray = $query->pluck('id')->toArray();
         // --------------------------------------------------------------------
@@ -441,7 +899,8 @@ class AnalisaController extends Controller
         // --------------------------------------------------------------------
         // Get data summary sa jurusan
         // --------------------------------------------------------------------
-        $relationship = DB::table('summary_sa_materi')
+        if($filterDate != null){
+            $relationship = DB::table('summary_sa_materi')
                             ->selectRaw('SUM(summary_sa_materi.jumlah) as total_jumlah, materi.id as materi_id, summary.bulan, summary.tahun')
                             ->join('summary', 'summary_sa_materi.summary_id', '=', 'summary.id')
                             ->join('materi', 'summary_sa_materi.materi_id', '=', 'materi.id')
@@ -449,6 +908,15 @@ class AnalisaController extends Controller
                             ->orderBy('summary.tahun', 'asc')
                             ->orderBy('summary.bulan', 'asc')
                             ->groupBy('summary.tahun', 'summary.bulan', 'materi.id');
+        }else if($filterYear != null){
+            $relationship = DB::table('summary_sa_materi')
+                            ->selectRaw('SUM(summary_sa_materi.jumlah) as total_jumlah, materi.id as materi_id, summary.tahun')
+                            ->join('summary', 'summary_sa_materi.summary_id', '=', 'summary.id')
+                            ->join('materi', 'summary_sa_materi.materi_id', '=', 'materi.id')
+                            ->whereIn('summary_sa_materi.summary_id', $summaryArray)
+                            ->orderBy('summary.tahun', 'asc')
+                            ->groupBy('summary.tahun', 'materi.id');
+        }
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
@@ -459,9 +927,40 @@ class AnalisaController extends Controller
         $result = [];
         $materis = Materi::where('status', 1)->get();
         foreach($materis as $materi){
+            $labels = $this->getLabel($filterDate, $filterYear);
             $total = [];
-            foreach($data as $row){
-                if($row->materi_id == $materi->id) $total[] = $row->total_jumlah;
+            if($filterDate != null){
+                for($i = 0; $i < count($labels); $i++){
+                    // -----------------------------------------------------------
+                    $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
+                    $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
+                    // -----------------------------------------------------------
+                    $status = true;
+                    foreach($data as $row){
+                        if($row->bulan == $bulan && $row->tahun == $tahun && $row->materi_id == $materi->id){
+                            $total[] = $row->total_jumlah;
+                            $status = false;
+                        }
+                    }
+
+                    if($status) $total[] = 0;
+                    // -----------------------------------------------------------
+                }
+            }else if($filterYear != null){
+                for($i = 0; $i < count($labels); $i++){
+                    // -----------------------------------------------------------
+                    // royalti
+                    $status = true;
+                    foreach($data as $row){
+                        if($row->tahun == $labels[$i] && $row->materi_id == $materi->id){
+                            $total[] = $row->total_jumlah;
+                            $status = false;
+                        }
+                    }
+
+                    if($status) $total[] = 0;
+                    // -----------------------------------------------------------
+                }
             }
 
             $result[] = [
@@ -479,25 +978,32 @@ class AnalisaController extends Controller
     // ------------------------------------------------------------------------
     // Get data siswa aktif pendidikan summery (Chart data)
     // ------------------------------------------------------------------------
-    public function getDataSetSiswaAktifpendidikan($filterDate, $cabang = null){
+    public function getDataSetSiswaAktifpendidikan($filterDate, $cabang = null, $wilayah = null, $subWilayah = null, $filterYear = null){
         // --------------------------------------------------------------------
-        $month = $this->setMonth($filterDate);
+        // Make condition if filter with date or year
         // --------------------------------------------------------------------
-        $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
-        $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
-        // --------------------------------------------------------------------
-        $cabang = $cabang == null ? [] : $cabang;
-        // --------------------------------------------------------------------
-        $query = Summary::where('status', 1);
+        if($filterDate != null){
+            $month = $this->setMonth($filterDate);
+            // ----------------------------------------------------------------
+            $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
+            $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
+            // ----------------------------------------------------------------
+            $query = Summary::where('status', 1);
+        }else if($filterYear != null){
+            $year = $filterYear;
+            $query = Summary::where('status', 1);
+        }
         // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
-        $query->where(function($query)use($month){
-            foreach($month as $row){
-                $month_format = strlen($row) == 1 ? "0".$row : $row;
-                $query->orWhere('bulan', $month_format);
-            }
-        });
+        if($filterDate != null){
+            $query->where(function($query)use($month){
+                foreach($month as $row){
+                    $month_format = strlen($row) == 1 ? "0".$row : $row;
+                    $query->orWhere('bulan', $month_format);
+                }
+            });
+        }
         // --------------------------------------------------------------------
         // Where Year
         // --------------------------------------------------------------------
@@ -506,13 +1012,45 @@ class AnalisaController extends Controller
         // Where Cabang
         // --------------------------------------------------------------------
         if($cabang != null){
-            $query->where('cabang_id', $cabang);
+            $query->where(function($query)use($cabang){
+                $query->where('cabang_id', $cabang);
+            });
+        }else if(Auth::user()->level_id == 2){
+            $query->where(function($query){
+                $query->whereHas('cabang', function($query){
+                    $query->where('user_id', Auth::user()->id);
+                });
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where wilayah
+        // --------------------------------------------------------------------
+        if($wilayah != null){
+            $query->whereHas('cabang', function($query)use($wilayah){
+                $query->where('wilayah_id', $wilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
+        }
+        // --------------------------------------------------------------------
+        // Where sub wilayah
+        // --------------------------------------------------------------------
+        if($subWilayah != null){
+            $query->whereHas('cabang', function($query)use($subWilayah){
+                $query->where('sub_wilayah_id', $subWilayah);
+                if(Auth::user()->level_id == 2){
+                    $query->where('user_id', Auth::user()->id);
+                }
+            });
         }
         // --------------------------------------------------------------------
         // $query->orderBy('tahun', 'desc')->orderBy('bulan', 'asc');
         // --------------------------------------------------------------------
         $query->orderBy('tahun', 'asc');
-        $query->orderBy('bulan', 'asc');
+        if($filterDate != null){
+            $query->orderBy('bulan', 'asc');
+        }
         // --------------------------------------------------------------------
         $summaryArray = $query->pluck('id')->toArray();
         // --------------------------------------------------------------------
@@ -520,7 +1058,8 @@ class AnalisaController extends Controller
         // --------------------------------------------------------------------
         // Get data summary sa pendidikan
         // --------------------------------------------------------------------
-        $relationship = DB::table('summary_sa_pendidikan')
+        if($filterDate != null){
+            $relationship = DB::table('summary_sa_pendidikan')
                             ->selectRaw('SUM(summary_sa_pendidikan.jumlah) as total_jumlah, pendidikan.id as pendidikan_id, summary.bulan, summary.tahun')
                             ->join('summary', 'summary_sa_pendidikan.summary_id', '=', 'summary.id')
                             ->join('pendidikan', 'summary_sa_pendidikan.pendidikan_id', '=', 'pendidikan.id')
@@ -528,6 +1067,15 @@ class AnalisaController extends Controller
                             ->orderBy('summary.tahun', 'asc')
                             ->orderBy('summary.bulan', 'asc')
                             ->groupBy('summary.tahun', 'summary.bulan', 'pendidikan.id');
+        }else if($filterYear != null){
+            $relationship = DB::table('summary_sa_pendidikan')
+                            ->selectRaw('SUM(summary_sa_pendidikan.jumlah) as total_jumlah, pendidikan.id as pendidikan_id, summary.tahun')
+                            ->join('summary', 'summary_sa_pendidikan.summary_id', '=', 'summary.id')
+                            ->join('pendidikan', 'summary_sa_pendidikan.pendidikan_id', '=', 'pendidikan.id')
+                            ->whereIn('summary_sa_pendidikan.summary_id', $summaryArray)
+                            ->orderBy('summary.tahun', 'asc')
+                            ->groupBy('summary.tahun', 'pendidikan.id');
+        }
         // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
@@ -538,9 +1086,40 @@ class AnalisaController extends Controller
         $result = [];
         $pendidikans = Pendidikan::all();
         foreach($pendidikans as $pendidikan){
+            $labels = $this->getLabel($filterDate, $filterYear);
             $total = [];
-            foreach($data as $row){
-                if($row->pendidikan_id == $pendidikan->id) $total[] = $row->total_jumlah;
+            if($filterDate != null){
+                for($i = 0; $i < count($labels); $i++){
+                    // -----------------------------------------------------------
+                    $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
+                    $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
+                    // -----------------------------------------------------------
+                    $status = true;
+                    foreach($data as $row){
+                        if($row->bulan == $bulan && $row->tahun == $tahun && $row->pendidikan_id == $pendidikan->id){
+                            $total[] = $row->total_jumlah;
+                            $status = false;
+                        }
+                    }
+
+                    if($status) $total[] = 0;
+                    // -----------------------------------------------------------
+                }
+            }else if($filterYear != null){
+                for($i = 0; $i < count($labels); $i++){
+                    // -----------------------------------------------------------
+                    // royalti
+                    $status = true;
+                    foreach($data as $row){
+                        if($row->tahun == $labels[$i] && $row->pendidikan_id == $pendidikan->id){
+                            $total[] = $row->total_jumlah;
+                            $status = false;
+                        }
+                    }
+
+                    if($status) $total[] = 0;
+                    // -----------------------------------------------------------
+                }
             }
 
             $result[] = [

@@ -324,9 +324,9 @@ class SummaryCreateController extends Controller
                     "uang_pendaftaran"  => $uangPendaftaran,
                     "uang_kursus"       => $uangKursus,
                     "siswa_aktif"       => $siswaAktif->siswa_aktif_details->sum('jumlah'),
-                    "siswa_baru"        => $siswaBaru->sum('jumlah'),
-                    "siswa_cuti"        => $siswaCuti->sum('jumlah'),
-                    "siswa_keluar"      => $siswaInaktif->sum('jumlah'),
+                    "siswa_baru"        => $siswaBaru ? $siswaBaru->sum('jumlah') : 0,
+                    "siswa_cuti"        => $siswaCuti ? $siswaCuti->sum('jumlah') : 0,
+                    "siswa_keluar"      => $siswaInaktif ? $siswaInaktif->sum('jumlah') : 0,
                     "status"            => 0,
                     "cabang_id"         => $input['cabang_id'],
                     "user_id"           => Auth::user()->id,
@@ -344,9 +344,9 @@ class SummaryCreateController extends Controller
                 $mSummary->uang_pendaftaran  = $uangPendaftaran;
                 $mSummary->uang_kursus       = $uangKursus;
                 $mSummary->siswa_aktif       = $siswaAktif->siswa_aktif_details->sum('jumlah');
-                $mSummary->siswa_baru        = $siswaBaru->sum('jumlah');
-                $mSummary->siswa_cuti        = $siswaCuti->sum('jumlah');
-                $mSummary->siswa_keluar      = $siswaInaktif->sum('jumlah');
+                $mSummary->siswa_baru        = $siswaBaru ? $siswaBaru->sum('jumlah') : 0;
+                $mSummary->siswa_cuti        = $siswaCuti ? $siswaCuti->sum('jumlah') : 0;
+                $mSummary->siswa_keluar      = $siswaInaktif ? $siswaInaktif->sum('jumlah') : 0;
                 $mSummary->status            = 0;
                 $mSummary->cabang_id         = $input['cabang_id'];
                 $mSummary->user_id           = Auth::user()->id;
