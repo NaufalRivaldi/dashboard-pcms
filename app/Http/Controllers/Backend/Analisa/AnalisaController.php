@@ -147,7 +147,7 @@ class AnalisaController extends Controller
         // --------------------------------------------------------------------
         // Set filter date
         // ----------------------------------------------------------------
-        if($request->start_date != null && $request->end_date != null){
+        if($request->start_date != "undefined" && $request->end_date != "undefined"){
             $filterDate[0] = $request->start_date;
             $filterDate[1] = $request->end_date;
         }else{
@@ -156,7 +156,7 @@ class AnalisaController extends Controller
         // ----------------------------------------------------------------
         // Set filter year
         // ----------------------------------------------------------------
-        if($request->start_year != null && $request->end_year != null){
+        if($request->start_year != "undefined" && $request->end_year != "undefined"){
             $filterYear[0] = $request->start_year;
             $filterYear[1] = $request->end_year;
         }else{
