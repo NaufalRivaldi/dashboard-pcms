@@ -144,7 +144,7 @@ class MateriController extends Controller
             return redirect()->route('master.materi.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.materi.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.materi.create')->with('danger', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -287,7 +287,7 @@ class MateriController extends Controller
             return redirect()->route('master.materi.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.materi.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.materi.edit', $id)->with('danger', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }

@@ -128,7 +128,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     // Import page
     // --------------------------------------------------------------------
-    Route::namespace('Import')->prefix('import')->middleware(['level:1,2,4'])->name('import.')->group(function(){
+    Route::namespace('Import')->prefix('import')->middleware(['level:1,2,3,4'])->name('import.')->group(function(){
         // ----------------------------------------------------------------
         // Summary page
         // ----------------------------------------------------------------
@@ -159,6 +159,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
             Route::get('summary/{id}', 'SummaryDetailController@index')->name('summary.show');
             Route::get('summary/{id}/pdf', 'SummaryDetailController@exportPdf')->name('summary.show.pdf');
             Route::put('summary/{id}/approve-detail', 'SummaryDetailController@approve')->name('summary.show.approve');
+            Route::put('summary/{id}/pending-detail', 'SummaryDetailController@pending')->name('summary.show.pending');
             // ------------------------------------------------------------
         });
         // ----------------------------------------------------------------
@@ -387,9 +388,18 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
         Route::prefix('analisa')->group(function(){
             Route::get('/', 'AnalisaController@index')->name('analisa.index');
-            Route::get('json/{param}', 'AnalisaController@json')->name('user.json');
             Route::post('/search', 'AnalisaController@search')->name('analisa.search');
             Route::get('/export', 'AnalisaController@export')->name('analisa.export');
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Compare page
+        // ----------------------------------------------------------------
+        Route::prefix('compare')->group(function(){
+            Route::get('/', 'CompareController@index')->name('compare.index');
+            Route::post('/search', 'CompareController@search')->name('compare.search');
+            Route::get('/export', 'CompareController@export')->name('compare.export');
         });
         // ----------------------------------------------------------------
     });

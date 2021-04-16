@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12 text-center">
         <h6>
-            SUMMARY LAPORAN PENERIMAAN<br>
+            LAPORAN JUMLAH ROYALTI<br>
             <span v-if="cabang != null">
                 CABANG: @{{ cabang }}<br>
             </span>
@@ -20,35 +20,31 @@
 <hr>
 <div class="row">
     <div class="col-md-6">
-        <chart-penerimaan :dataset="chartPenerimaan.dataSets" :label="labels"></chart-penerimaan>
+        <chart-royalti :dataset="chartRoyalti.dataSets" :label="labels"></chart-royalti>
     </div>
 
-    <!-- Start - Table uang penerimaan -->
+    <!-- Start - Table uang royalti -->
     <div class="col-md-6">
         <table class="table table-striped table-bordered defaultDatatable">
             <thead>
                 <tr>
                     <th>Periode</th>
-                    <th>Uang Pendaftaran</th>
-                    <th>Uang Kursus</th>
-                    <th>Total Penerimaan</th>
+                    <th>Royalti</th>
                 </tr>
             </thead>
-            <tbody class="t-scroll-vertikal t-max-height-400">
+            <tbody>
                 <tr v-for="(label, index) in labels">
                     <td>@{{ label }}</td>
-                    <td align="right">@{{ chartPenerimaan.dataSets[0].data[index] | numeral('0,0') }}</td>
-                    <td align="right">@{{ chartPenerimaan.dataSets[1].data[index] | numeral('0,0') }}</td>
-                    <td align="right">@{{ chartPenerimaan.dataSets[2].data[index] | numeral('0,0') }}</td>
+                    <td align="right">@{{ chartRoyalti.dataSets[0].data[index] | numeral('0,0') }}</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="3" class="text-center">Total</th>
-                    <th class="text-right">@{{ _.sum(chartPenerimaan.dataSets[2].data) | numeral('0,0') }}</th>
+                    <th class="text-center">Total</th>
+                    <th class="text-right">@{{ _.sum(chartRoyalti.dataSets[0].data) | numeral('0,0') }}</th>
                 </tr>
             </tfoot>
         </table>
     </div>
-    <!-- Start - Table uang penerimaan -->
+    <!-- Start - Table uang royalti -->
 </div>

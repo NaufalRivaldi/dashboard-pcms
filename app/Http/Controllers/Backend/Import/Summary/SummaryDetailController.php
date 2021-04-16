@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Backend\Import\Summary;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+// ----------------------------------------------------------------------------
+use App\Mail\MailNotify;
 // ----------------------------------------------------------------------------
 use App\Helpers\ImportHelper;
 // ----------------------------------------------------------------------------
@@ -63,11 +66,60 @@ class SummaryDetailController extends Controller
             SiswaInaktif::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
             SiswaCuti::where('bulan', $summary->bulan)->where('tahun', $summary->tahun)->where('cabang_id', $summary->cabang_id)->delete();
             // ----------------------------------------------------------------
-            $data->message = __('label.SUCCESS_UPDATE_MESSAGE');
+            $data->status   = true;
+            $data->message  = __('label.SUCCESS_UPDATE_MESSAGE');
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            // Send notification
+            // ----------------------------------------------------------------
+            Mail::to($summary->user->email)->send(new MailNotify($summary, $summary->cabang->nama, 1));
+            // ----------------------------------------------------------------
+            
+            // ----------------------------------------------------------------
             return response()->json($data);
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            $data->message = __('label.FAIL_UPDATE_MESSAGE');
+            $data->status   = false;
+            $data->message  = __('label.FAIL_UPDATE_MESSAGE');
+            return response()->json($data);
+        }
+        // --------------------------------------------------------------------
+    }
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    public function pending(Request $request, $id)
+    {
+        $data = new \stdClass;
+        // --------------------------------------------------------------------
+        // Use try catch
+        // --------------------------------------------------------------------
+        try {
+            // ----------------------------------------------------------------
+            // Update summary
+            // ----------------------------------------------------------------
+            $summary = Summary::find($id);
+            $summary->status = 0;
+            $summary->user_approve_id = Auth::user()->id;
+            $summary->save();
+            // ----------------------------------------------------------------
+            $data->status   = true;
+            $data->message  = 'Notifikasi data pending telah dikirimkan.';
+            // ----------------------------------------------------------------
+
+            // ----------------------------------------------------------------
+            // Send notification
+            // ----------------------------------------------------------------
+            Mail::to($summary->user->email)->send(new MailNotify($summary, $summary->cabang->nama, 2));
+            // ----------------------------------------------------------------
+            
+            // ----------------------------------------------------------------
+            return response()->json($data);
+            // ----------------------------------------------------------------
+        } catch (\Throwable $th) {
+            $data->status   = false;
+            $data->message  = 'Notifikasi data pending gagal dikirimkan';
             return response()->json($data);
         }
         // --------------------------------------------------------------------

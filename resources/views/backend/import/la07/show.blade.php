@@ -5,6 +5,14 @@
 @endsection
 
 @section('card-slot-up')
+    <!-- Start - Alert -->
+    @if($siswaAktifJurusan->siswa_aktif_details->sum('jumlah') != $siswaAktif->siswa_aktif_pendidikan_details->sum('jumlah'))
+    <div class="alert alert-danger" role="alert">
+        Jumlah data siswa tidak sesuai dengan laporan LA06, silahkan lakukan perbaikan pada aplikasi desktop.
+    </div>
+    @endif
+    <!-- Start - Alert -->
+
     <!-- Start - Detail siswaAktif -->
     <div class="row">
         <div class="col-sm-3 font-weight-bold">Kode Cabang</div>
@@ -19,7 +27,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Bulan</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ setMonth($siswaAktif->bulan) }}</div>
+        <div class="col-sm-8">{{ strtoupper(setMonth($siswaAktif->bulan)) }}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Tahun</div>
@@ -29,7 +37,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Jumlah Total Siswa Aktif</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ $siswaAktif->siswa_aktif_pendidikan_details->sum('jumlah') }} Orang</div>
+        <div class="col-sm-8">{{ $siswaAktif->siswa_aktif_pendidikan_details->sum('jumlah') }}</div>
     </div>
     <!-- End - Detail siswaAktif -->
 

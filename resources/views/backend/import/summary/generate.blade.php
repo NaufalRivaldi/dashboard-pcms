@@ -11,6 +11,13 @@
     <hr>
 
     <template v-if="status.form">
+        <!-- Start - alert -->
+        <div class="alert alert-danger" role="alert" v-if="sumJumlah(this.import.la06.siswa_aktif_details) != sumJumlah(this.import.la07.siswa_aktif_pendidikan_details)">
+            Jumlah data siswa tidak sesuai antara laporan LA06 dengan laporan LA07, silahkan lakukan perbaikan pada aplikasi desktop dan lakukan import data ulang kembali.
+        </div>
+        <!-- End - alert -->
+        
+
         <!-- Start - Row 2 -->
         @include('backend.import.summary.includes.generate.input')
         <!-- End - Row 2 -->
@@ -20,7 +27,7 @@
         <!-- Start - Button -->
         <div class="row">
             <div class="col-sm-12 text-center">
-                <button type="button" class="btn btn-success" :disabled="(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false) ? false : true" @click="checkImportStatus()">
+                <button type="button" class="btn btn-success" :disabled="(this.import.la03 != false && this.import.la06 != false && this.import.la07 != false && sumJumlah(this.import.la06.siswa_aktif_details) == sumJumlah(this.import.la07.siswa_aktif_pendidikan_details)) ? false : true" @click="checkImportStatus()">
                     <i class="ti-save"></i> Simpan
                 </button>
             </div>
@@ -190,6 +197,19 @@
                     // ----------------------------------------------------------------
                 }
                 // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Sum array jumlah
+            // --------------------------------------------------------------------
+            sumJumlah: function(array){
+                let total = 0;
+                $.each(array, function(index, value){
+                    total += value.jumlah;
+                })
+
+                return total;
             },
             // --------------------------------------------------------------------
         },

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Helpers\ImportHelper;
 // ----------------------------------------------------------------------------
 use App\Models\VWSiswaAktifPendidikan as VWSiswaAktif; // LA07 - model
+use App\Models\SiswaAktif as SiswaAktifJurusan; // LA06 - model
 use App\Models\SiswaAktifPendidikan as SiswaAktif; // LA07 - model
 use App\Models\SiswaAktifPendidikanDetail as SiswaAktifDetail; // LA07 - model
 use App\Models\Cabang;
@@ -29,6 +30,7 @@ class LA07DetailController extends Controller
         $data->title        = "LA07 - Detail";
         $data->filtering    = $filtering; 
         $data->siswaAktif   = SiswaAktif::with('siswa_aktif_pendidikan_details')->where('id', $id)->first();
+        $data->siswaAktifJurusan = SiswaAktifJurusan::with('siswa_aktif_details')->where('bulan', $data->siswaAktif->bulan)->where('tahun', $data->siswaAktif->tahun)->first();
         $data->pendidikans  = Pendidikan::all();
         // --------------------------------------------------------------------
         // Filtering data

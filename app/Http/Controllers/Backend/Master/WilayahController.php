@@ -136,7 +136,7 @@ class WilayahController extends Controller
             return redirect()->route('master.wilayah.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.wilayah.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.wilayah.create')->with('danger', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -208,7 +208,7 @@ class WilayahController extends Controller
             return redirect()->route('master.wilayah.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.wilayah.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.wilayah.edit', $id)->with('danger', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }

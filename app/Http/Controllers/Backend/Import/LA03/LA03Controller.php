@@ -93,6 +93,23 @@ class LA03Controller extends Controller
                 // ------------------------------------------------------------
                 $pembayarans = Pembayaran::with('cabang', 'user');
                 // ------------------------------------------------------------
+                // View owner
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 2){
+                    // --------------------------------------------------------
+                    $cabangs = [];
+                    foreach(Auth::user()->cabangs as $row){ array_push($cabangs, $row->id); }
+                    // --------------------------------------------------------
+                    $pembayarans->whereIn('cabang_id', $cabangs);
+                    // --------------------------------------------------------
+                }
+                // ------------------------------------------------------------
+                // View user cabang
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 4){
+                    $pembayarans->where('cabang_id', Auth::user()->cabang_id);
+                }
+                // ------------------------------------------------------------
                 $datatable = datatables()->of($pembayarans)->addIndexColumn();
                 // ------------------------------------------------------------
                 // Add column
@@ -281,6 +298,30 @@ class LA03Controller extends Controller
                 $cabang = ImportHelper::createCabang($vwPembayarans->random()->cabang);
             }
             // ----------------------------------------------------------------
+            // Check cabang and user owner if it's exits
+            // ----------------------------------------------------------------
+            // Admin
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 1){
+                $cabang = Cabang::where('kode', strtoupper($vwPembayarans->random()->cabang))->where('status', 1)->first();
+            }
+            // ----------------------------------------------------------------
+            // Owner
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 2){
+                $cabang = Cabang::where('kode', strtoupper($vwPembayarans->random()->cabang))->where('status', 1)->where('user_id', Auth::user()->id)->first();
+            }
+            // ----------------------------------------------------------------
+            // User
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 4){
+                $cabang = Cabang::where('kode', strtoupper($vwPembayarans->random()->cabang))->where('status', 1)->where('id', Auth::user()->cabang_id)->first();
+            }
+            // ----------------------------------------------------------------
+            if(empty($cabang)){
+                return redirect()->route('import.la03.import')->with('danger', __('Cabang tidak sesuai dengan user, silahkan masukkan data dengan cabang yang benar'));
+            }
+            // ----------------------------------------------------------------
             // Check pembayaran
             // ----------------------------------------------------------------
             $pembayaran = Pembayaran::where('bulan', $vwPembayarans->random()->bulan)->where('tahun', $vwPembayarans->random()->tahun)->where('cabang_id', $cabang->id)->first();
@@ -313,7 +354,7 @@ class LA03Controller extends Controller
             return redirect()->route('import.la03.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('import.la03.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('import.la03.import')->with('success', 'Format CSV tidak sesuai!');
         }
         // --------------------------------------------------------------------
     }

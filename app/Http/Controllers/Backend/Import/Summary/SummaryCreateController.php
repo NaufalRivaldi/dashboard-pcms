@@ -39,12 +39,7 @@ class SummaryCreateController extends Controller
         // Init data
         // --------------------------------------------------------------------
         $data->pageType = "create";
-
-        if(Auth::user()->level_id != 1){
-            $data->cabangs = Cabang::where('status', 1)->where('user_id', Auth::user()->id)->pluck('nama', 'id');
-        }else{
-            $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
-        }
+        $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
         // --------------------------------------------------------------------
         $data->materis      = Materi::where('status', 1)->get();
         $data->pendidikans  = Pendidikan::all();
@@ -66,8 +61,10 @@ class SummaryCreateController extends Controller
         // --------------------------------------------------------------------
         $data->pageType = "create";
 
-        if(Auth::user()->level_id != 1){
+        if(Auth::user()->level_id == 2){
             $data->cabangs = Cabang::where('status', 1)->where('user_id', Auth::user()->id)->pluck('nama', 'id');
+        }else if(Auth::user()->level_id == 4){
+            $data->cabangs = Cabang::where('status', 1)->where('id', Auth::user()->cabang_id)->pluck('nama', 'id');
         }else{
             $data->cabangs = Cabang::where('status', 1)->pluck('nama', 'id');
         }

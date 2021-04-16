@@ -19,7 +19,7 @@ use Auth;
 use DB;
 use PDF;
 // ----------------------------------------------------------------------------
-class AnalisaController extends Controller
+class CompareController extends Controller
 {
     // ------------------------------------------------------------------------
     public function index()
@@ -36,9 +36,8 @@ class AnalisaController extends Controller
         // --------------------------------------------------------------------
         $item->filterDate = $filterDate;
         // --------------------------------------------------------------------
-        $year = Carbon::now()->format('Y');
-        $yearArray[0] = Carbon::now()->format('Y');
-        $yearArray[1] = Carbon::now()->format('Y');
+        $cabang[0] = 1;
+        $cabang[1] = 3;
         // --------------------------------------------------------------------
         $data->cabang               = "ALL";
         // --------------------------------------------------------------------
@@ -62,14 +61,14 @@ class AnalisaController extends Controller
                                             })->where('status', 1)->pluck('nama', 'id');
         }
         // --------------------------------------------------------------------
-        $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($item->filterDate);
+        $data->dataSetPenerimaan    = $this->getDataSetPenerimaan($item->filterDate, $cabang);
         $data->dataSetRoyalti       = $this->getDataSetRoyalti($item->filterDate);
         $data->dataSetSiswaAktif    = $this->getDataSetSiswaAktif($item->filterDate);
         $data->dataSetSiswaAktifJurusan    = $this->getDataSetSiswaAktifJurusan($item->filterDate);
         $data->dataSetSiswaAktifPendidikan = $this->getDataSetSiswaAktifPendidikan($item->filterDate);
         $data->labels               = $this->getLabel($item->filterDate);
         // --------------------------------------------------------------------
-        return view('backend.analisa.self.index', (array) $data);
+        return view('backend.analisa.compare.index', (array) $data);
         // --------------------------------------------------------------------
     }
     // ------------------------------------------------------------------------
@@ -241,10 +240,10 @@ class AnalisaController extends Controller
             $year[0] = Carbon::parse('01 '.$filterDate[0])->format('Y');
             $year[1] = Carbon::parse('01 '.$filterDate[1])->format('Y');
             // ----------------------------------------------------------------
-            $query = Summary::selectRaw('bulan, tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+            $query = Summary::selectRaw('bulan, tahun, cabang.nama as nama_cabang, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
         }else if($filterYear != null){
             $year = $filterYear;
-            $query = Summary::selectRaw('tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
+            $query = Summary::selectRaw('tahun, cabang.nama as nama_cabang, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
         }
         // --------------------------------------------------------------------
         // Where Month
@@ -317,13 +316,13 @@ class AnalisaController extends Controller
         $totalPendaftaran = [];
         $totalKursus = [];
         $totalPenerimaan = [];
+        // Pendaftaran
         if($filterDate != null){
             for($i = 0; $i < count($labels); $i++){
                 // -----------------------------------------------------------
                 $bulan = Carbon::parse('01 '.$labels[$i])->format('m');
                 $tahun = Carbon::parse('01 '.$labels[$i])->format('Y');
                 // -----------------------------------------------------------
-                // Pendaftaran
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
@@ -402,25 +401,22 @@ class AnalisaController extends Controller
         // Result
         $result = [
             [
+                'label' => 'Uang Pendaftaran',
+                'backgroundColor' => '#3498db',
+                'data' => $totalPendaftaran,
+            ],
+            [
+                'label' => 'Uang Kursus',
+                'backgroundColor' => '#1abc9c',
+                'data' => $totalKursus,
+            ],
+            [
                 'label' => 'Total Penerimaan',
                 'backgroundColor' => '#f39c12',
                 'data' => $totalPenerimaan,
                 'type' => 'line',
                 'fill' => false,
                 'borderColor' => '#f39c12',
-                'tension'           => 0,
-            ],
-            [
-                'label'             => 'Uang Pendaftaran',
-                'backgroundColor'   => '#3498db',
-                'data'              => $totalPendaftaran,
-                'stack'             => 'stack_1'
-            ],
-            [
-                'label'             => 'Uang Kursus',
-                'backgroundColor'   => '#1abc9c',
-                'data'              => $totalKursus,
-                'stack'             => 'stack_1'
             ],
         ];
         // --------------------------------------------------------------------
@@ -557,11 +553,10 @@ class AnalisaController extends Controller
         // Result
         $result = [
             [
-                'label'             => 'Royalti',
-                'backgroundColor'   => '#74b9ff',
-                'data'              => $totalRoyalti,
-                'type'              => 'line',
-                'tension'           => 0,
+                'label' => 'Royalti',
+                'backgroundColor' => '#74b9ff',
+                'data' => $totalRoyalti,
+                'type' => 'line',
             ],
         ];
         // --------------------------------------------------------------------
@@ -765,24 +760,24 @@ class AnalisaController extends Controller
         // Result
         $result = [
             [
-                'label'             => 'Siswa Aktif',
-                'backgroundColor'   => '#3498db',
-                'data'              => $totalSiswaAktif,
+                'label' => 'Siswa Aktif',
+                'backgroundColor' => '#3498db',
+                'data' => $totalSiswaAktif,
             ],
             [
-                'label'             => 'Siswa Baru',
-                'backgroundColor'   => '#d35400',
-                'data'              => $totalSiswaBaru,
+                'label' => 'Siswa Baru',
+                'backgroundColor' => '#d35400',
+                'data' => $totalSiswaBaru,
             ],
             [
-                'label'             => 'Siswa Cuti',
-                'backgroundColor'   => '#27ae60',
-                'data'              => $totalSiswaCuti,
+                'label' => 'Siswa Cuti',
+                'backgroundColor' => '#27ae60',
+                'data' => $totalSiswaCuti,
             ],
             [
-                'label'             => 'Siswa Keluar',
-                'backgroundColor'   => '#8e44ad',
-                'data'              => $totalSiswaKeluar,
+                'label' => 'Siswa Keluar',
+                'backgroundColor' => '#8e44ad',
+                'data' => $totalSiswaKeluar,
             ],
         ];
         // --------------------------------------------------------------------
@@ -939,10 +934,9 @@ class AnalisaController extends Controller
             }
 
             $result[] = [
-                'label'             => $materi->nama,
-                'backgroundColor'   => randomColor(),
-                'data'              => $total,
-                'stack'             => 'stack_1',
+                'label' => $materi->nama,
+                'backgroundColor' => randomColor(),
+                'data' => $total,
             ];
         }
         // --------------------------------------------------------------------
@@ -1099,10 +1093,9 @@ class AnalisaController extends Controller
             }
 
             $result[] = [
-                'label'             => $pendidikan->nama,
-                'backgroundColor'   => randomColor(),
-                'data'              => $total,
-                'stack'             => 'stack_1'
+                'label' => $pendidikan->nama,
+                'backgroundColor' => randomColor(),
+                'data' => $total,
             ];
         }
         // --------------------------------------------------------------------

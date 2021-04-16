@@ -135,7 +135,7 @@ class GradeController extends Controller
             return redirect()->route('master.grade.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.grade.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.grade.create')->with('danger', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -205,7 +205,7 @@ class GradeController extends Controller
             return redirect()->route('master.grade.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.grade.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.grade.edit', $id)->with('danger', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }

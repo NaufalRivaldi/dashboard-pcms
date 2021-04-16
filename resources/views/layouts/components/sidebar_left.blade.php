@@ -62,19 +62,22 @@
             @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
             <!-- Start - Main Link -->
             <li class="menu-group">Main</li>
-            <!-- Start - User link -->
+            <!-- Start - Analisa collapse -->
             <li class="panel">
-                <li>
-                    <a href="{{ route('main.analisa.index') }}" class="@if(strpos(Route::currentRouteName(), 'analisa') !== false) active @endif">
-                        <i class="ti-stats-up"></i> <span class="title">Analisa</span>
-                    </a>
-                </li>
+                <a href="#" data-toggle="collapse" data-target="#submenuAnalisa" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'analisa') !== false) active @endif @if(strpos(Route::currentRouteName(), 'compare') !== false) active @endif @if(strpos(Route::currentRouteName(), 'grade') !== false) active @endif">
+                    <i class="ti-stats-up"></i> <span class="title">Analisa Data</span><i class="icon-submenu ti-angle-left"></i>
+                </a>
+                <div id="submenuAnalisa" class="collapse">
+                    <ul class="submenu">
+                        <li><a href="{{ route('main.analisa.index') }}">Analisa</a></li>
+                        <li><a href="{{ route('main.compare.index') }}">Compare</a></li>
+                    </ul>
+                </div>
             </li>
-            <!-- End - User link -->
+            <!-- End - Analisa collapse -->
             <!-- End - Main Link -->
             @endif
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 4)
             <!-- Start - Import data Link -->
             <li class="menu-group">Import Data</li>
 
@@ -89,6 +92,7 @@
             </li>
             <!-- End - summary link -->
 
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 4)
             <!-- Start - Import File collapse -->
             <li class="panel">
                 <a href="#" data-toggle="collapse" data-target="#submenuImportLaporan" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'la03') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la06') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la07') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la09') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la012') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la11') !== false) active @endif">
@@ -106,8 +110,8 @@
                 </div>
             </li>
             <!-- End - Import File collapse -->
-            <!-- End - Import data Link -->
             @endif
+            <!-- End - Import data Link -->
         </ul>
         <button type="button" class="btn-toggle-minified" title="Toggle Minified Menu"><i class="ti-arrows-horizontal"></i></button>
     </nav>

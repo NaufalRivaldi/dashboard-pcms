@@ -25,7 +25,7 @@
         <br/>
 
         <!-- Start - row 1 -->
-		<table width="50%">
+		<table width="100%">
             <tr>
                 <td>Kode Cabang:</td>
                 <td>{{ $summary->cabang->kode }}</td>

@@ -19,7 +19,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Bulan</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ setMonth($siswaCuti->bulan) }}</div>
+        <div class="col-sm-8">{{ strtoupper(setMonth($siswaCuti->bulan)) }}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Tahun</div>
@@ -29,7 +29,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Jumlah Total Siswa Cuti</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ $siswaCuti->jumlah }} Orang</div>
+        <div class="col-sm-8">{{ $siswaCuti->jumlah }}</div>
     </div>
     <!-- End - Detail siswaCuti -->
 @endsection

@@ -123,7 +123,7 @@
 @section('modal')
     <!-- Start - Modal Validation -->
     <div class="modal fade" id="modalValidation" tabindex="-1" aria-labelledby="modalValidationLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalValidationLabel">Verifikasi Import Summary</h5>
@@ -137,12 +137,12 @@
                             <button class="btn btn-success btn-block btn-approve">Approve</button>
                         </div>
                         <div class="col-sm-6">
-                            <button class="btn btn-secondary btn-block" data-dismiss="modal">Pending</button>
+                            <button class="btn btn-secondary btn-block btn-pending" data-dismiss="modal">Pending</button>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui ab labore exercitationem iste velit modi, rem eligendi? Totam aspernatur tenetur delectus porro dolores. Facilis necessitatibus aperiam officia ipsum similique ratione.</p>
+                    <p>Apakah Data sudah Valid / Benar ? Apabila sudah valid klik Approve, jika belum valid klik Pending.</p>
                 </div>
             </div>
         </div>
@@ -188,7 +188,8 @@
                     location.reload();
                     // ------------------------------------------------------------
                     Vue.nextTick(function () {
-                        toastr.success(data.message);    
+                        if(data.status) toastr.success(data.message);    
+                        else toastr.error(data.message);
                     })
                     // ------------------------------------------------------------
                 })
@@ -196,7 +197,38 @@
                 // If request error
                 // ----------------------------------------------------------------
                 request.catch((error)=>{
-                    toastr.error(error.message);
+                    toastr.error(error.response.data.message);
+                })
+                // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // Validation pending function
+            // --------------------------------------------------------------------
+            pending: function(){
+                // ----------------------------------------------------------------
+                let url = "{{ route('import.summary.show.pending', ':id') }}";
+                url = url.replace(':id', "{{ $summary->id }}");
+                let request = axios.put(url);
+                // ----------------------------------------------------------------
+                // If request success
+                // ----------------------------------------------------------------
+                request.then((response)=>{
+                    // ------------------------------------------------------------
+                    let data = response.data;
+                    // ------------------------------------------------------------
+                    Vue.nextTick(function () {
+                        if(data.status) toastr.success(data.message);    
+                        else toastr.error(data.message);
+                    })
+                    // ------------------------------------------------------------
+                })
+                // ----------------------------------------------------------------
+                // If request error
+                // ----------------------------------------------------------------
+                request.catch((error)=>{
+                    toastr.error(error.response.data.message);
                 })
                 // ----------------------------------------------------------------
             },
@@ -217,6 +249,14 @@
             // --------------------------------------------------------------------
             $(document).on('click', '.btn-approve', function(){
                 vm.approve();
+            })
+            // --------------------------------------------------------------------
+
+            // --------------------------------------------------------------------
+            // pending event
+            // --------------------------------------------------------------------
+            $(document).on('click', '.btn-pending', function(){
+                vm.pending();
             })
             // --------------------------------------------------------------------
         },

@@ -23,7 +23,7 @@
     <!-- Start - Filter data -->
     <!-- Start - Change year or month -->
     <div class="custom-control custom-switch">
-        <input type="checkbox" v-model="filterState" class="custom-control-input" id="switchForm">
+        <input type="checkbox" v-model="filterState" class="custom-control-input" id="switchForm" @click="setMonthPicker()">
         <label class="custom-control-label" for="switchForm">Filter per tahun?</label>
     </div>
     <!-- Emd - Change year or month -->
@@ -132,31 +132,31 @@
 
     <template v-else>
         <!-- Start - Analisis chart penerimaan -->
-        @include('backend.analisa.includes.chart-penerimaan')
+        @include('backend.analisa.self.includes.chart-penerimaan')
         <!-- End - Analisis chart royalti -->
 
         <hr>
 
         <!-- Start - Analisis chart royalti -->
-        @include('backend.analisa.includes.chart-royalti')
+        @include('backend.analisa.self.includes.chart-royalti')
         <!-- End - Analisis chart royalti -->
 
         <hr>
 
         <!-- Start - Analisis chart siswa -->
-        @include('backend.analisa.includes.chart-siswa')
+        @include('backend.analisa.self.includes.chart-siswa')
         <!-- End - Analisis chart siswa -->
 
         <hr>
 
         <!-- Start - Analisis chart siswa-jurusan -->
-        @include('backend.analisa.includes.chart-siswa-jurusan')
+        @include('backend.analisa.self.includes.chart-siswa-jurusan')
         <!-- End - Analisis chart siswa-jurusan -->
 
         <hr>
 
         <!-- Start - Analisis chart siswa-pendidikan -->
-        @include('backend.analisa.includes.chart-siswa-pendidikan')
+        @include('backend.analisa.self.includes.chart-siswa-pendidikan')
         <!-- End - Analisis chart siswa-pendidikan -->
     </template>
 @endsection
@@ -219,6 +219,14 @@
                         }, 
                     }, 
                 }, 
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                }
             })
         }
     })
@@ -274,7 +282,7 @@
                             return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
                         }, 
                     }, 
-                }, 
+                },
             })
         }
     })
@@ -303,6 +311,14 @@
                         }, 
                     }, 
                 }, 
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
             })
         }
     })
@@ -330,6 +346,14 @@
                             return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
                         }, 
                     }, 
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
                 }, 
             })
         }
@@ -524,8 +548,23 @@
                 // ----------------------------------------------------------------
                 window.open(url, '_blank');
                 // ----------------------------------------------------------------
-            }
+            },
             // --------------------------------------------------------------------
+
+            setMonthPicker: function(){
+                setTimeout(() => {
+                    $('.date-picker-month').datepicker( {
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        dateFormat: 'MM yy',
+                        onClose: function(dateText, inst) { 
+                            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                            let val = new Date(inst.selectedYear, inst.selectedMonth, 1);
+                        }
+                    });
+                }, 200);
+            },
         },
         // ------------------------------------------------------------------------
 

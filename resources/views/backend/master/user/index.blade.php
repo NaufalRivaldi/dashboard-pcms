@@ -8,7 +8,8 @@
     <th>Nama</th>
     <th>Username</th>
     <th>Email</th>
-    <th data-type="select" data-filtering='{!! parseJson($filtering->level) !!}'>Kategori</th>
+    <th>Cabang</th>
+    <th data-type="select" data-filtering='{!! parseJson($filtering->level) !!}'>Level</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->status) !!}'>Status</th>
     <th>Action</th>
 @endsection
@@ -19,6 +20,7 @@
         ["data" => "nama", "name" => "nama", "defaultContent" => "-"],
         ["data" => "username", "name" => "username", "defaultContent" => "-"],
         ["data" => "email", "name" => "email", "defaultContent" => "-"],
+        ["data" => "cabang_user.nama", "name" => "cabang_user.nama", "defaultContent" => "-"],
         ["data" => "level.nama", "name" => "level.nama", "defaultContent" => "-"],
         ["data" => "status", "name" => "status", "defaultContent" => "-"],
         ["data" => "action", "name" => "action", "orderable" => false, "searchable" => false],

@@ -51,6 +51,19 @@ class SummaryController extends Controller
                 // ------------------------------------------------------------
                 // Set level view for list
                 // ------------------------------------------------------------
+                // View owner
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 2){
+                    // --------------------------------------------------------
+                    $cabangs = [];
+                    foreach(Auth::user()->cabangs as $row){ array_push($cabangs, $row->id); }
+                    // --------------------------------------------------------
+                    $summarys->whereIn('cabang_id', $cabangs);
+                    // --------------------------------------------------------
+                }
+                // ------------------------------------------------------------
+                // View user
+                // ------------------------------------------------------------
                 if(Auth::user()->level_id == 4){
                     $summarys->where('cabang_id', Auth::user()->cabang_id);
                 }
@@ -67,7 +80,7 @@ class SummaryController extends Controller
                 $datatable = $datatable->addColumn('action', function($row){
                                     $button = '<div class="btn-group" role="group" aria-label="Basic example">';
                                     $button .= '<a href="'.route('import.summary.show', $row->id).'" class="btn btn-sm btn-info"><i class="ti-eye"></i></a>';
-                                    $button .= '<a href="'.route('import.summary.edit', $row->id).'" class="btn btn-sm btn-warning '. ($row->status == 1 ? 'disabled' : '') .'"><i class="ti-settings"></i></a>';
+                                    // $button .= '<a href="'.route('import.summary.edit', $row->id).'" class="btn btn-sm btn-warning '. ($row->status == 1 ? 'disabled' : '') .'"><i class="ti-settings"></i></a>';
                                     $button .= '<button type="button" data-id="'.$row->id.'" class="btn btn-sm btn-danger btn-delete" '. ($row->status == 1 ? 'disabled' : '') .'><i class="ti-trash"></i></button>';
                                     $button .= '</div>';
 

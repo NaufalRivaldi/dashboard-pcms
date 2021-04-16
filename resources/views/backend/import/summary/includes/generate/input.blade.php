@@ -76,6 +76,10 @@
                             <td>@{{ detail.materi.nama }}</td>
                             <td>@{{ detail.jumlah }}</td>
                         </tr>
+                        <tr>
+                            <th>Total</th>
+                            <th>@{{ sumJumlah(this.import.la06.siswa_aktif_details) | numeral('0,0') }}</th>
+                        </tr>
                     </table>
                 </div>
                 <!-- End - result -->
@@ -112,6 +116,10 @@
                         <tr v-for="(detail, index) in this.import.la07.siswa_aktif_pendidikan_details">
                             <td>@{{ detail.pendidikan.nama }}</td>
                             <td>@{{ detail.jumlah }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <th>@{{ sumJumlah(this.import.la07.siswa_aktif_pendidikan_details) | numeral('0,0') }}</th>
                         </tr>
                     </table>
                 </div>

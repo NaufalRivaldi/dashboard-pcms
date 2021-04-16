@@ -19,7 +19,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Bulan</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ setMonth($siswaAktif->bulan) }}</div>
+        <div class="col-sm-8">{{ strtoupper(setMonth($siswaAktif->bulan)) }}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Tahun</div>
@@ -29,13 +29,13 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Jumlah Total Siswa Aktif</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ $siswaAktif->siswa_aktif_details->sum('jumlah') }} Orang</div>
+        <div class="col-sm-8">{{ $siswaAktif->siswa_aktif_details->sum('jumlah') }}</div>
     </div>
     <!-- End - Detail siswaAktif -->
 
     <hr>
 
-    <h5>Detail siswaAktif</h5>
+    <h5>Detail Siswa Aktif Berdasarkan Jurusan</h5>
 @endsection
 
 @section('content-table')

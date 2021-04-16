@@ -33,7 +33,7 @@ class Cabang extends Model
     }
     // --------------------------------------------------------------------------------
     public function cabang_users(){
-        return $this->hasMany(User::class, 'user_id');
+        return $this->hasMany(User::class, 'cabang_id');
     }
     // --------------------------------------------------------------------------------
     public function pembayarans(){

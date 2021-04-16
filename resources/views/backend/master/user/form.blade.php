@@ -68,7 +68,7 @@
             <div class="label-form">Level</div>
         </label>
         <div class="col-sm-10 input-form">
-            <select name="level_id" class="form-control @if($errors->has('level_id')) is-invalid @endif" required>
+            <select name="level_id" v-model="level_id" class="form-control @if($errors->has('level_id')) is-invalid @endif" required>
                 <option value="">Pilih</option>
                 @foreach($level as $id => $value)
                     <option value="{{ $id }}" @if($id == $user->level_id) selected @endif>{{ $value }}</option>
@@ -83,9 +83,8 @@
     </div>
     <!-- End - level_id -->
 
-    @if(Auth::user()->level_id == 4)
     <!-- Start - cabang_id -->
-    <div class="form-group row">
+    <div class="form-group row" v-if="level_id == 4">
         <label class="col-sm-2 col-form-label">
             <span class="badge badge-success">Optional</span><br>
             <div class="label-form">Cabang</div>
@@ -105,7 +104,6 @@
         </div>
     </div>
     <!-- End - cabang_id -->
-    @endif
 
     <!-- Start - Button -->
     <div class="row">
@@ -138,7 +136,7 @@
         // Data for user page
         // ------------------------------------------------------------------------
         data: {
-            //
+            level_id: "{{ $user->level_id }}",
         },
         // ------------------------------------------------------------------------
 

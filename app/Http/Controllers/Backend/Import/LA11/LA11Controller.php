@@ -49,6 +49,23 @@ class LA11Controller extends Controller
                 // ------------------------------------------------------------
                 $siswaCutis = SiswaCuti::with('cabang', 'user');
                 // ------------------------------------------------------------
+                // View owner
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 2){
+                    // --------------------------------------------------------
+                    $cabangs = [];
+                    foreach(Auth::user()->cabangs as $row){ array_push($cabangs, $row->id); }
+                    // --------------------------------------------------------
+                    $siswaCutis->whereIn('cabang_id', $cabangs);
+                    // --------------------------------------------------------
+                }
+                // ------------------------------------------------------------
+                // View user cabang
+                // ------------------------------------------------------------
+                if(Auth::user()->level_id == 4){
+                    $siswaCutis->where('cabang_id', Auth::user()->cabang_id);
+                }
+                // ------------------------------------------------------------
                 $datatable = datatables()->of($siswaCutis)->addIndexColumn();
                 // ------------------------------------------------------------
                 // Add column
@@ -153,14 +170,26 @@ class LA11Controller extends Controller
             // ----------------------------------------------------------------
             // Check cabang and user owner if it's exits
             // ----------------------------------------------------------------
-            if(Auth::user()->level_id != 1){
-                $cabang = Cabang::where('kode', strtoupper($vwSiswaCutis->random()->cabang))->where('status', 1)->where('user_id', Auth::user()->id)->first();
-            }else{
+            // Admin
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 1){
                 $cabang = Cabang::where('kode', strtoupper($vwSiswaCutis->random()->cabang))->where('status', 1)->first();
             }
             // ----------------------------------------------------------------
+            // Owner
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 2){
+                $cabang = Cabang::where('kode', strtoupper($vwSiswaCutis->random()->cabang))->where('status', 1)->where('user_id', Auth::user()->id)->first();
+            }
+            // ----------------------------------------------------------------
+            // User
+            // ----------------------------------------------------------------
+            if(Auth::user()->level_id == 4){
+                $cabang = Cabang::where('kode', strtoupper($vwSiswaCutis->random()->cabang))->where('status', 1)->where('id', Auth::user()->cabang_id)->first();
+            }
+            // ----------------------------------------------------------------
             if(empty($cabang)){
-                return redirect()->route('import.la11.index')->with('danger', __('Cabang tidak sesuai dengan user owner, silahkan masukkan data yang benar'));
+                return redirect()->route('import.la11.import')->with('danger', __('Cabang tidak sesuai dengan user, silahkan masukkan data dengan cabang yang benar'));
             }
             // ----------------------------------------------------------------
             // Check siswa aktif
@@ -190,7 +219,7 @@ class LA11Controller extends Controller
             return redirect()->route('import.la11.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('import.la11.index')->with('danger', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('import.la11.import')->with('danger', 'Format CSV tidak sesuai!');
         }
         // --------------------------------------------------------------------
     }

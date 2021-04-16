@@ -48,7 +48,7 @@ class UserController extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $users = User::with('level')
+                $users = User::with('level', 'cabang_user')
                             ->select('user.*');
                 // ------------------------------------------------------------
                 $datatable = datatables()->of($users)->addIndexColumn();
@@ -131,6 +131,7 @@ class UserController extends Controller
             'nama'              => 'required|max:191',
             'username'          => 'required|max:191',
             'email'             => 'required|email|unique:user,email',
+            'cabang_id'         => 'nullable',
             'level_id'          => 'required',
         ])->validate();
         // --------------------------------------------------------------------
@@ -142,13 +143,14 @@ class UserController extends Controller
             // ----------------------------------------------------------------
             $data = $request->all();
             $data['password'] = bcrypt('123456');
+            if($data['level_id'] != 4) $data['cabang_id'] = null;
             // ----------------------------------------------------------------
             User::create($data);
             // ----------------------------------------------------------------
             return redirect()->route('master.user.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.user.index')->with('success', __('label.FAIL_CREATE_MESSAGE'));
+            return redirect()->route('master.user.create')->with('danger', __('label.FAIL_CREATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
@@ -220,13 +222,14 @@ class UserController extends Controller
             $user->nama                 = $data['nama'];
             $user->username             = $data['username'];
             $user->email                = $data['email'];
+            $user->cabang_id            = $data['level_id'] != 4 ? null : $data['cabang_id'];
             $user->level_id             = $data['level_id'];
             $user->save();
             // ----------------------------------------------------------------
             return redirect()->route('master.user.index')->with('success', __('label.SUCCESS_UPDATE_MESSAGE'));
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            return redirect()->route('master.user.index')->with('success', __('label.FAIL_UPDATE_MESSAGE'));
+            return redirect()->route('master.user.edit', $id)->with('danger', __('label.FAIL_UPDATE_MESSAGE'));
         }
         // --------------------------------------------------------------------
     }
