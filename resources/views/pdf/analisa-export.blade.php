@@ -345,8 +345,8 @@
                 <!-- Start - Table uang siswa -->
             </div>
             <!-- End - Analisis chart siswa-pendidikan -->
-        </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Vendor -->
     <script src="{{ asset('assets/js/vendor.min.js') }}"></script>

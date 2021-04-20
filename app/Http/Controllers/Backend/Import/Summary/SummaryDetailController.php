@@ -118,6 +118,7 @@ class SummaryDetailController extends Controller
             return response()->json($data);
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
+            dd($th);
             $data->status   = false;
             $data->message  = 'Notifikasi data pending gagal dikirimkan';
             return response()->json($data);

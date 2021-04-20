@@ -23,7 +23,7 @@
     <!-- Start - Filter data -->
     <!-- Start - Change year or month -->
     <div class="custom-control custom-switch">
-        <input type="checkbox" v-model="filterState" class="custom-control-input" id="switchForm">
+        <input type="checkbox" v-model="filterState" class="custom-control-input" id="switchForm" @click="setMonthPicker()">
         <label class="custom-control-label" for="switchForm">Filter per tahun?</label>
     </div>
     <!-- Emd - Change year or month -->
@@ -68,8 +68,8 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label>Cabang</label>
-                <select name="cabang_id" class="form-control select2" :disabled="filter.cabang == false ? true : false">
+                <label>Cabang Pertama</label>
+                <select name="cabang_id_1" class="form-control select2" :disabled="filter.cabang == false ? true : false">
                     <option value="">Pilih</option>
                     @foreach($cabangs as $id => $value)
                         <option value="{{ $id }}">{{ $value }}</option>
@@ -84,8 +84,22 @@
 
         <div class="col-md-3">
             <div class="form-group">
-                <label>Wilayah</label>
-                <select name="wilayah_id" class="form-control select2" :disabled="filter.wilayah == false ? true : false">
+                <label>Cabang Kedua</label>
+                <select name="cabang_id_2" class="form-control select2" :disabled="filter.cabang == false ? true : false">
+                    <option value="">Pilih</option>
+                    @foreach($cabangs as $id => $value)
+                        <option value="{{ $id }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Wilayah Pertama</label>
+                <select name="wilayah_id_1" class="form-control select2" :disabled="filter.wilayah == false ? true : false">
                     <option value="">Pilih</option>
                     @foreach($wilayahs as $id => $value)
                         <option value="{{ $id }}">{{ $value }}</option>
@@ -100,8 +114,22 @@
 
         <div class="col-md-3">
             <div class="form-group">
-                <label>Sub Wilayah</label>
-                <select name="sub_wilayah_id" class="form-control select2" :disabled="filter.subWilayah == false ? true : false">
+                <label>Wilayah Kedua</label>
+                <select name="wilayah_id_2" class="form-control select2" :disabled="filter.wilayah == false ? true : false">
+                    <option value="">Pilih</option>
+                    @foreach($wilayahs as $id => $value)
+                        <option value="{{ $id }}">{{ $value }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Sub Wilayah Pertama</label>
+                <select name="sub_wilayah_id_1" class="form-control select2" :disabled="filter.subWilayah == false ? true : false">
                     <option value="">Pilih</option>
                     @foreach($subWilayahs as $id => $value)
                         <option value="{{ $id }}">{{ $value }}</option>
@@ -111,6 +139,18 @@
                 <!-- Start - Checkbox -->
                 <input type="checkbox" v-model="filter.subWilayah" @click="checkFilter('subWilayah')"> Filter sesuai dengan sub wilayah?
                 <!-- End - Checkbox -->
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Sub Wilayah Kedua</label>
+                <select name="sub_wilayah_id_2" class="form-control select2" :disabled="filter.subWilayah == false ? true : false">
+                    <option value="">Pilih</option>
+                    @foreach($subWilayahs as $id => $value)
+                        <option value="{{ $id }}">{{ $value }}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
 
@@ -216,9 +256,30 @@
                     callbacks: { 
                         label: function(tooltipItem, data) { 
                             return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
-                        }, 
+                        }
                     }, 
                 }, 
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true,
+                    },
+                    xAxes: [
+                        {
+                            ticks: {
+                                callback: function(label) {
+                                    if (/\s/.test(label)) {
+                                        return label.replace(" / ", " ").split(" ");
+                                    }else{
+                                        return label;
+                                    }              
+                                }
+                            }
+                        }
+                    ]
+                }
             })
         }
     })
@@ -247,6 +308,21 @@
                         }, 
                     }, 
                 }, 
+                scales: {
+                    xAxes: [
+                        {
+                            ticks: {
+                                callback: function(label) {
+                                    if (/\s/.test(label)) {
+                                        return label.replace(" / ", " ").split(" ");
+                                    }else{
+                                        return label;
+                                    }              
+                                }
+                            }
+                        }
+                    ]
+                }
             })
         }
     })
@@ -274,7 +350,28 @@
                             return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
                         }, 
                     }, 
-                }, 
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true,
+                    },
+                    xAxes: [
+                        {
+                            ticks: {
+                                callback: function(label) {
+                                    if (/\s/.test(label)) {
+                                        return label.replace(" / ", " ").split(" ");
+                                    }else{
+                                        return label;
+                                    }              
+                                }
+                            }
+                        }
+                    ]
+                }
             })
         }
     })
@@ -303,6 +400,14 @@
                         }, 
                     }, 
                 }, 
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
             })
         }
     })
@@ -330,6 +435,14 @@
                             return tooltipItem.yLabel.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
                         }, 
                     }, 
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                    },
+                    y: {
+                        stacked: true
+                    }
                 }, 
             })
         }
@@ -362,7 +475,7 @@
             // --------------------------------------------------------------------
             // Chart global data
             // --------------------------------------------------------------------
-            cabang: "{{ $cabang }}",
+            cabang: null,
             wilayah: null,
             subWilayah: null,
             labels: @json($labels),
@@ -372,31 +485,83 @@
             // Chart uang penerimaan (uang daftar, uang kursus, total penerimaan)
             // --------------------------------------------------------------------
             chartPenerimaan: {
-                dataSets: @json($dataSetPenerimaan),
+                dataSets: 
+                [
+                    {
+                        'label'             : 'Total Penerimaan',
+                        'backgroundColor'   : '#f39c12',
+                        'data'              : [],
+                        'type'              : 'line',
+                        'fill'              : false,
+                        'borderColor'       : '#f39c12',
+                        'tension'           : 0,
+                    },
+                    {
+                        'label'             : 'Uang Pendaftaran',
+                        'backgroundColor'   : '#3498db',
+                        'data'              : [],
+                        'stack'             : 'stack_1'    
+                    },
+                    {
+                        'label'             : 'Uang Kursus',
+                        'backgroundColor'   : '#1abc9c',
+                        'data'              : [],
+                        'stack'             : 'stack_1'
+                    }
+                ],
             },
             // --------------------------------------------------------------------
             // Chart uang royalti
             // --------------------------------------------------------------------
             chartRoyalti: {
-                dataSets: @json($dataSetRoyalti),
+                dataSets: 
+                [
+                    {
+                        'label'             : 'Royalti',
+                        'backgroundColor'   : '#74b9ff',
+                        'data'              : [],
+                    },
+                ],
             },
             // --------------------------------------------------------------------
             // Chart siswa
             // --------------------------------------------------------------------
             chartSiswaAktif: {
-                dataSets: @json($dataSetSiswaAktif),
+                dataSets:
+                [
+                    {
+                        'label'             : 'Siswa Aktif',
+                        'backgroundColor'   : '#3498db',
+                        'data'              : [],
+                    },
+                    {
+                        'label'             : 'Siswa Baru',
+                        'backgroundColor'   : '#d35400',
+                        'data'              : [],
+                    },
+                    {
+                        'label'             : 'Siswa Cuti',
+                        'backgroundColor'   : '#27ae60',
+                        'data'              : [],
+                    },
+                    {
+                        'label'             : 'Siswa Keluar',
+                        'backgroundColor'   : '#8e44ad',
+                        'data'              : [],
+                    },
+                ],
             },
             // --------------------------------------------------------------------
             // Chart siswa aktif jurusan
             // --------------------------------------------------------------------
             chartSiswaAktifJurusan: {
-                dataSets: @json($dataSetSiswaAktifJurusan),
+                dataSets: [],
             },
             // --------------------------------------------------------------------
             // Chart siswa aktif pendidikan
             // --------------------------------------------------------------------
             chartSiswaAktifPendidikan: {
-                dataSets: @json($dataSetSiswaAktifPendidikan),
+                dataSets: [],
             },
             // --------------------------------------------------------------------
         },
@@ -410,6 +575,22 @@
         // Methods for Cabang page
         // ------------------------------------------------------------------------
         methods: {
+            // --------------------------------------------------------------------
+            // Sum with different index
+            // --------------------------------------------------------------------
+            sumBy: function(array, mod){
+                // ----------------------------------------------------------------
+                let total = 0;
+                // ----------------------------------------------------------------
+                $.each(array, function(index, value){
+                    if(index % 2 == mod) total += parseInt(value);
+                });
+                // ----------------------------------------------------------------
+                return total;
+                // ----------------------------------------------------------------
+            },
+            // --------------------------------------------------------------------
+
             // --------------------------------------------------------------------
             // Check filter condition form
             // --------------------------------------------------------------------
@@ -449,20 +630,26 @@
                 let endDate     = $("input[name='endDate']").val();
                 let startYear   = $("select[name='startYear']").val();
                 let endYear     = $("select[name='endYear']").val();
-                let cabang_id   = $("select[name='cabang_id']").val();
-                let wilayah_id  = $("select[name='wilayah_id']").val();
-                let sub_wilayah_id   = $("select[name='sub_wilayah_id']").val();
+                let cabang_id_1   = $("select[name='cabang_id_1']").val();
+                let cabang_id_2   = $("select[name='cabang_id_2']").val();
+                let wilayah_id_1  = $("select[name='wilayah_id_1']").val();
+                let wilayah_id_2  = $("select[name='wilayah_id_2']").val();
+                let sub_wilayah_id_1   = $("select[name='sub_wilayah_id_1']").val();
+                let sub_wilayah_id_2   = $("select[name='sub_wilayah_id_2']").val();
                 let data = {
                     startDate: startDate,
                     endDate: endDate,
                     startYear: startYear,
                     endYear: endYear,
-                    cabang_id: cabang_id,
-                    wilayah_id: wilayah_id,
-                    sub_wilayah_id: sub_wilayah_id,
+                    cabang_id_1: cabang_id_1,
+                    cabang_id_2: cabang_id_2,
+                    wilayah_id_1: wilayah_id_1,
+                    wilayah_id_2: wilayah_id_2,
+                    sub_wilayah_id_1: sub_wilayah_id_1,
+                    sub_wilayah_id_2: sub_wilayah_id_2,
                 };
                 // ----------------------------------------------------------------
-                let request = axios.post("{{ route('main.analisa.search') }}", data);
+                let request = axios.post("{{ route('main.compare.search') }}", data);
                 // ----------------------------------------------------------------
 
                 // ----------------------------------------------------------------
@@ -487,10 +674,6 @@
                     }
                     // ------------------------------------------------------------
                     this.status.loading = false;
-
-                    setTimeout(() => {
-                        $('.defaultDatatable').DataTable({ "ordering": false });
-                    }, 500);
                 })
                 // ----------------------------------------------------------------
 
@@ -500,10 +683,6 @@
                 request.catch((error)=>{
                     toastr.error(error.response.data.message);
                     this.status.loading = false;
-
-                    setTimeout(() => {
-                        $('.defaultDatatable').DataTable({ "ordering": false });
-                    }, 500);
                 })
                 // ----------------------------------------------------------------
             },
@@ -516,16 +695,34 @@
                 let endDate     = $("input[name='endDate']").val();
                 let startYear   = $("select[name='startYear']").val();
                 let endYear     = $("select[name='endYear']").val();
-                let cabang_id   = $("select[name='cabang_id']").val();
-                let wilayah_id  = $("select[name='wilayah_id']").val();
-                let sub_wilayah_id   = $("select[name='sub_wilayah_id']").val();
+                let cabang_id_1 = $("select[name='cabang_id_1']").val();
+                let cabang_id_2 = $("select[name='cabang_id_2']").val();
+                let wilayah_id_1        = $("select[name='wilayah_id_1']").val();
+                let wilayah_id_2        = $("select[name='wilayah_id_2']").val();
+                let sub_wilayah_id_1    = $("select[name='sub_wilayah_id_1']").val();
+                let sub_wilayah_id_2    = $("select[name='sub_wilayah_id_2']").val();
                 // ----------------------------------------------------------------
-                let url = "{{ route('main.analisa.export') }}?start_date="+startDate+"&end_date="+endDate+"&start_year="+startYear+"&end_year="+endYear+"&cabang_id="+cabang_id+"&wilayah_id="+wilayah_id+"&sub_wilayah_id="+sub_wilayah_id;
+                let url = "{{ route('main.compare.export') }}?start_date="+startDate+"&end_date="+endDate+"&start_year="+startYear+"&end_year="+endYear+"&cabang_id_1="+cabang_id_1+"&cabang_id_2="+cabang_id_2+"&wilayah_id_1="+wilayah_id_1+"&wilayah_id_2="+wilayah_id_2+"&sub_wilayah_id_1="+sub_wilayah_id_1+"&sub_wilayah_id_2="+sub_wilayah_id_2;
                 // ----------------------------------------------------------------
                 window.open(url, '_blank');
                 // ----------------------------------------------------------------
-            }
+            },
             // --------------------------------------------------------------------
+
+            setMonthPicker: function(){
+                setTimeout(() => {
+                    $('.date-picker-month').datepicker( {
+                        changeMonth: true,
+                        changeYear: true,
+                        showButtonPanel: true,
+                        dateFormat: 'MM yy',
+                        onClose: function(dateText, inst) { 
+                            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                            let val = new Date(inst.selectedYear, inst.selectedMonth, 1);
+                        }
+                    });
+                }, 200);
+            },
         },
         // ------------------------------------------------------------------------
 

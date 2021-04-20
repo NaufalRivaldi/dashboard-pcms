@@ -19,12 +19,12 @@
 </div>
 <hr>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-12">
         <chart-siswa :dataset="chartSiswaAktif.dataSets" :label="labels"></chart-siswa>
     </div>
 
     <!-- Start - Table uang siswa -->
-    <div class="col-md-6">
+    <div class="col-md-12">
         <table class="table table-striped table-bordered defaultDatatable">
             <thead>
                 <tr>

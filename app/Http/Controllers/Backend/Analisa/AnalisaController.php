@@ -31,8 +31,8 @@ class AnalisaController extends Controller
         // --------------------------------------------------------------------
         // Init data
         // --------------------------------------------------------------------
-        $filterDate[0] = viewDate(Carbon::now()->startOfYear()->format('Y-m-d'));
-        $filterDate[1] = viewDate(Carbon::now()->endOfYear()->format('Y-m-d'));
+        $filterDate[0] = viewDate(Carbon::now()->firstOfMonth()->subYears(1)->addMonth(1)->format('Y-m-d'));
+        $filterDate[1] = viewDate(Carbon::now()->firstOfMonth()->format('Y-m-d'));
         // --------------------------------------------------------------------
         $item->filterDate = $filterDate;
         // --------------------------------------------------------------------
@@ -412,6 +412,7 @@ class AnalisaController extends Controller
             ],
             [
                 'label'             => 'Uang Pendaftaran',
+                'labels'            => ['London', 'New York', 'Paris', 'Moscow', 'Mumbai'],
                 'backgroundColor'   => '#3498db',
                 'data'              => $totalPendaftaran,
                 'stack'             => 'stack_1'
