@@ -59,9 +59,11 @@
             <!-- End - Master Link -->
             @endif
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 3)
             <!-- Start - Main Link -->
             <li class="menu-group">Main</li>
+
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
             <!-- Start - Analisa collapse -->
             <li class="panel">
                 <a href="#" data-toggle="collapse" data-target="#submenuAnalisa" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'analisa') !== false) active @endif @if(strpos(Route::currentRouteName(), 'compare') !== false) active @endif @if(strpos(Route::currentRouteName(), 'grade') !== false) active @endif">
@@ -75,6 +77,26 @@
                 </div>
             </li>
             <!-- End - Analisa collapse -->
+            @endif
+
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 3)
+            <!-- Start - Report collapse -->
+            <li class="panel">
+                <a href="#" data-toggle="collapse" data-target="#submenuReport" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'report') !== false) active @endif">
+                    <i class="ti-receipt"></i> <span class="title">Report</span><i class="icon-submenu ti-angle-left"></i>
+                </a>
+                <div id="submenuReport" class="collapse">
+                    <ul class="submenu">
+                        <li><a href="{{ route('main.report.unreport.index') }}">Report Cabang Belum Import Data</a></li>
+                        <li><a href="{{ route('main.report.top5.index') }}">Top 5</a></li>
+                        <li><a href="{{ route('main.report.under5.index') }}">Under 5</a></li>
+                        <li><a href="{{ route('main.report.all.index') }}">All Cabang</a></li>
+                    </ul>
+                </div>
+            </li>
+            <!-- End - Report collapse -->
+            @endif
+
             <!-- End - Main Link -->
             @endif
 

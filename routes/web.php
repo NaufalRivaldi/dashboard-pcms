@@ -404,5 +404,51 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
         // ----------------------------------------------------------------
     });
     // --------------------------------------------------------------------
+
+    // --------------------------------------------------------------------
+    // Report page
+    // --------------------------------------------------------------------
+    Route::namespace('Report')->prefix('report')->middleware(['level:1,2,3'])->name('main.report.')->group(function(){
+        // ----------------------------------------------------------------
+        //  Cabang unreport page
+        // ----------------------------------------------------------------
+        Route::namespace('UnReport')->prefix('unreport')->group(function(){
+            Route::get('/', 'UnReportController@index')->name('unreport.index');
+            Route::post('/', 'UnReportController@search')->name('unreport.search');
+            Route::get('/export', 'UnReportController@export')->name('unreport.export');
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Cabang top5 page
+        // ----------------------------------------------------------------
+        Route::namespace('Top5')->prefix('top5')->group(function(){
+            Route::get('/', 'Top5Controller@index')->name('top5.index');
+            Route::post('/', 'Top5Controller@search')->name('top5.search');
+            Route::get('/export', 'Top5Controller@export')->name('top5.export');
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Cabang under5 page
+        // ----------------------------------------------------------------
+        Route::namespace('Under5')->prefix('under5')->group(function(){
+            Route::get('/', 'Under5Controller@index')->name('under5.index');
+            Route::post('/', 'Under5Controller@search')->name('under5.search');
+            Route::get('/export', 'Under5Controller@export')->name('under5.export');
+        });
+        // ----------------------------------------------------------------
+
+        // ----------------------------------------------------------------
+        //  Cabang All page
+        // ----------------------------------------------------------------
+        Route::namespace('All')->prefix('all')->group(function(){
+            Route::get('/', 'AllController@index')->name('all.index');
+            Route::post('/', 'AllController@search')->name('all.search');
+            Route::get('/export', 'AllController@export')->name('all.export');
+        });
+        // ----------------------------------------------------------------
+    });
+    // --------------------------------------------------------------------
 });
 // ------------------------------------------------------------------------
