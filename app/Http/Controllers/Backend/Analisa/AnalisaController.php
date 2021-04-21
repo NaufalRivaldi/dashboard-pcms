@@ -327,7 +327,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalPendaftaran[] = $row->total_up;
+                        $totalPendaftaran[] = (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -339,7 +339,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalKursus[] = $row->total_k;
+                        $totalKursus[] = (int)$row->total_k;
                         $status = false;
                     }
                 }
@@ -351,7 +351,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $totalPenerimaan[] = (int)$row->total_k + (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -365,7 +365,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalPendaftaran[] = $row->total_up;
+                        $totalPendaftaran[] = (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -377,7 +377,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalKursus[] = $row->total_k;
+                        $totalKursus[] = (int)$row->total_k;
                         $status = false;
                     }
                 }
@@ -389,7 +389,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $totalPenerimaan[] = (int)$row->total_k + $row->total_up;
                         $status = false;
                     }
                 }
@@ -530,7 +530,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $totalRoyalti[] = ((int)$row->total_k + (int)$row->total_up) * 0.1;
                         $status = false;
                     }
                 }
@@ -545,7 +545,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $totalRoyalti[] = ((int)$row->total_k + (int)$row->total_up) * 0.1;
                         $status = false;
                     }
                 }
@@ -672,7 +672,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalSiswaAktif[] = $row->total_sa;
+                        $totalSiswaAktif[] = (int)$row->total_sa;
                         $status = false;
                     }
                 }
@@ -683,7 +683,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalSiswaBaru[] = $row->total_sb;
+                        $totalSiswaBaru[] = (int)$row->total_sb;
                         $status = false;
                     }
                 }
@@ -694,7 +694,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalSiswaCuti[] = $row->total_sc;
+                        $totalSiswaCuti[] = (int)$row->total_sc;
                         $status = false;
                     }
                 }
@@ -705,7 +705,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->bulan == $bulan && $row->tahun == $tahun){
-                        $totalSiswaKeluar[] = $row->total_sk;
+                        $totalSiswaKeluar[] = (int)$row->total_sk;
                         $status = false;
                     }
                 }
@@ -720,7 +720,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalSiswaAktif[] = $row->total_sa;
+                        $totalSiswaAktif[] = (int)$row->total_sa;
                         $status = false;
                     }
                 }
@@ -731,7 +731,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalSiswaBaru[] = $row->total_sb;
+                        $totalSiswaBaru[] = (int)$row->total_sb;
                         $status = false;
                     }
                 }
@@ -742,7 +742,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalSiswaCuti[] = $row->total_sc;
+                        $totalSiswaCuti[] = (int)$row->total_sc;
                         $status = false;
                     }
                 }
@@ -753,7 +753,7 @@ class AnalisaController extends Controller
                 $status = true;
                 foreach($query->get() as $row){
                     if($row->tahun == $labels[$i]){
-                        $totalSiswaKeluar[] = $row->total_sk;
+                        $totalSiswaKeluar[] = (int)$row->total_sk;
                         $status = false;
                     }
                 }
@@ -914,7 +914,7 @@ class AnalisaController extends Controller
                     $status = true;
                     foreach($data as $row){
                         if($row->bulan == $bulan && $row->tahun == $tahun && $row->materi_id == $materi->id){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -929,7 +929,7 @@ class AnalisaController extends Controller
                     $status = true;
                     foreach($data as $row){
                         if($row->tahun == $labels[$i] && $row->materi_id == $materi->id){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -1074,7 +1074,7 @@ class AnalisaController extends Controller
                     $status = true;
                     foreach($data as $row){
                         if($row->bulan == $bulan && $row->tahun == $tahun && $row->pendidikan_id == $pendidikan->id){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -1089,7 +1089,7 @@ class AnalisaController extends Controller
                     $status = true;
                     foreach($data as $row){
                         if($row->tahun == $labels[$i] && $row->pendidikan_id == $pendidikan->id){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }

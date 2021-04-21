@@ -1,9 +1,9 @@
 @extends('layouts.content_show')
 
 @section('card-button')
-    @if($summary->status == 0)
+    @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 3 && $summary->status == 0)
         <button class="btn btn-success" data-toggle="modal" data-target="#modalValidation"><i class="ti-check"></i> Approve</button>
-    @else
+    @elseif($summary->status == 1)
         <a href="{{ route('import.summary.show.pdf', $summary->id) }}" class="btn btn-danger"><i class="ti-file"></i> Export PDF</a>
     @endif
 @endsection
