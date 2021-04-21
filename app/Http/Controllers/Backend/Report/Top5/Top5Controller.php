@@ -165,9 +165,9 @@ class Top5Controller extends Controller
         // --------------------------------------------------------------------
         $result = $query->limit(5)->get();
         foreach($result as $row){
-            $totalPendaftaran[] = $row->uang_pendaftaran;
-            $totalKursus[]      = $row->uang_kursus;
-            $totalPenerimaan[]  = $row->total;
+            $totalPendaftaran[] = (int)$row->uang_pendaftaran;
+            $totalKursus[]      = (int)$row->uang_kursus;
+            $totalPenerimaan[]  = (int)$row->total;
         }
         // --------------------------------------------------------------------
         // Result
@@ -255,7 +255,7 @@ class Top5Controller extends Controller
         // --------------------------------------------------------------------
         $result = $query->limit(5)->get();
         foreach($result as $row){
-            $totalRoyalti[] = $row->total * 0.1;
+            $totalRoyalti[] = (int)$row->total * 0.1;
         }
         // --------------------------------------------------------------------
         // Result
@@ -332,10 +332,10 @@ class Top5Controller extends Controller
         // --------------------------------------------------------------------
         $result = $query->limit(5)->get();
         foreach($result as $row){
-            $totalSiswaAktif[]  = $row->siswa_aktif;
-            $totalSiswaBaru[]   = $row->siswa_baru;
-            $totalSiswaCuti[]   = $row->siswa_cuti;
-            $totalSiswaKeluar[] = $row->siswa_keluar;
+            $totalSiswaAktif[]  = (int)$row->siswa_aktif;
+            $totalSiswaBaru[]   = (int)$row->siswa_baru;
+            $totalSiswaCuti[]   = (int)$row->siswa_cuti;
+            $totalSiswaKeluar[] = (int)$row->siswa_keluar;
         }
         // --------------------------------------------------------------------
         // Result
@@ -457,7 +457,7 @@ class Top5Controller extends Controller
             $result[] = [
                 'label'             => $materi->nama,
                 'backgroundColor'   => randomColor(),
-                'data'              => $total,
+                'data'              => (int)$total,
                 'stack'             => 'stack_1',
             ];
         }
@@ -552,7 +552,7 @@ class Top5Controller extends Controller
             $result[] = [
                 'label'             => $pendidikan->nama,
                 'backgroundColor'   => randomColor(),
-                'data'              => $total,
+                'data'              => (int)$total,
                 'stack'             => 'stack_1',
             ];
         }
