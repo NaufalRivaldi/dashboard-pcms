@@ -242,7 +242,7 @@
                 // ----------------------------------------------------------------
                 $.each(vm.pembayaranDetails, function(idx, value){
                     if(value.type == 1){
-                        pendaftaran += value.nominal;
+                        pendaftaran += parseInt(value.nominal);
                     }
                 });
 
@@ -252,7 +252,7 @@
                 // ----------------------------------------------------------------
                 $.each(vm.pembayaranDetails, function(idx, value){
                     if(value.type == 2){
-                        kursus += value.nominal;
+                        kursus += parseInt(value.nominal);
                     }
                 });
 

@@ -513,7 +513,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalPendaftaran[] = $row->total_up;
+                        $totalPendaftaran[] = (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -538,7 +538,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalKursus[] = $row->total_k;
+                        $totalKursus[] = (int)$row->total_k;
                         $status = false;
                     }
                 }
@@ -563,7 +563,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $totalPenerimaan[] = (int)$row->total_k + (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -593,7 +593,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalPendaftaran[] = $row->total_up;
+                        $totalPendaftaran[] = (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -618,7 +618,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalKursus[] = $row->total_k;
+                        $totalKursus[] = (int)$row->total_k;
                         $status = false;
                     }
                 }
@@ -643,7 +643,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalPenerimaan[] = $row->total_k + $row->total_up;
+                        $totalPenerimaan[] = (int)$row->total_k + (int)$row->total_up;
                         $status = false;
                     }
                 }
@@ -843,7 +843,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $totalRoyalti[] = ((int)$row->total_k + (int)$row->total_up) * 0.1;
                         $status = false;
                     }
                 }
@@ -874,7 +874,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null && $location != null){
-                        $totalRoyalti[] = ($row->total_k + $row->total_up) * 0.1;
+                        $totalRoyalti[] = ((int)$row->total_k + (int)$row->total_up) * 0.1;
                         $status = false;
                     }
                 }
@@ -1060,7 +1060,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalSiswaAktif[] = $row->total_sa;
+                        $totalSiswaAktif[] = (int)$row->total_sa;
                         $status = false;
                     }
                 }
@@ -1084,7 +1084,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalSiswaBaru[] = $row->total_sb;
+                        $totalSiswaBaru[] = (int)$row->total_sb;
                         $status = false;
                     }
                 }
@@ -1108,7 +1108,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalSiswaCuti[] = $row->total_sc;
+                        $totalSiswaCuti[] = (int)$row->total_sc;
                         $status = false;
                     }
                 }
@@ -1132,7 +1132,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->bulan == $bulan && $row->tahun == $tahun && $location != null){
-                        $totalSiswaKeluar[] = $row->total_sk;
+                        $totalSiswaKeluar[] = (int)$row->total_sk;
                         $status = false;
                     }
                 }
@@ -1163,7 +1163,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalSiswaAktif[] = $row->total_sa;
+                        $totalSiswaAktif[] = (int)$row->total_sa;
                         $status = false;
                     }
                 }
@@ -1187,7 +1187,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalSiswaBaru[] = $row->total_sb;
+                        $totalSiswaBaru[] = (int)$row->total_sb;
                         $status = false;
                     }
                 }
@@ -1211,7 +1211,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalSiswaCuti[] = $row->total_sc;
+                        $totalSiswaCuti[] = (int)$row->total_sc;
                         $status = false;
                     }
                 }
@@ -1235,7 +1235,7 @@ class CompareController extends Controller
                     if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                     // -------------------------------------------------------
                     if($row->tahun == $tahun && $location != null){
-                        $totalSiswaKeluar[] = $row->total_sk;
+                        $totalSiswaKeluar[] = (int)$row->total_sk;
                         $status = false;
                     }
                 }
@@ -1482,7 +1482,7 @@ class CompareController extends Controller
                         if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                         // -------------------------------------------------------
                         if($row->bulan == $bulan && $row->tahun == $tahun && $row->materi_id == $materi->id && $location != null){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -1513,7 +1513,7 @@ class CompareController extends Controller
                         if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                         // -------------------------------------------------------
                         if($row->tahun == $tahun && $row->materi_id == $materi->id && $location != null){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -1743,7 +1743,7 @@ class CompareController extends Controller
                         if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                         // -------------------------------------------------------
                         if($row->bulan == $bulan && $row->tahun == $tahun && $row->pendidikan_id == $pendidikan->id && $location != null){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
@@ -1774,7 +1774,7 @@ class CompareController extends Controller
                         if($subWilayah != null) $location = $subWilayahColl->where('id', $row->sub_wilayah_id)->where('nama', $labelsArray[1])->first();
                         // -------------------------------------------------------
                         if($row->tahun == $tahun && $row->pendidikan_id == $pendidikan->id && $location != null){
-                            $total[] = $row->total_jumlah;
+                            $total[] = (int)$row->total_jumlah;
                             $status = false;
                         }
                     }
