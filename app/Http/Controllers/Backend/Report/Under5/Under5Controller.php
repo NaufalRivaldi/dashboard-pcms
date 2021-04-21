@@ -449,7 +449,7 @@ class Under5Controller extends Controller
                 foreach($data as $row){
                     $location = $cabangColl->where('id', $row->cabang_id)->where('nama', $labels[$i])->first();
                     if($row->materi_id == $materi->id && $location != null){
-                        $total[] = $row->total_jumlah;
+                        $total[] = (int)$row->total_jumlah;
                     }
                 }
             }
@@ -457,7 +457,7 @@ class Under5Controller extends Controller
             $result[] = [
                 'label'             => $materi->nama,
                 'backgroundColor'   => randomColor(),
-                'data'              => (int)$total,
+                'data'              => $total,
                 'stack'             => 'stack_1',
             ];
         }
@@ -544,7 +544,7 @@ class Under5Controller extends Controller
                 foreach($data as $row){
                     $location = $cabangColl->where('id', $row->cabang_id)->where('nama', $labels[$i])->first();
                     if($row->pendidikan_id == $pendidikan->id && $location != null){
-                        $total[] = $row->total_jumlah;
+                        $total[] = (int)$row->total_jumlah;
                     }
                 }
             }
@@ -552,7 +552,7 @@ class Under5Controller extends Controller
             $result[] = [
                 'label'             => $pendidikan->nama,
                 'backgroundColor'   => randomColor(),
-                'data'              => (int)$total,
+                'data'              => $total,
                 'stack'             => 'stack_1',
             ];
         }
