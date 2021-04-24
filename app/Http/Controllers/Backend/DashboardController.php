@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 // ----------------------------------------------------------------------------
+use App\Models\Cabang;
+// ----------------------------------------------------------------------------
 class DashboardController extends Controller
 {
     // ------------------------------------------------------------------------
@@ -12,6 +14,8 @@ class DashboardController extends Controller
         // --------------------------------------------------------------------
         $data = new \stdClass;
         $data->title    = 'Dashboard';
+        // --------------------------------------------------------------------
+        $data->cabangs  = Cabang::all();
         // --------------------------------------------------------------------
         return view('backend.dashboard.index', (array) $data);
         // --------------------------------------------------------------------

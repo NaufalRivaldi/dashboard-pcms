@@ -34,7 +34,7 @@ class MailNotify extends Mailable
      */
     public function build()
     {
-        return $this->from('noreply@dashboard-pcms.com')
+        return $this->from('noreply@aplikasi-pcms.my.id')
                     ->view('mail.notification_user')
                     ->with([
                         'summary'   => $this->summary,

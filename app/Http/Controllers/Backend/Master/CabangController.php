@@ -220,6 +220,8 @@ class CabangController extends Controller
             $cabang = Cabang::findOrFail($id);
             $cabang->kode               = $data['kode'];
             $cabang->nama               = $data['nama'];
+            $cabang->latitude           = $data['latitude'];
+            $cabang->longitude          = $data['longitude'];
             $cabang->wilayah_id         = $data['wilayah_id'];
             $cabang->sub_wilayah_id     = $data['sub_wilayah_id'];
             $cabang->user_id            = $data['user_id'];

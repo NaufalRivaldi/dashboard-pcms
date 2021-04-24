@@ -7,6 +7,8 @@
 @section('content-table')
     <th>Kode</th>
     <th>Nama</th>
+    <th>Latitude</th>
+    <th>Longitude</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->wilayah) !!}'>Wilayah</th>
     <th data-type="select" data-filtering='{!! parseJson($filtering->subWilayah) !!}'>Sub Wilayah</th>
     <th>Owner</th>
@@ -19,6 +21,8 @@
     $column = [
         ["data" => "kode", "name" => "kode", "defaultContent" => "-"],
         ["data" => "nama", "name" => "nama", "defaultContent" => "-"],
+        ["data" => "latitude", "name" => "latitude", "defaultContent" => "-"],
+        ["data" => "longitude", "name" => "longitude", "defaultContent" => "-"],
         ["data" => "wilayah.nama", "name" => "wilayah.nama", "defaultContent" => "-"],
         ["data" => "sub_wilayah.nama", "name" => "sub_wilayah.nama", "defaultContent" => "-"],
         ["data" => "owner.nama", "name" => "owner.nama", "defaultContent" => "-"],

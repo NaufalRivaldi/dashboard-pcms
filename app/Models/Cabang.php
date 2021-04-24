@@ -12,7 +12,7 @@ class Cabang extends Model
     // --------------------------------------------------------------------------------
     protected $table = 'cabang';
     // --------------------------------------------------------------------------------
-    protected $fillable = ['kode', 'nama', 'status', 'wilayah_id', 'sub_wilayah_id', 'user_id'];
+    protected $fillable = ['kode', 'nama', 'latitude', 'longitude', 'status', 'wilayah_id', 'sub_wilayah_id', 'user_id'];
     // --------------------------------------------------------------------------------
     public $timestamps = false;
     // --------------------------------------------------------------------------------

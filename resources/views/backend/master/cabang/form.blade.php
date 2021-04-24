@@ -17,7 +17,7 @@
             <div class="label-form">Kode</div>
         </label>
         <div class="col-sm-10 input-form">
-            <input type="text" name="kode" class="form-control col-sm-6 @if($errors->has('kode')) is-invalid @endif" value="{{ $cabang->kode ? $cabang->kode : old('kode') }}">
+            <input type="text" name="kode" class="form-control col-sm-6 @if($errors->has('kode')) is-invalid @endif" value="{{ $cabang->kode ? $cabang->kode : old('kode') }}" required>
             <!-- Start - Error handling -->
             @if($errors->has('kode'))
                 <div class="invalid-feedback">{{ $errors->first('kode') }}</div>
@@ -34,7 +34,7 @@
             <div class="label-form">Nama</div>
         </label>
         <div class="col-sm-10 input-form">
-            <input type="text" name="nama" class="form-control @if($errors->has('nama')) is-invalid @endif" value="{{ $cabang->nama ? $cabang->nama : old('nama') }}">
+            <input type="text" name="nama" class="form-control @if($errors->has('nama')) is-invalid @endif" value="{{ $cabang->nama ? $cabang->nama : old('nama') }}" required>
             <!-- Start - Error handling -->
             @if($errors->has('nama'))
                 <div class="invalid-feedback">{{ $errors->first('nama') }}</div>
@@ -43,6 +43,40 @@
         </div>
     </div>
     <!-- End - Nama -->
+
+    <!-- Start - latitude -->
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+            <span class="badge badge-success">Optional</span><br>
+            <div class="label-form">Latitude</div>
+        </label>
+        <div class="col-sm-10 input-form">
+            <input type="text" name="latitude" class="form-control @if($errors->has('latitude')) is-invalid @endif" value="{{ $cabang->latitude ? $cabang->latitude : old('latitude') }}">
+            <!-- Start - Error handling -->
+            @if($errors->has('latitude'))
+                <div class="invalid-feedback">{{ $errors->first('latitude') }}</div>
+            @endif
+            <!-- End - Error handling -->
+        </div>
+    </div>
+    <!-- End - latitude -->
+
+    <!-- Start - longitude -->
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+            <span class="badge badge-success">Optional</span><br>
+            <div class="label-form">Longitude</div>
+        </label>
+        <div class="col-sm-10 input-form">
+            <input type="text" name="longitude" class="form-control @if($errors->has('longitude')) is-invalid @endif" value="{{ $cabang->longitude ? $cabang->longitude : old('longitude') }}">
+            <!-- Start - Error handling -->
+            @if($errors->has('longitude'))
+                <div class="invalid-feedback">{{ $errors->first('longitude') }}</div>
+            @endif
+            <!-- End - Error handling -->
+        </div>
+    </div>
+    <!-- End - longitude -->
 
     <!-- Start - wilayah_id -->
     <div class="form-group row">
