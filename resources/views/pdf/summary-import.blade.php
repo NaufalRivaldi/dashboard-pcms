@@ -13,6 +13,14 @@
             width: 20%
             float: left;
         }
+
+        body{
+            font-size: .8em;
+        }
+
+        table{
+            font-size: .9em;
+        }
     </style>
 </head>
 <body>
@@ -21,8 +29,6 @@
 		<center>
 			<h4>SUMMARY IMPORT DATA</h4>
 		</center>
-		
-        <br/>
 
         <!-- Start - row 1 -->
 		<table width="100%">

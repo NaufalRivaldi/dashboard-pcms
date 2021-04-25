@@ -13,9 +13,11 @@
             Maps Cabang
         </div>
         <div class="card-body">
-            <div class="alert alert-info" role="alert">
-                Tambahkan pin maps pada master cabang dengan cara memberikan koordinat Latitude dan Longitude.
-            </div>
+            @if(Auth::user()->level_id == 1)
+                <div class="alert alert-info" role="alert">
+                    Tambahkan pin maps pada master cabang dengan cara memberikan koordinat Latitude dan Longitude.
+                </div>
+            @endif
 
             <!-- Start - Maps -->
             <div id="mapid" style="height:500px"></div>

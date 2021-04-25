@@ -118,7 +118,6 @@ class SummaryDetailController extends Controller
             return response()->json($data);
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             $data->status   = false;
             $data->message  = 'Notifikasi data pending gagal dikirimkan';
             return response()->json($data);
@@ -133,7 +132,7 @@ class SummaryDetailController extends Controller
 
         $pdf = PDF::loadview('pdf.summary-import', $data);
     	return $pdf->download('summary-import');
-        // return view('pdf.summary-import', $data);
+        return view('pdf.summary-import', $data);
     }
     // ------------------------------------------------------------------------
 }

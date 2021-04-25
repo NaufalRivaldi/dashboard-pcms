@@ -6,10 +6,16 @@
 
 @section('card-slot-up')
     <!-- Start - Alert -->
-    @if($siswaAktifJurusan->siswa_aktif_details->sum('jumlah') != $siswaAktif->siswa_aktif_pendidikan_details->sum('jumlah'))
-    <div class="alert alert-danger" role="alert">
-        Jumlah data siswa tidak sesuai dengan laporan LA06, silahkan lakukan perbaikan pada aplikasi desktop.
-    </div>
+    @if(empty($siswaAktifJurusan))
+        <div class="alert alert-danger" role="alert">
+            Laporan LA06 belum diimport, pastikan terlebih dahulu data sudah diimport.
+        </div>
+    @else
+        @if($siswaAktifJurusan->siswa_aktif_details->sum('jumlah') != $siswaAktif->siswa_aktif_pendidikan_details->sum('jumlah'))
+            <div class="alert alert-danger" role="alert">
+                Jumlah data siswa tidak sesuai dengan laporan LA06, silahkan lakukan perbaikan pada aplikasi desktop.
+            </div>
+        @endif
     @endif
     <!-- Start - Alert -->
 

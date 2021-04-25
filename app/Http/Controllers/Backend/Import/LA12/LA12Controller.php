@@ -47,7 +47,7 @@ class LA12Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $siswaInaktifs = SiswaInaktif::with('cabang', 'user');
+                $siswaInaktifs = SiswaInaktif::with('cabang', 'user')->select('siswa_inaktif.*');
                 // ------------------------------------------------------------
                 // View owner
                 // ------------------------------------------------------------

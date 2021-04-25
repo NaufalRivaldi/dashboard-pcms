@@ -245,6 +245,19 @@ class AllController extends Controller
             $query = Summary::selectRaw('tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($filterDate != null){
@@ -413,6 +426,19 @@ class AllController extends Controller
             $query = Summary::selectRaw('tahun, SUM(uang_pendaftaran) as total_up, SUM(uang_kursus) as total_k')->where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($filterDate != null){
@@ -514,6 +540,19 @@ class AllController extends Controller
         }else if($filterYear != null){
             $year = $filterYear;
             $query = Summary::selectRaw('tahun, SUM(siswa_aktif) as total_sa, SUM(siswa_baru) as total_sb, SUM(siswa_cuti) as total_sc, SUM(siswa_keluar) as total_sk')->where('status', 1);
+        }
+        // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where Month
@@ -701,6 +740,19 @@ class AllController extends Controller
             $query = Summary::where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($filterDate != null){
@@ -823,6 +875,19 @@ class AllController extends Controller
         }else if($filterYear != null){
             $year = $filterYear;
             $query = Summary::where('status', 1);
+        }
+        // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where Month

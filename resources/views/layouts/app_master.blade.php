@@ -22,7 +22,7 @@
 	<!-- End - Fonts -->
 
 	<!-- Start - Favicon -->
-	<link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
+	<link rel="shortcut icon" href="{{ asset('assets/images/pcms.ico') }}">
 	<!-- End - Favicon -->
 
     <!-- Start - Stack CSS -->
@@ -59,7 +59,7 @@
         <!-- footer -->
         <footer>
             <div class="container-fluid">
-                <p class="copyright">&copy; 2021 Naufal Rivaldi. All Rights Reserved.</p>
+                <p class="copyright">&copy; {{ date('Y') }} Purwa Caraka Music Studio. All Rights Reserved.</p>
             </div>
         </footer>
         <!-- end footer -->

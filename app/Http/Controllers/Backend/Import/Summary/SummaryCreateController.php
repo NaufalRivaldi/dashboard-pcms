@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Backend\Import\Summary;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+// ----------------------------------------------------------------------------
+use App\Mail\MailNotify;
 // ----------------------------------------------------------------------------
 use App\Helpers\ImportHelper;
 // ----------------------------------------------------------------------------
@@ -20,6 +23,7 @@ use App\Models\SiswaAktifPendidikan;
 use App\Models\SiswaBaru;
 use App\Models\SiswaInaktif;
 use App\Models\SiswaCuti;
+use App\Models\User;
 // ----------------------------------------------------------------------------
 use Carbon\Carbon;
 use Auth;
@@ -377,6 +381,16 @@ class SummaryCreateController extends Controller
                 SummarySAPendidikan::create($summaryPendidikan);
                 // ------------------------------------------------------------
             }
+
+            // ----------------------------------------------------------------
+            // Send notification
+            // ----------------------------------------------------------------
+            $userApprovers = User::where('level_id', 3)->where('status', 1)->get();
+            foreach($userApprovers as $user){
+                Mail::to($user->email)->send(new MailNotify($mSummary, $mSummary->cabang->nama, 3));
+            }
+            // ----------------------------------------------------------------
+
             // ----------------------------------------------------------------
             return redirect()->route('import.summary.index')->with('success', __('label.SUCCESS_CREATE_MESSAGE'));
             // ----------------------------------------------------------------

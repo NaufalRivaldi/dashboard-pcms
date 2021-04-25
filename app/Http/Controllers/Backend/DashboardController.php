@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 // ----------------------------------------------------------------------------
 use App\Models\Cabang;
 // ----------------------------------------------------------------------------
+use Auth;
+// ----------------------------------------------------------------------------
 class DashboardController extends Controller
 {
     // ------------------------------------------------------------------------
@@ -15,7 +17,9 @@ class DashboardController extends Controller
         $data = new \stdClass;
         $data->title    = 'Dashboard';
         // --------------------------------------------------------------------
-        $data->cabangs  = Cabang::all();
+        if(Auth::user()->level_id == 2) $data->cabangs  = Cabang::where('user_id', Auth::user()->id)->get();
+        elseif(Auth::user()->level_id == 4) $data->cabangs  = Cabang::where('id', Auth::user()->cabang_id)->get();
+        else $data->cabangs  = Cabang::where('status', 1)->get();
         // --------------------------------------------------------------------
         return view('backend.dashboard.index', (array) $data);
         // --------------------------------------------------------------------

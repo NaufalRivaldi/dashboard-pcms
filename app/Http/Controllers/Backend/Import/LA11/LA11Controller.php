@@ -47,7 +47,7 @@ class LA11Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $siswaCutis = SiswaCuti::with('cabang', 'user');
+                $siswaCutis = SiswaCuti::with('cabang', 'user')->select('siswa_cuti.*');
                 // ------------------------------------------------------------
                 // View owner
                 // ------------------------------------------------------------

@@ -128,6 +128,19 @@ class Top5Controller extends Controller
             $query = Summary::selectRaw('SUM(uang_pendaftaran) as uang_pendaftaran, SUM(uang_kursus) as uang_kursus, SUM(uang_pendaftaran + uang_kursus) as total, tahun, cabang_id')->where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($periode != null){
@@ -220,6 +233,19 @@ class Top5Controller extends Controller
             $query = Summary::selectRaw('SUM(uang_pendaftaran) as uang_pendaftaran, SUM(uang_kursus) as uang_kursus, SUM(uang_pendaftaran + uang_kursus) as total, tahun, cabang_id')->where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($periode != null){
@@ -292,6 +318,19 @@ class Top5Controller extends Controller
             $query = Summary::selectRaw('siswa_aktif, siswa_baru, siswa_cuti, siswa_keluar, siswa_aktif + siswa_baru + siswa_cuti + siswa_keluar as total, cabang_id')->where('status', 1);
         }else{
             $query = Summary::selectRaw('SUM(siswa_aktif) as siswa_aktif, SUM(siswa_baru) as siswa_baru, SUM(siswa_cuti) as siswa_cuti, SUM(siswa_keluar) as siswa_keluar, SUM(siswa_aktif + siswa_baru + siswa_cuti + siswa_keluar) as total, tahun, cabang_id')->where('status', 1);
+        }
+        // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where Month
@@ -393,6 +432,19 @@ class Top5Controller extends Controller
             $query = Summary::where('status', 1);
         }
         // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
+        }
+        // --------------------------------------------------------------------
         // Where Month
         // --------------------------------------------------------------------
         if($periode != null){
@@ -486,6 +538,19 @@ class Top5Controller extends Controller
             $query = Summary::where('status', 1);
         }else{
             $query = Summary::where('status', 1);
+        }
+        // --------------------------------------------------------------------
+        // Where Cabang is active
+        // --------------------------------------------------------------------
+        if(Auth::user()->level_id == 2){
+            $query->whereHas('cabang', function($query){
+                $query->where('user_id', Auth::user()->id);
+                $query->where('status', 1);
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where Month

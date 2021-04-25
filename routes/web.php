@@ -408,7 +408,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     // Report page
     // --------------------------------------------------------------------
-    Route::namespace('Report')->prefix('report')->middleware(['level:1,2,3'])->name('main.report.')->group(function(){
+    Route::namespace('Report')->prefix('report')->middleware(['level:1,2,3,5'])->name('main.report.')->group(function(){
         // ----------------------------------------------------------------
         //  Cabang unreport page
         // ----------------------------------------------------------------

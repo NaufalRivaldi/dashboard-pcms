@@ -79,7 +79,7 @@
             <!-- End - Analisa collapse -->
             @endif
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 3)
+            @if(Auth::user()->level_id != 4)
             <!-- Start - Report collapse -->
             <li class="panel">
                 <a href="#" data-toggle="collapse" data-target="#submenuReport" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'report') !== false) active @endif">
@@ -87,7 +87,9 @@
                 </a>
                 <div id="submenuReport" class="collapse">
                     <ul class="submenu">
+                        @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 3)
                         <li><a href="{{ route('main.report.unreport.index') }}">Report Cabang Belum Import Data</a></li>
+                        @endif
                         <li><a href="{{ route('main.report.top5.index') }}">Top 5</a></li>
                         <li><a href="{{ route('main.report.under5.index') }}">Under 5</a></li>
                         <li><a href="{{ route('main.report.all.index') }}">All Cabang</a></li>
@@ -101,7 +103,7 @@
             @endif
 
 
-            @if(Auth::user()->level_id != 5)
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 3 || Auth::user()->level_id == 4)
             <!-- Start - Import data Link -->
             <li class="menu-group">Import Data</li>
 
@@ -117,7 +119,7 @@
             <!-- End - summary link -->
             @endif
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 4)
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 4)
             <!-- Start - Import File collapse -->
             <li class="panel">
                 <a href="#" data-toggle="collapse" data-target="#submenuImportLaporan" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'la03') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la06') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la07') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la09') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la012') !== false) active @endif @if(strpos(Route::currentRouteName(), 'la11') !== false) active @endif">

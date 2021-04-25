@@ -19,7 +19,7 @@
 	<!-- End - Fonts -->
 
 	<!-- Start - Favicon -->
-	<link rel="shortcut icon" href="{{ asset('assets/images/favicon.png') }}">
+	<link rel="shortcut icon" href="{{ asset('assets/images/pcms.ico') }}">
 	<!-- End - Favicon -->
 
 	<!-- Start - CSS -->

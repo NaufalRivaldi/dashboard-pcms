@@ -47,7 +47,7 @@ class LA09Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $siswaBarus = SiswaBaru::with('cabang', 'user');
+                $siswaBarus = SiswaBaru::with('cabang', 'user')->select('siswa_baru.*');
                 // ------------------------------------------------------------
                 // View owner
                 // ------------------------------------------------------------

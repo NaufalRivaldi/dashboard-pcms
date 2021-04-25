@@ -49,7 +49,7 @@ class LA07Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $siswaAktifs = SiswaAktif::with('cabang', 'user');
+                $siswaAktifs = SiswaAktif::with('cabang', 'user')->select('siswa_aktif_pendidikan.*');
                 // ------------------------------------------------------------
                 // View owner
                 // ------------------------------------------------------------

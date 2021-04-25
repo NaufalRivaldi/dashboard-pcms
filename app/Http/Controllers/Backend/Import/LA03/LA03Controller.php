@@ -91,7 +91,7 @@ class LA03Controller extends Controller
             // ----------------------------------------------------------------
             case 'datatable':
                 // ------------------------------------------------------------
-                $pembayarans = Pembayaran::with('cabang', 'user');
+                $pembayarans = Pembayaran::with('cabang', 'user')->select('pembayaran.*');
                 // ------------------------------------------------------------
                 // View owner
                 // ------------------------------------------------------------

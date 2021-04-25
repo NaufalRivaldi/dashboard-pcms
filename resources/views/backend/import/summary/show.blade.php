@@ -23,7 +23,7 @@
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Bulan</div>
         <div class="col-sm-1 text-right">:</div>
-        <div class="col-sm-8">{{ setMonth($summary->bulan) }}</div>
+        <div class="col-sm-8">{{ strtoupper(setMonth($summary->bulan)) }}</div>
     </div>
     <div class="row mt-2">
         <div class="col-sm-3 font-weight-bold">Tahun</div>

@@ -28,6 +28,15 @@
                     {{ Auth::user()->nama }}
                 </p>
                 @endif
+
+                @if($type == 3)
+                <p>
+                    Summary Import Cabang {{ $cabang }} periode {{ setMonth($summary->bulan).' '.$summary->tahun }} sudah diimport, silahkan lakukan verifikasi data.<br><br><br><br>
+                    Best regards,<br><br>
+
+                    {{ Auth::user()->nama }}
+                </p>
+                @endif
             </div>
         </div>
     </div>

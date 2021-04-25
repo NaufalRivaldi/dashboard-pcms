@@ -30,7 +30,7 @@ class LA07DetailController extends Controller
         $data->title        = "LA07 - Detail";
         $data->filtering    = $filtering; 
         $data->siswaAktif   = SiswaAktif::with('siswa_aktif_pendidikan_details')->where('id', $id)->first();
-        $data->siswaAktifJurusan = SiswaAktifJurusan::with('siswa_aktif_details')->where('bulan', $data->siswaAktif->bulan)->where('tahun', $data->siswaAktif->tahun)->first();
+        $data->siswaAktifJurusan = SiswaAktifJurusan::with('siswa_aktif_details')->where('bulan', $data->siswaAktif->bulan)->where('tahun', $data->siswaAktif->tahun)->where('cabang_id', $data->siswaAktif->cabang_id)->first();
         $data->pendidikans  = Pendidikan::all();
         // --------------------------------------------------------------------
         // Filtering data

@@ -272,7 +272,12 @@ class AnalisaController extends Controller
             $query->where(function($query){
                 $query->whereHas('cabang', function($query){
                     $query->where('user_id', Auth::user()->id);
+                    $query->where('status', 1);
                 });
+            });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
             });
         }
         // --------------------------------------------------------------------
@@ -281,6 +286,7 @@ class AnalisaController extends Controller
         if($wilayah != null){
             $query->whereHas('cabang', function($query)use($wilayah){
                 $query->where('wilayah_id', $wilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -292,6 +298,7 @@ class AnalisaController extends Controller
         if($subWilayah != null){
             $query->whereHas('cabang', function($query)use($subWilayah){
                 $query->where('sub_wilayah_id', $subWilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -478,6 +485,10 @@ class AnalisaController extends Controller
                     $query->where('user_id', Auth::user()->id);
                 });
             });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where wilayah
@@ -485,6 +496,7 @@ class AnalisaController extends Controller
         if($wilayah != null){
             $query->whereHas('cabang', function($query)use($wilayah){
                 $query->where('wilayah_id', $wilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -496,6 +508,7 @@ class AnalisaController extends Controller
         if($subWilayah != null){
             $query->whereHas('cabang', function($query)use($subWilayah){
                 $query->where('sub_wilayah_id', $subWilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -617,6 +630,10 @@ class AnalisaController extends Controller
                     $query->where('user_id', Auth::user()->id);
                 });
             });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where wilayah
@@ -624,6 +641,7 @@ class AnalisaController extends Controller
         if($wilayah != null){
             $query->whereHas('cabang', function($query)use($wilayah){
                 $query->where('wilayah_id', $wilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -635,6 +653,7 @@ class AnalisaController extends Controller
         if($subWilayah != null){
             $query->whereHas('cabang', function($query)use($subWilayah){
                 $query->where('sub_wilayah_id', $subWilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -838,6 +857,10 @@ class AnalisaController extends Controller
                     $query->where('user_id', Auth::user()->id);
                 });
             });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where wilayah
@@ -845,6 +868,7 @@ class AnalisaController extends Controller
         if($wilayah != null){
             $query->whereHas('cabang', function($query)use($wilayah){
                 $query->where('wilayah_id', $wilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -856,6 +880,7 @@ class AnalisaController extends Controller
         if($subWilayah != null){
             $query->whereHas('cabang', function($query)use($subWilayah){
                 $query->where('sub_wilayah_id', $subWilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -998,6 +1023,10 @@ class AnalisaController extends Controller
                     $query->where('user_id', Auth::user()->id);
                 });
             });
+        }else{
+            $query->whereHas('cabang', function($query){
+                $query->where('status', 1);
+            });
         }
         // --------------------------------------------------------------------
         // Where wilayah
@@ -1005,6 +1034,7 @@ class AnalisaController extends Controller
         if($wilayah != null){
             $query->whereHas('cabang', function($query)use($wilayah){
                 $query->where('wilayah_id', $wilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }
@@ -1016,6 +1046,7 @@ class AnalisaController extends Controller
         if($subWilayah != null){
             $query->whereHas('cabang', function($query)use($subWilayah){
                 $query->where('sub_wilayah_id', $subWilayah);
+                $query->where('status', 1);
                 if(Auth::user()->level_id == 2){
                     $query->where('user_id', Auth::user()->id);
                 }

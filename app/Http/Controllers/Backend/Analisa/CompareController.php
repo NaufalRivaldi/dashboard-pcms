@@ -177,7 +177,6 @@ class CompareController extends Controller
             return response()->json($data);
             // ----------------------------------------------------------------
         } catch (\Throwable $th) {
-            dd($th);
             $data->status = false;
             $data->message = "Filter data gagal";
             return response()->json($data);
