@@ -206,7 +206,7 @@
             sumJumlah: function(array){
                 let total = 0;
                 $.each(array, function(index, value){
-                    total += value.jumlah;
+                    total += parseInt(value.jumlah);
                 })
 
                 return total;

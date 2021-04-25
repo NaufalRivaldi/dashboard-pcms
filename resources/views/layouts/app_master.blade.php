@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>{{ $title }} | {{ replaceUnderscore(env('APP_NAME')) }}</title>
+    <title>{{ $title }} | Dashboard PCMS</title>
     <!-- Start - Meta tag -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">

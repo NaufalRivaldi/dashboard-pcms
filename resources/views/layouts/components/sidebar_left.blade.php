@@ -59,11 +59,11 @@
             <!-- End - Master Link -->
             @endif
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 3)
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 3 || Auth::user()->level_id == 5)
             <!-- Start - Main Link -->
             <li class="menu-group">Main</li>
 
-            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2)
+            @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 5)
             <!-- Start - Analisa collapse -->
             <li class="panel">
                 <a href="#" data-toggle="collapse" data-target="#submenuAnalisa" data-parent="#sidebar-nav-menu" class="@if(strpos(Route::currentRouteName(), 'analisa') !== false) active @endif @if(strpos(Route::currentRouteName(), 'compare') !== false) active @endif @if(strpos(Route::currentRouteName(), 'grade') !== false) active @endif">
@@ -100,6 +100,8 @@
             <!-- End - Main Link -->
             @endif
 
+
+            @if(Auth::user()->level_id != 5)
             <!-- Start - Import data Link -->
             <li class="menu-group">Import Data</li>
 
@@ -113,6 +115,7 @@
                 </li>
             </li>
             <!-- End - summary link -->
+            @endif
 
             @if(Auth::user()->level_id == 1 || Auth::user()->level_id == 2 || Auth::user()->level_id == 4)
             <!-- Start - Import File collapse -->

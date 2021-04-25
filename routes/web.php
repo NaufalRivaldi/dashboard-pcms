@@ -382,7 +382,7 @@ Route::namespace('Backend')->middleware('auth')->group(function(){
     // --------------------------------------------------------------------
     // Main page
     // --------------------------------------------------------------------
-    Route::namespace('Analisa')->middleware(['level:1,2'])->name('main.')->group(function(){
+    Route::namespace('Analisa')->middleware(['level:1,2,5'])->name('main.')->group(function(){
         // ----------------------------------------------------------------
         //  Analisa page
         // ----------------------------------------------------------------

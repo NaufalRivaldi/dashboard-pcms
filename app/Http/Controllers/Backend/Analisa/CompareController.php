@@ -42,7 +42,7 @@ class CompareController extends Controller
         // --------------------------------------------------------------------
         // If admin
         // --------------------------------------------------------------------
-        if(Auth::user()->level_id == 1){
+        if(Auth::user()->level_id == 1 || Auth::user()->level_id == 5){
             $data->cabangs              = Cabang::where('status', 1)->pluck('nama', 'id');
             $data->wilayahs             = Wilayah::where('status', 1)->pluck('nama', 'id');
             $data->subWilayahs          = SubWilayah::where('status', 1)->pluck('nama', 'id');
